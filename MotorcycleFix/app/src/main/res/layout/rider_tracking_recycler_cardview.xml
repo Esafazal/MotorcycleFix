@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="4dp"
+    android:layout_marginBottom="5sp">
+
+    <TextView
+        android:id="@+id/bookingID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10sp"
+        android:text="Booking ID"
+        android:textColor="@color/colorblack"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/serviceType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40sp"
+        android:layout_marginTop="40sp"
+        android:text="Service Type" />
+
+    <ImageView
+        android:id="@+id/service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:layout_marginTop="40sp"
+        android:contentDescription="@string/serviceIcon"
+        android:src="@drawable/ic_bike_black_24dp" />
+
+    <TextView
+        android:id="@+id/bikeModel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40sp"
+        android:layout_marginTop="65sp"
+        android:text="Bike Model" />
+
+    <ImageView
+        android:id="@+id/bikeModelIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:layout_marginTop="65sp"
+        android:contentDescription="@string/serviceIcon"
+        android:src="@drawable/ic_bike_model_black_24dp" />
+
+    <TextView
+        android:id="@+id/viewDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="220sp"
+        android:layout_marginTop="35sp"
+        android:text="@string/viewDetails"
+        android:textColor="@color/colorAsh2"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/viewDetailsIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="320sp"
+        android:layout_marginTop="37sp"
+        android:contentDescription="@string/serviceIcon"
+        android:src="@drawable/ic_right_black_24dp" />
+
+</androidx.cardview.widget.CardView>

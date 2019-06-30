@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAsh"
+    tools:context=".RiderFragments.TrackingFragment">
+
+    <!--<androidx.cardview.widget.CardView-->
+        <!--android:id="@+id/trackCard"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="89dp"-->
+        <!--android:layout_margin="10sp"-->
+        <!--app:cardBackgroundColor="#F0ECEC"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent">-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/workshopName"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="10sp"-->
+            <!--android:text="@string/bookingId"-->
+            <!--android:textColor="@color/colorblack"-->
+            <!--android:textSize="20sp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/serviceType"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="40sp"-->
+            <!--android:layout_marginTop="40sp"-->
+            <!--android:text="@string/serviceType" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/service"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="10sp"-->
+            <!--android:layout_marginTop="40sp"-->
+            <!--android:contentDescription="@string/serviceIcon"-->
+            <!--android:src="@drawable/ic_bike_black_24dp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/bikeModel"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="40sp"-->
+            <!--android:layout_marginTop="65sp"-->
+            <!--android:text="@string/bikeModel" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/bikeModelIcon"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="10sp"-->
+            <!--android:layout_marginTop="65sp"-->
+            <!--android:contentDescription="@string/serviceIcon"-->
+            <!--android:src="@drawable/ic_bike_model_black_24dp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/textView3"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="250sp"-->
+            <!--android:layout_marginTop="35sp"-->
+            <!--android:text="@string/viewDetails"-->
+            <!--android:textColor="@color/colorAsh2"-->
+            <!--android:textSize="18sp" />-->
+
+        <!--<ImageView-->
+            <!--android:id="@+id/viewDetailsIcon"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="350sp"-->
+            <!--android:layout_marginTop="37sp"-->
+            <!--android:contentDescription="@string/serviceIcon"-->
+            <!--android:src="@drawable/ic_right_black_24dp" />-->
+
+    <!--</androidx.cardview.widget.CardView>-->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tracking_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/anotherAsh"
+        android:padding="5sp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAsh"
+    tools:context=".RiderFragments.SettingsFragment">
+
+    <!--profile card view-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/settingProfileCard"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10sp"
+        app:cardBackgroundColor="#F0ECEC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/settingProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70sp"
+            android:layout_marginTop="15sp"
+            android:text="@string/riderProfile"
+            android:textColor="@color/colorblack"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/profileIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25sp"
+            android:layout_marginTop="18sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_account_circle_black_24dp" />
+    </androidx.cardview.widget.CardView>
+
+    <!--vehicle card menu-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/settingVehicleCard"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="5sp"
+        app:cardBackgroundColor="#F0ECEC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingProfileCard">
+
+
+        <TextView
+            android:id="@+id/settingVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70sp"
+            android:layout_marginTop="15sp"
+            android:text="@string/riderVehicle"
+            android:textColor="@color/colorblack"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/vehicleIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25sp"
+            android:layout_marginTop="18sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_single_motorbike" />
+    </androidx.cardview.widget.CardView>
+
+    <!--Logout card menu-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/settingLogoutCard"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="5sp"
+        app:cardBackgroundColor="#F0ECEC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settingVehicleCard">
+
+
+        <TextView
+            android:id="@+id/settingLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="70sp"
+            android:layout_marginTop="15sp"
+            android:text="@string/riderLogout"
+            android:textColor="@color/colorblack"
+            android:textSize="22sp" />
+
+        <ImageView
+            android:id="@+id/logoutIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25sp"
+            android:layout_marginTop="18sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_logout_black_24dp" />
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

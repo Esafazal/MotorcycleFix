@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/workshopCardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/anotherAsh"
+    app:cardCornerRadius="7dp"
+    app:cardElevation="5sp"
+    android:layout_margin="4sp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/workshopImg"
+        android:layout_width="match_parent"
+        android:layout_height="120sp"
+        android:layout_marginTop="10sp"
+        android:layout_marginStart="10sp"
+        android:layout_marginEnd="10sp"
+        android:contentDescription="Mechanic workshop image"
+        android:src="@drawable/workshop_image" />
+
+        <TextView
+        android:id="@+id/workshopName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:text="Lasantha Mechanic n Malli"
+        android:layout_below="@+id/workshopImg"
+        android:textColor="@color/colorblack"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/specialized"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/workshopName"
+        android:layout_marginStart="40sp"
+        android:text="Bajaj | Honda | TVS"
+        android:textColor="@color/colorAsh2"/>
+
+    <ImageView
+        android:id="@+id/specializedIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10sp"
+        android:contentDescription="@string/serviceIcon"
+        android:src="@drawable/ic_ash_motorbike"
+        android:layout_below="@+id/workshopName"/>
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

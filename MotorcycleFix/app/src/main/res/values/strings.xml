@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">MotorcycleFix</string>
+    <string name="mechanic">Mechanic</string>
+    <string name="rider">Rider</string>
+    <string name="create_account">Create Account</string>
+    <string name="sign_in">Sign In</string>
+    <string name="password">Password:</string>
+    <string name="your_email_address">Email Address:</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+
+    <string name="title_activity_rider_portal">RiderPortal</string>
+    <string name="title_home">Home</string>
+    <string name="title_workshop">Workshops</string>
+    <string name="title_emergency">Emergency</string>
+    <string name="title_tracking">Tracking</string>
+    <string name="title_settings">Settings</string>
+
+    <string name="search_bar">Search Workshops</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_mechanic_portal">MechanicPortal</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="bookingId">Booking #565659</string>
+    <string name="serviceType">Service Type</string>
+    <string name="bikeModel">Hero Hunk</string>
+    <string name="serviceIcon">Service Icon</string>
+    <string name="viewDetailsIcon">View tracking details info</string>
+    <string name="viewDetails">View Details</string>
+    <string name="title_activity_rider_settings">Settings</string>
+
+    <string name="riderProfile">Profile</string>
+    <string name="riderVehicle">My Vehicles</string>
+    <string name="riderLogout">Logout</string>
+
+
+</resources>
