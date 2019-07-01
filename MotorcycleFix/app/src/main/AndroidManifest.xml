@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.ProfileActivity"></activity>
+        <activity android:name=".RiderFragments.VehicleActivity"></activity>
+        <activity android:name=".RiderFragments.ProfileActivity" />
         <activity
             android:name=".MechanicPortal"
             android:label="@string/title_activity_mechanic_portal"
