@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 
 import com.fyp.motorcyclefix.LoginActivity;
 import com.fyp.motorcyclefix.R;
+import com.fyp.motorcyclefix.RiderFragments.Settings.ProfileActivity;
+import com.fyp.motorcyclefix.RiderFragments.Settings.VehicleActivity;
 
 /**
  * A simple {@link Fragment} subclass.

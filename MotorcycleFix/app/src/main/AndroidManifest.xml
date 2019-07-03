@@ -24,8 +24,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.VehicleActivity"></activity>
-        <activity android:name=".RiderFragments.ProfileActivity" />
+        <activity android:name=".RiderFragments.Settings.ChooseModel"></activity>
+        <activity android:name=".RiderFragments.Settings.ChooseManufacturer" />
+        <activity android:name=".RiderFragments.Settings.AddVehicle" />
+        <activity android:name=".RiderFragments.Settings.VehicleActivity" />
+        <activity android:name=".RiderFragments.Settings.ProfileActivity" />
         <activity
             android:name=".MechanicPortal"
             android:label="@string/title_activity_mechanic_portal"

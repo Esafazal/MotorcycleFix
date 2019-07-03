@@ -65,7 +65,7 @@ public class WorkshopFragment extends Fragment {
     }
 
     private void setUpRecyclerView(View view) {
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.workshop_recycler_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
         workshopsAdapter = new WorkshopsAdapter(workshopDaoList);

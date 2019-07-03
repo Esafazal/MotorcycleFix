@@ -53,6 +53,7 @@
     <string name="riderProfile">Profile</string>
     <string name="riderVehicle">My Vehicles</string>
     <string name="riderLogout">Logout</string>
+    <string name="add_vehicle">Add Vehicle</string>
 
 
 </resources>
