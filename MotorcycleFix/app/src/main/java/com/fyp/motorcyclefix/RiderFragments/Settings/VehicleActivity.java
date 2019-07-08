@@ -23,10 +23,20 @@ public class VehicleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_vehicle_settings_activity);
+        setTitle("My Vehicles");
 
         ArrayList<TrackingDao> trackingDaos = new ArrayList<>();
 
         trackingDaos.add(new TrackingDao("", "", "Bugati Bike R15"));
+        trackingDaos.add(new TrackingDao("", "", "Bajaj 125"));
+        trackingDaos.add(new TrackingDao("", "", "pulsar 200"));
+        trackingDaos.add(new TrackingDao("", "", "hero hunk"));
+        trackingDaos.add(new TrackingDao("", "", "Ducati"));
+        trackingDaos.add(new TrackingDao("", "", "Suzuki Gixxar"));
+        trackingDaos.add(new TrackingDao("", "", "BMW Racing"));
+        trackingDaos.add(new TrackingDao("", "", "Chevrolet"));
+
+
 
         recyclerView = findViewById(R.id.vehicleSettingRecycler);
         recyclerView.setHasFixedSize(true);
@@ -41,6 +51,6 @@ public class VehicleActivity extends AppCompatActivity {
     public void addVehicleButtonClick(View view) {
 
         Intent intent = new Intent(this, AddVehicle.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 }

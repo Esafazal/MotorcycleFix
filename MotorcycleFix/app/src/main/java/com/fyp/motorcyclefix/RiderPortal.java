@@ -33,22 +33,27 @@ public class RiderPortal extends AppCompatActivity {
                 case R.id.navigation_home:
                     selectedFragment = new MapsFragment();
                     loadFragment(selectedFragment);
+                    setTitle("Nearby Workshops");
                     return true;
                 case R.id.navigation_workshops:
                     selectedFragment = new WorkshopFragment();
                     loadFragment(selectedFragment);
+                    setTitle("Find Workshops");
                     return true;
                 case R.id.navigation_emergency:
                     selectedFragment = new EmergencyFragment();
                     loadFragment(selectedFragment);
+                    setTitle("Emergency");
                     return true;
                 case R.id.navigation_tracking:
                     selectedFragment = new TrackingFragment();
                     loadFragment(selectedFragment);
+                    setTitle("Track Booking");
                     return true;
                 case R.id.navigation_settings:
                     selectedFragment = new SettingsFragment();
                     loadFragment(selectedFragment);
+                    setTitle("Profile and Settings");
                     return true;
             }
             return false;
@@ -63,7 +68,7 @@ public class RiderPortal extends AppCompatActivity {
         mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         frameLayout = findViewById(R.id.framelay);
-
+        setTitle("Nearby Workshops");
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
 

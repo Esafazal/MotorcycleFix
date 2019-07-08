@@ -24,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.Settings.ChooseModel"></activity>
+        <activity android:name=".RiderFragments.Settings.MyVehicle"></activity>
+        <activity android:name=".RiderFragments.Settings.ChooseModel" />
         <activity android:name=".RiderFragments.Settings.ChooseManufacturer" />
         <activity android:name=".RiderFragments.Settings.AddVehicle" />
         <activity android:name=".RiderFragments.Settings.VehicleActivity" />
