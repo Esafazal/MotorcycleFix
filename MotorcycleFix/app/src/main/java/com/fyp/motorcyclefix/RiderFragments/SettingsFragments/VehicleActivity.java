@@ -1,4 +1,4 @@
-package com.fyp.motorcyclefix.RiderFragments.Settings;
+package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,15 +17,16 @@ import java.util.ArrayList;
 public class VehicleActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private RecyclerView.Adapter adapter;
+    private VehicleAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_vehicle_settings_activity);
         setTitle("My Vehicles");
 
-        ArrayList<TrackingDao> trackingDaos = new ArrayList<>();
+        final ArrayList<TrackingDao> trackingDaos = new ArrayList<>();
 
         trackingDaos.add(new TrackingDao("", "", "Bugati Bike R15"));
         trackingDaos.add(new TrackingDao("", "", "Bajaj 125"));
@@ -45,6 +46,18 @@ public class VehicleActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new VehicleAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                String itemClick = String.valueOf(trackingDaos.get(position));
+
+                Intent intent = new Intent(VehicleActivity.this, MyVehicle.class);
+                intent.putExtra("vehicleID", "1");
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
 

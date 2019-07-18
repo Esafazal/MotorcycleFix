@@ -24,12 +24,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.Settings.MyVehicle"></activity>
-        <activity android:name=".RiderFragments.Settings.ChooseModel" />
-        <activity android:name=".RiderFragments.Settings.ChooseManufacturer" />
-        <activity android:name=".RiderFragments.Settings.AddVehicle" />
-        <activity android:name=".RiderFragments.Settings.VehicleActivity" />
-        <activity android:name=".RiderFragments.Settings.ProfileActivity" />
+        <activity android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity"></activity>
+        <activity android:name=".RiderFragments.SettingsFragments.MyVehicle" />
+        <activity android:name=".RiderFragments.SettingsFragments.ChooseModel" />
+        <activity android:name=".RiderFragments.SettingsFragments.ChooseManufacturer" />
+        <activity android:name=".RiderFragments.SettingsFragments.AddVehicle" />
+        <activity android:name=".RiderFragments.SettingsFragments.VehicleActivity" />
+        <activity android:name=".RiderFragments.SettingsFragments.ProfileActivity" />
         <activity
             android:name=".MechanicPortal"
             android:label="@string/title_activity_mechanic_portal"
@@ -50,7 +51,8 @@
             android:name=".RiderPortal"
             android:label="@string/title_activity_rider_portal" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

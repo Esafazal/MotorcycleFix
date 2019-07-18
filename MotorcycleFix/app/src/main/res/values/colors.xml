@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#00796B</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorblack">#000000</color>
@@ -8,4 +8,6 @@
     <color name="colorAsh2">#4D4B4B</color>
     <color name="white">#FFFFFF</color>
     <color name="anotherAsh">#C4C0C0</color>
+    <color name="red">#F02727</color>
+    <color name="green">#689F38</color>
 </resources>

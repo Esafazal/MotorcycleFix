@@ -16,14 +16,36 @@ import java.util.ArrayList;
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.CardViewHolder> {
 
     private ArrayList<TrackingDao> trackingDaos;
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
 
         public TextView bikeModel;
 
-        public CardViewHolder(@NonNull View itemView) {
+        public CardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             bikeModel = itemView.findViewById(R.id.bikeNameModel);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -37,7 +59,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.CardView
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.rider_my_vehicles_fragment, parent, false);
 
-        CardViewHolder cardViewHolder = new CardViewHolder(view);
+        CardViewHolder cardViewHolder = new CardViewHolder(view, itemClickListener);
 
         return cardViewHolder;
     }

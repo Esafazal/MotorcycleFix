@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fyp.motorcyclefix.Dao.TrackingDao;
 import com.fyp.motorcyclefix.Patterns.TrackingAdapter;
 import com.fyp.motorcyclefix.R;
+import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.TrackingViewDetails;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 public class TrackingFragment extends Fragment {
 
     private RecyclerView recyclerView;
-    private  RecyclerView.Adapter adapter;
+    private  TrackingAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     public TrackingFragment() {
@@ -43,8 +44,6 @@ public class TrackingFragment extends Fragment {
                 "Repair Service", "Hero Hunk"));
         trackingDaos.add(new TrackingDao("Booking #002",
                 "General Service", "Hero Hunk"));
-            trackingDaos.add(new TrackingDao("Booking #003",
-                "Other nonsense", "XCD 125"));
 
         recyclerView = view.findViewById(R.id.tracking_recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -53,6 +52,14 @@ public class TrackingFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
+                trackingViewDetails.show(getFragmentManager(), "View Details");            }
+        });
 
         return view;
     }

@@ -21,6 +21,15 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
 
     private List<WorkshopDao> workshopDaos;
     private List<WorkshopDao> workshopList;
+    private WorkshopsAdapter.OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener{
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(WorkshopsAdapter.OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
 
@@ -28,13 +37,28 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
         public TextView workshopName;
         public TextView speciality;
 
-        public CardViewHolder(@NonNull View itemView) {
+        public CardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             workshopImg = itemView.findViewById(R.id.workshopImg);
             workshopName = itemView.findViewById(R.id.workshopName);
             speciality = itemView.findViewById(R.id.specialized);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
+
         }
     }
+
 
     public WorkshopsAdapter(List<WorkshopDao> workshopDaos) {
         this.workshopDaos = workshopDaos;
@@ -47,7 +71,7 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.rider_workshop_recycler, parent, false);
 
-        return new CardViewHolder(view);
+        return new CardViewHolder(view, itemClickListener);
 
     }
 

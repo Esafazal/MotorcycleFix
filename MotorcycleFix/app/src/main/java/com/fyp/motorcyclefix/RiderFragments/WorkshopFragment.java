@@ -1,6 +1,7 @@
 package com.fyp.motorcyclefix.RiderFragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fyp.motorcyclefix.Dao.WorkshopDao;
 import com.fyp.motorcyclefix.Patterns.WorkshopsAdapter;
 import com.fyp.motorcyclefix.R;
+import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,18 @@ public class WorkshopFragment extends Fragment {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(workshopsAdapter);
+        workshopsAdapter.setOnItemClickListener(new WorkshopsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+
+                String itemClick = String.valueOf(workshopDaoList.get(position));
+
+                Intent intent = new Intent(getActivity(), ViewWorkshopActivity.class);
+                intent.putExtra("workshopID", "1");
+                intent.putExtra("workshop", itemClick);
+                startActivityForResult(intent, 1);
+            }
+        });
     }
 
     @Override

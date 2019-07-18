@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RiderFragments.Settings.AddVehicle">
+    tools:context=".RiderFragments.SettingsFragments.AddVehicle">
 
     <TextView
-        android:id="@+id/profileText"
+        android:id="@+id/profileUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10sp"
@@ -28,7 +28,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileText"
+        app:layout_constraintTop_toBottomOf="@+id/profileUpdate"
         app:layout_constraintVertical_bias="0.0">
 
         <ScrollView
@@ -41,7 +41,7 @@
 
                 <!--CHOOSE MANUFACTURER-->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/chooseManufacturerCard"
+                    android:id="@+id/myVehicleManufacturer"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_marginTop="10sp"
@@ -82,7 +82,7 @@
 
                 <!--CHOOSE MODEL-->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/chooseModelCard"
+                    android:id="@+id/myVehicleModel"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_marginTop="10sp"
@@ -90,7 +90,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_below="@+id/chooseManufacturerCard"
+                    android:layout_below="@+id/myVehicleManufacturer"
                     android:onClick="chooseModelCardClick">
 
                     <TextView
@@ -132,7 +132,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_below="@+id/chooseModelCard">
+                    android:layout_below="@+id/myVehicleModel">
 
                     <TextView
                         android:id="@+id/chooseFuel"

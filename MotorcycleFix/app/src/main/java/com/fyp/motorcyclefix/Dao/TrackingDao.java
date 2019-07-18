@@ -12,6 +12,10 @@ public class TrackingDao {
         this.bikeModel = bikeModel;
     }
 
+    public void changeBikeModel(String bikeModel){
+        this.bikeModel = bikeModel;
+    }
+
     public String getBookingID() {
         return bookingID;
     }

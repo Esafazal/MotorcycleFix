@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RiderFragments.WorkshopFragments.ViewWorkshopActivity">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <ImageView
+            android:id="@+id/workshopImg"
+            android:layout_width="match_parent"
+            android:layout_height="180sp"
+            app:srcCompat="@drawable/ic_bike_model_black_24dp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/workshopNameNratings"
+        android:layout_width="match_parent"
+        android:layout_height="130sp"
+        android:layout_marginTop="8sp"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp"
+        app:cardElevation="5sp"
+        android:layout_below="@+id/workshopImg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chains and Gears - Wattala"
+            android:textColor="@color/colorblack"
+            android:textSize="25sp"
+            android:layout_marginTop="5sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kawasaki | Her0-honda"
+            android:textSize="15sp"
+            android:layout_marginTop="50sp"/>
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="75sp"
+            android:rating="1" />
+        <TextView
+            android:id="@+id/reviewsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(500+)"
+            android:textSize="25sp"
+            android:layout_marginTop="82sp"
+            android:layout_marginStart="250sp"/>
+
+    </androidx.cardview.widget.CardView>
+
+    <!--jhgfdhddlkg-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/serviceTypeCard"
+        android:layout_width="match_parent"
+        android:layout_height="130sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8sp"
+        android:layout_marginEnd="8dp"
+        app:cardElevation="5sp"
+        android:layout_below="@+id/workshopNameNratings">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose your desired type of service"
+            android:textSize="20sp"
+            android:textColor="@color/colorblack"
+            android:layout_marginTop="5sp"/>
+
+        <RadioButton
+            android:id="@+id/generalService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="General Service"
+            android:layout_marginTop="40sp"
+            android:layout_marginStart="20sp"
+            android:textSize="18sp"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/repairService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Repair Service"
+            android:layout_marginTop="70sp"
+            android:layout_marginStart="20sp"
+            android:textSize="18sp"/>
+
+        <RadioButton
+            android:id="@+id/washNWaxService"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wash and Wax"
+            android:layout_marginTop="100sp"
+            android:layout_marginStart="20sp"
+            android:textSize="18sp"/>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/dateNTimeCard"
+            android:layout_width="match_parent"
+            android:layout_height="400sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8sp"
+            android:layout_marginEnd="8dp"
+            android:layout_below="@+id/serviceTypeCard">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose your date and time of service"
+                android:textColor="@color/colorblack"
+                android:textSize="20sp" />
+
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40sp"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
+                android:minDate="08/19/2019"
+                android:maxDate="12/30/2019"/>
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="230sp"
+                android:timePickerMode="spinner"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="60sp"
+            android:layout_below="@+id/dateNTimeCard"
+            android:text="Place Booking"
+            android:textSize="20sp"
+            android:layout_marginTop="20sp"
+            android:layout_marginStart="7sp"
+            android:layout_marginEnd="7sp"
+            android:layout_marginBottom="7sp"
+            android:background="@color/green"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

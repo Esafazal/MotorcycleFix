@@ -1,4 +1,4 @@
-package com.fyp.motorcyclefix.RiderFragments.Settings;
+package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
