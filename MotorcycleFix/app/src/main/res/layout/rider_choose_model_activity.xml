@@ -4,6 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RiderFragments.ProfileActivity">
+    tools:context=".RiderFragments.SettingsFragments.ChooseManufacturer">
+
+    <ListView
+        android:id="@+id/modelListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </ListView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

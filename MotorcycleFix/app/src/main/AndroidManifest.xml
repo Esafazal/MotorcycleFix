@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -24,7 +26,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.ProfileActivity"></activity>
+        <activity android:name=".PasswordReset"></activity>
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity" />
+        <activity android:name=".RiderFragments.SettingsFragments.MyVehicle" />
+        <activity android:name=".RiderFragments.SettingsFragments.ChooseModel" />
+        <activity android:name=".RiderFragments.SettingsFragments.ChooseManufacturer" />
+        <activity android:name=".RiderFragments.SettingsFragments.AddVehicle" />
+        <activity android:name=".RiderFragments.SettingsFragments.VehicleActivity" />
+        <activity android:name=".RiderFragments.SettingsFragments.ProfileActivity" />
         <activity
             android:name=".MechanicPortal"
             android:label="@string/title_activity_mechanic_portal"
@@ -40,12 +50,16 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
 
         <activity
             android:name=".RiderPortal"
             android:label="@string/title_activity_rider_portal" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity" />
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
