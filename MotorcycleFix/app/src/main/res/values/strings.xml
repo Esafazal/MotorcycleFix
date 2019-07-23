@@ -2,10 +2,23 @@
     <string name="app_name">MotorcycleFix</string>
     <string name="mechanic">Mechanic</string>
     <string name="rider">Rider</string>
-    <string name="create_account">Create Account</string>
+    <string name="create_account">Sign Up</string>
     <string name="sign_in">Sign In</string>
     <string name="password">Password:</string>
-    <string name="your_email_address">Email Address:</string>
+    <string name="your_email_address">Email:</string>
+
+    <!--TODO: Login shared preferences-->
+    <string name="rider_username">crazydude</string>
+    <string name="rider_password">esa@123</string>
+    <string name="rider_login_preference">com.fyp.motorcyclefix_rider_login_preference</string>
+    <string name="rider_login_status_preference">com.fyp.motorcyclefix_rider_login_status_preference</string>
+
+    <string name="mechanic_username">crazydude</string>
+    <string name="mechanic_password">esa@123</string>
+    <string name="mechanic_login_preference">com.fyp.motorcyclefix_mechanic_login_preference</string>
+    <string name="mechanic_login_status_preference">com.fyp.motorcyclefix_mechanic_login_status_preference</string>
+    <!--login shared preference resourses ends here-->
+
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -36,12 +49,11 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_tools">Tools</string>
-    <string name="menu_share">Share</string>
-    <string name="menu_send">Send</string>
+    <string name="menu_dashboard">Dashboard</string>
+    <string name="menu_bookings">Bookings</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_workshop_details">Workshop Info</string>
+    <string name="menu_logout">Logout</string>
     <string name="bookingId">Booking #565659</string>
     <string name="serviceType">Service Type</string>
     <string name="bikeModel">Hero Hunk</string>

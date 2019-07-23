@@ -160,7 +160,8 @@
             android:layout_marginBottom="7sp"
             android:background="@color/green"
             android:textColor="@color/white"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:onClick="placeBookingClickHandler"/>
 
     </RelativeLayout>
 </ScrollView>

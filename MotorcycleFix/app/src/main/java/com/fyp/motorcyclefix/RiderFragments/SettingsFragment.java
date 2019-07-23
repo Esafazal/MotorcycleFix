@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import com.fyp.motorcyclefix.Configs.RiderSharedPreferenceConfig;
 import com.fyp.motorcyclefix.LoginActivity;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.ProfileActivity;
@@ -23,6 +24,7 @@ public class SettingsFragment extends Fragment {
     private CardView profileSetting;
     private CardView vehicleSetting;
     private CardView logoutSetting;
+    private RiderSharedPreferenceConfig riderPreferenceConfig;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -35,6 +37,7 @@ public class SettingsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.rider_settings_fragment, container, false);
 
+        riderPreferenceConfig = new RiderSharedPreferenceConfig(getContext());
         onMenuItemClick(view);
         return view;
     }
@@ -65,7 +68,9 @@ public class SettingsFragment extends Fragment {
         logoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
+
+                riderPreferenceConfig.writeRiderLoginStatus(false);
+                Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.putExtra("type", "1");
                 startActivity(intent);
             }

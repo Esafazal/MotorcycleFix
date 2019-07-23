@@ -1,28 +1,25 @@
 package com.fyp.motorcyclefix;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import android.view.MenuItem;
 import android.view.View;
 
-import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-
-import android.view.MenuItem;
-
-import com.google.android.material.navigation.NavigationView;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.view.Menu;
+import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MechanicPortal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    MechanicSharedPreferencesConfig mechanicPreferenceConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +42,8 @@ public class MechanicPortal extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
+        mechanicPreferenceConfig = new MechanicSharedPreferencesConfig(getApplicationContext());
     }
 
     @Override
@@ -57,27 +56,27 @@ public class MechanicPortal extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.mechanic_portal, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.mechanic_portal, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -85,18 +84,19 @@ public class MechanicPortal extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_dashboard) {
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_bookings) {
 
-        } else if (id == R.id.nav_tools) {
+        } else if (id == R.id.nav_profile) {
 
-        } else if (id == R.id.nav_share) {
+        }else if (id == R.id.nav_workshopDetails) {
 
-        } else if (id == R.id.nav_send) {
-
+        }else if (id == R.id.nav_logout) {
+            mechanicPreferenceConfig.writeMechanicLoginStatus(false);
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.putExtra("type", "2");
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
