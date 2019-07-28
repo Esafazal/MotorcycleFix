@@ -1,6 +1,8 @@
 package com.fyp.motorcyclefix.RiderFragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.fyp.motorcyclefix.LoginActivity;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.ProfileActivity;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,10 +72,28 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                riderPreferenceConfig.writeRiderLoginStatus(false);
-                Intent intent = new Intent(getContext(), LoginActivity.class);
-                intent.putExtra("type", "1");
-                startActivity(intent);
+//                riderPreferenceConfig.writeRiderLoginStatus(false);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Are you sure you want to logout?")
+                        .setTitle("Confirmation")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent intent = new Intent(getContext(), LoginActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.putExtra("type", "1");
+                                startActivity(intent);
+                                getActivity().finish();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        }).show();
             }
         });
     }

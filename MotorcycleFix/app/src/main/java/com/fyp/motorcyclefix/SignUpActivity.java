@@ -2,27 +2,40 @@ package com.fyp.motorcyclefix;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fyp.motorcyclefix.Dao.User;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText Email, Password;
+    private static final String TAG = "Signup Activity";
+
+    private EditText Email, Password, Name;
+    private RadioGroup sexGroup;
+    private RadioButton radioSelected;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
+    private Bundle bundle;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +45,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         Email = findViewById(R.id.emailEditText);
         Password = findViewById(R.id.passwordEditText);
+        Name = findViewById(R.id.nameEditText);
+        sexGroup = findViewById(R.id.radioSex);
+
         progressBar = findViewById(R.id.signUpProgressBar);
 
         // Initialize Firebase Auth
@@ -56,11 +72,18 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
-    private void createUser(String email, String password){
+    private void createUser(final String email, final String password){
 
         if(!validateForm(email, password)){
             return;
         }
+
+        //gender radio button, getting user selected option
+        int selectedId = sexGroup.getCheckedRadioButtonId();
+        radioSelected = findViewById(selectedId);
+        final String gender = radioSelected.getText().toString();
+        final String name = Name.getText().toString();
+
 
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -68,9 +91,69 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(getApplicationContext(), "Registered Successfully!", Toast.LENGTH_LONG).show();
-                            FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
+                            bundle = getIntent().getExtras();
+                            FirebaseUser user;
+                            //if user type is rider, execute the follwoing
+                            if (bundle.getString("type").equals("1")) {
+                                user = mAuth.getCurrentUser();
+                                String userId = user.getUid();
+                                String type ="rider";
+
+                                User userModel = new User(type, name, email, gender);
+
+                                progressBar.setVisibility(View.GONE);
+                                db.collection("users").document(userId).set(userModel)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(SignUpActivity.this, "Rider Registration Successful!", Toast.LENGTH_SHORT).show();
+                                                Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(SignUpActivity.this, "Rider Registration Failed!", Toast.LENGTH_SHORT).show();
+                                                Log.d(TAG, e.toString());
+
+                                            }
+                                        });
+                                //if the user type is mechanic, execute the following
+                            } else if (bundle.getString("type").equals("2")) {
+
+                                user = mAuth.getCurrentUser();
+                                String userId = user.getUid();
+                                String type ="mechanic";
+
+                                User userModel = new User(type, name, email, gender);
+
+                                progressBar.setVisibility(View.GONE);
+                                db.collection("users").document(userId).set(userModel)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Toast.makeText(SignUpActivity.this, "Mechanic Registration Successful!", Toast.LENGTH_SHORT).show();
+                                                Intent intent = (new Intent(getApplicationContext(), MechanicPortal.class));
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Toast.makeText(SignUpActivity.this, "Mechanic Registration Failed!", Toast.LENGTH_SHORT).show();
+                                                Log.d(TAG, e.toString());
+
+                                            }
+                                        });
+                            }
+
                         }
 
                         else{
@@ -78,7 +161,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     }
                 });
-        progressBar.setVisibility(View.GONE);
+
     }
 
     private boolean validateForm(String email, String password){

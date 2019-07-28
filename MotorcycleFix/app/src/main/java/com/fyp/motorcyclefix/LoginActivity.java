@@ -15,19 +15,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
 import com.fyp.motorcyclefix.Configs.RiderSharedPreferenceConfig;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
     private RiderSharedPreferenceConfig riderPreferenceConfig;
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
-    private EditText Email, Password;
-    private FirebaseAuth mAuth;
-    private ProgressBar progressBar;
-    private Bundle bundle;
+    public EditText Email, Password;
+    public FirebaseAuth mAuth;
+    public ProgressBar progressBar;
+    public Bundle bundle;
+    public FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public CollectionReference userRef = db.collection("users");
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //create sharepreference config instances
-        riderPreferenceConfig = new RiderSharedPreferenceConfig(getApplicationContext());
-        mechanicPreferenceConfig = new MechanicSharedPreferencesConfig(getApplicationContext());
+//        riderPreferenceConfig = new RiderSharedPreferenceConfig(getApplicationContext());
+//        mechanicPreferenceConfig = new MechanicSharedPreferencesConfig(getApplicationContext());
         mAuth = FirebaseAuth.getInstance();
 
         Email = findViewById(R.id.email);
@@ -48,29 +56,11 @@ public class LoginActivity extends AppCompatActivity {
 
         //delete once development completed
         Email.setText("esafazal72@gmail.com");
-        Password.setText("12344321");
-
-        Intent intent;
-        bundle = getIntent().getExtras();
-
-        if (bundle.getString("type").equals("1")) {
-
-            if(riderPreferenceConfig.readRiderLoginStatus()){
-                startActivity(new Intent(this, RiderPortal.class));
-            }
-
-        } else if (bundle.getString("type").equals("2")) {
-
-            if(mechanicPreferenceConfig.readMechanicLoginStatus()){
-                startActivity(new Intent(this, MechanicPortal.class));
-            }
-        }
-
-
+        Password.setText("123456");
 
     }
 
-    public boolean onOptionsItemSelected(MenuItem item){
+    public boolean onOptionsItemSelected(MenuItem item) {
         //goto previous activity when back button is pressed
         Intent myIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivityForResult(myIntent, 0);
@@ -86,96 +76,92 @@ public class LoginActivity extends AppCompatActivity {
 
         //check if user type is rider
         if (bundle.getString("type").equals("1")) {
-            signInRider(email, password);
+            signInUser(email, password);
 
             //check if user type is mechanic
         } else if (bundle.getString("type").equals("2")) {
-            signInMechanic(email, password);
+            signInUser(email, password);
 
         }
     }
 
-    private void signInRider(String email, String password){
 
-        if(!validateForm(email, password)){
+    public void signInUser(String email, String password) {
+
+        if (!validateForm(email, password)) {
             return;
         }
         progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(getApplicationContext(), "success!", Toast.LENGTH_SHORT).show();
                     FirebaseUser user = mAuth.getCurrentUser();
-                    startActivity(new Intent(getApplicationContext(), RiderPortal.class));
-                    riderPreferenceConfig.writeRiderLoginStatus(true);
-                    finish();
-//                    updateUI(user);
+                    if (user != null) {
+                        String id = user.getUid();
+
+                        progressBar.setVisibility(View.GONE);
+                        userRef.document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                String type = documentSnapshot.getString("type");
+                                bundle = getIntent().getExtras();
+                                if (bundle.getString("type").equals("1") && type.contentEquals("rider")) {
+                                    Toast.makeText(LoginActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+
+                                } else if (bundle.getString("type").equals("2") && type.contentEquals("mechanic")) {
+                                    Toast.makeText(LoginActivity.this, "Hi Mechanic!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = (new Intent(getApplicationContext(), MechanicPortal.class));
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Invalid User", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(LoginActivity.this, "serious fail", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-//                    updateUI(null);
+                    Toast.makeText(getApplicationContext(), "Invalid Credentials.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-        progressBar.setVisibility(View.GONE);
+
 
     }
 
-    private void signInMechanic(String email, String password){
-
-        if(!validateForm(email, password)){
-            return;
-        }
-        progressBar.setVisibility(View.VISIBLE);
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Toast.makeText(getApplicationContext(), "success!", Toast.LENGTH_SHORT).show();
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    startActivity(new Intent(getApplicationContext(), MechanicPortal.class));
-                    riderPreferenceConfig.writeRiderLoginStatus(true);
-                    finish();
-//                    updateUI(user);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-//                    updateUI(null);
-                }
-            }
-        });
-        progressBar.setVisibility(View.GONE);
-
-    }
-
-    private boolean validateForm(String email, String password){
+    public boolean validateForm(String email, String password) {
 
         boolean valid = true;
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             Email.setError("Please Enter an Email Address!");
             Email.requestFocus();
             valid = false;
-        }
-
-        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Email.setError("Please Enter an Valid Email Address!");
             Email.requestFocus();
             valid = false;
-        }
-
-        else if(password.isEmpty()){
+        } else if (password.isEmpty()) {
             Password.setError("Please Enter a Password!");
             Password.requestFocus();
             valid = false;
-        }
-
-        else if(password.length() < 6){
+        } else if (password.length() < 6) {
             Password.setError("Password Too Short!");
             Password.requestFocus();
             valid = false;
@@ -186,27 +172,32 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signUpClickHandler(View view) {
 
-        startActivity(new Intent(this, SignUpActivity.class));
+//        startActivity(new Intent(this, SignUpActivity.class));
+        checkUserType(SignUpActivity.class);
     }
 
     public void forgotPasswordClickHandler(View view) {
+
+        checkUserType(PasswordReset.class);
+
+    }
+
+    public void checkUserType(Class activity) {
 
         Intent intent;
         bundle = getIntent().getExtras();
 
         if (bundle.getString("type").equals("1")) {
-            intent = new Intent(this, PasswordReset.class);
+            intent = new Intent(this, activity);
             intent.putExtra("type", "1");
             startActivity(intent);
 
         } else if (bundle.getString("type").equals("2")) {
-            intent = new Intent(this, PasswordReset.class);
+            intent = new Intent(this, activity);
             intent.putExtra("type", "2");
             startActivity(intent);
 
         }
-
     }
-
 
 }

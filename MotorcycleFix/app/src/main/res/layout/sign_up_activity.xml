@@ -6,61 +6,104 @@
     android:layout_height="match_parent"
     tools:context=".SignUpActivity">
 
-
     <TextView
-        android:id="@+id/emailTextView"
+        android:id="@+id/signupTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="100sp"
-        android:text="Email:"
+        android:layout_marginTop="60sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="SIGN UP"
         android:textColor="@color/colorblack"
-        android:textSize="20sp"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/nameEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/signupTitle"
+        android:inputType="textEmailAddress"
+        android:hint="Name"/>
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20sp"
+        android:layout_marginTop="20sp"
         android:layout_marginEnd="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/emailTextView"
-        android:inputType="textEmailAddress"/>
+        app:layout_constraintTop_toBottomOf="@+id/nameEditText"
+        android:inputType="textEmailAddress"
+        android:hint="Email"/>
 
-    <TextView
-        android:id="@+id/passwordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10sp"
-        android:text="Password:"
-        android:textColor="@color/colorblack"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailEditText" />
 
     <EditText
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20sp"
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextView"
-        android:inputType="textPassword"/>
+        app:layout_constraintTop_toBottomOf="@+id/emailEditText"
+        android:inputType="textPassword"
+        android:hint="Password"/>
+
+    <TextView
+        android:id="@+id/genderText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15sp"
+        android:text="Gender"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordEditText"/>
+
+    <RadioGroup
+        android:id="@+id/radioSex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/genderText"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20sp"
+        android:layout_marginTop="10sp">
+
+        <RadioButton
+            android:id="@+id/radioMale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="male"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radioFemale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="female" />
+
+    </RadioGroup>
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="30sp"
         android:background="@color/colorblack"
         android:layout_marginStart="20sp"
         android:layout_marginEnd="20sp"
         android:text="Register"
         android:textColor="@color/white"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEditText"
+        app:layout_constraintTop_toBottomOf="@+id/radioSex"
         android:onClick="registerClickHandler"/>
 
     <ProgressBar

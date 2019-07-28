@@ -27,7 +27,6 @@ public class RiderPortal extends AppCompatActivity {
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            mTextMessage = findViewById(R.id.txtview);
 
             switch (item.getItemId()) {
                 case R.id.navigation_home:

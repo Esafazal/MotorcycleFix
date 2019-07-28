@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RiderFragments.SettingsFragments.AddVehicle">
+    tools:context=".RiderFragments.SettingsFragments.AddVehicle"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <TextView
         android:id="@+id/profileUpdate"
@@ -124,7 +126,7 @@
 
                 <!--CHOOSE FUEL TYPE-->
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/chooseFuelCard"
+                    android:id="@+id/choosePowerCard"
                     android:layout_width="match_parent"
                     android:layout_height="90dp"
                     android:layout_marginTop="10sp"
@@ -135,31 +137,49 @@
                     android:layout_below="@+id/myVehicleModel">
 
                     <TextView
-                        android:id="@+id/chooseFuel"
+                        android:id="@+id/choosePower"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20sp"
                         android:layout_marginTop="10sp"
-                        android:text="Choose Fuel Type"
+                        android:text="Choose Power Type"
                         android:textColor="@color/colorblack"
                         android:textSize="22sp"
                         android:textStyle="bold"/>
 
-                    <RadioButton
-                        android:id="@+id/petrol"
+                    <RadioGroup
+                        android:id="@+id/radioPower"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Petrol"
-                        android:layout_marginTop="50sp"
-                        android:layout_marginStart="20sp"/>
+                        android:layout_marginStart="20sp"
+                        android:layout_marginTop="30sp">
 
-                    <RadioButton
-                        android:id="@+id/diesel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Diesel"
-                        android:layout_marginTop="50sp"
-                        android:layout_marginStart="100sp"/>
+                        <RadioButton
+                            android:id="@+id/radioPetrol"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Petrol"
+                            android:checked="true"
+                            android:layout_marginTop="20sp"/>
+
+                        <RadioButton
+                            android:id="@+id/radioDiesal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Diesal"
+                            android:layout_marginStart="70dp"
+                            android:layout_marginTop="-32dp"
+                            />
+                        <RadioButton
+                            android:id="@+id/radioElectric"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Electric"
+                            android:layout_marginStart="140dp"
+                            android:layout_marginTop="-32dp"
+                            />
+
+                    </RadioGroup>
 
                 </androidx.cardview.widget.CardView>
 
@@ -173,7 +193,7 @@
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_below="@+id/chooseFuelCard">
+                    android:layout_below="@+id/choosePowerCard">
 
                     <TextView
                         android:id="@+id/registrationNo"
@@ -228,30 +248,3 @@
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-
-
-
-
-
-
-<!--<?xml version="1.0" encoding="utf-8"?>-->
-<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--tools:context=".RiderFragments.Settings.AddVehicle">-->
-
-    <!--<FrameLayout-->
-        <!--android:id="@+id/addVehicleFramelayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--</FrameLayout>-->
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
