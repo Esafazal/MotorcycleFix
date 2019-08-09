@@ -18,6 +18,20 @@ tools:context=".RiderFragments.SettingsFragments.VehicleActivity">
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/noVehicleTextview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="No Registered Vehicle"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/vehicleFrame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/vehicleSettingRecycler" />
+
     <FrameLayout
         android:id="@+id/vehicleFrame"
         android:layout_width="match_parent"

@@ -12,4 +12,12 @@
     <color name="dimRed">#CA7D7D</color>
     <color name="green">#689F38</color>
     <color name="blue">#0288D1</color>
+    <color name="kindaRed">#FF1744</color>
+    <color name="purple">#D500F9</color>
+    <color name="lightAsh">#F8F7F7</color>
+    <color name="royalBlue">#0A0AF5</color>
+    <color name="brightGreen">#76FF03</color>
+    <color name="yellow">#FFC400</color>
+    <color name="lightPink">#A7FFEB</color>
+
 </resources>

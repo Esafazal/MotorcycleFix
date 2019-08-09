@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class ChooseManufacturer extends AppCompatActivity {
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference bikeMakeRef = db.collection("bikes");
+    private ProgressBar makeProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +39,12 @@ public class ChooseManufacturer extends AppCompatActivity {
         setContentView(R.layout.rider_choose_manufacturer_activity);
         setTitle("Choose Manufacturer");
 
-
+        makeProgressBar = findViewById(R.id.chooseMakeProgress);
         bikeMakeRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
+                makeProgressBar.setVisibility(View.GONE);
                 if(task.isSuccessful()){
                     List<String> bikeMake = new ArrayList<>();
                     for(QueryDocumentSnapshot document : task.getResult()){

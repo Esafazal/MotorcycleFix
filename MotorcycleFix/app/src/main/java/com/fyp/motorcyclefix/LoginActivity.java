@@ -100,11 +100,11 @@ public class LoginActivity extends AppCompatActivity {
                     if (user != null) {
                         String id = user.getUid();
 
-                        progressBar.setVisibility(View.GONE);
                         userRef.document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 String type = documentSnapshot.getString("type");
+                                progressBar.setVisibility(View.GONE);
                                 bundle = getIntent().getExtras();
                                 if (bundle.getString("type").equals("1") && type.contentEquals("rider")) {
                                     Toast.makeText(LoginActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();

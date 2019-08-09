@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fyp.motorcyclefix.Dao.Vehicle;
 import com.fyp.motorcyclefix.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,9 +22,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AddVehicle extends AppCompatActivity {
 
@@ -112,21 +110,23 @@ public class AddVehicle extends AppCompatActivity {
         String regNumber = registrationNo.getText().toString();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Map<String, Object> myVehicle = new HashMap<>();
-        myVehicle.put("manufacturer", selectedMake);
-        myVehicle.put("model", selectedMod);
-        myVehicle.put("registration_no", regNumber);
-        myVehicle.put("power_type", powerType);
+
+        final Vehicle vehicle = new Vehicle();
+        vehicle.setManufacturer(selectedMake);
+        vehicle.setModel(selectedMod);
+        vehicle.setRegistrationNo(regNumber);
+        vehicle.setPowerType(powerType);
 
         if(currentUser != null){
             String userId = currentUser.getUid();
-            db.collection("my_vehicle").document(userId).set(myVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
+            db.collection("my_vehicle").document(userId).set(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(AddVehicle.this, "Added Your Vehicle!", Toast.LENGTH_LONG).show();
 
-                    Intent resultIntent = new Intent();
-                    setResult(RESULT_OK, resultIntent);
+                    Intent intent = new Intent(AddVehicle.this, VehicleActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
                     finish();
 
                 }

@@ -2,23 +2,41 @@ package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.TrackingDao;
+import com.fyp.motorcyclefix.Dao.Vehicle;
 import com.fyp.motorcyclefix.Patterns.VehicleAdapter;
 import com.fyp.motorcyclefix.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
 public class VehicleActivity extends AppCompatActivity {
 
+    private static final String TAG = "vehicleActivity";
+
     private RecyclerView recyclerView;
     private VehicleAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference vehicleRef = db.collection("my_vehicle");
+    private TextView noVehicle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,44 +44,70 @@ public class VehicleActivity extends AppCompatActivity {
         setContentView(R.layout.rider_vehicle_settings_activity);
         setTitle("My Vehicles");
 
+        noVehicle = findViewById(R.id.noVehicleTextview);
+
         final ArrayList<TrackingDao> trackingDaos = new ArrayList<>();
 
-        trackingDaos.add(new TrackingDao("", "", "Bugati Bike R15"));
-        trackingDaos.add(new TrackingDao("", "", "Bajaj 125"));
-        trackingDaos.add(new TrackingDao("", "", "pulsar 200"));
-        trackingDaos.add(new TrackingDao("", "", "hero hunk"));
-        trackingDaos.add(new TrackingDao("", "", "Ducati"));
-        trackingDaos.add(new TrackingDao("", "", "Suzuki Gixxar"));
-        trackingDaos.add(new TrackingDao("", "", "BMW Racing"));
-        trackingDaos.add(new TrackingDao("", "", "Chevrolet"));
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
+        if(currentUser != null){
 
+            final String userId = currentUser.getUid();
 
-        recyclerView = findViewById(R.id.vehicleSettingRecycler);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        adapter = new VehicleAdapter(trackingDaos);
+            vehicleRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
+                    for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
 
-        adapter.setOnItemClickListener(new VehicleAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
+                        Vehicle vehicle =documentSnapshot.toObject(Vehicle.class);
+                        vehicle.setDocumentId(documentSnapshot.getId());
 
-                String itemClick = String.valueOf(trackingDaos.get(position));
+                        String documentId = vehicle.getDocumentId();
 
-                Intent intent = new Intent(VehicleActivity.this, MyVehicle.class);
-                intent.putExtra("vehicleID", "1");
-                startActivityForResult(intent, 1);
-            }
-        });
+                        if(documentId.equals(userId)){
+
+                            trackingDaos.add(new TrackingDao("", "", vehicle.getModel()));
+
+                            recyclerView = findViewById(R.id.vehicleSettingRecycler);
+                            recyclerView.setHasFixedSize(true);
+                            layoutManager = new LinearLayoutManager(VehicleActivity.this);
+                            adapter = new VehicleAdapter(trackingDaos);
+
+                            recyclerView.setLayoutManager(layoutManager);
+                            recyclerView.setAdapter(adapter);
+
+                            adapter.setOnItemClickListener(new VehicleAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(int position) {
+
+                                    String itemClick = String.valueOf(trackingDaos.get(position));
+
+                                    Intent intent = new Intent(VehicleActivity.this, MyVehicle.class);
+                                    startActivity(intent);
+                                }
+                            });
+                        } else {
+
+                            noVehicle.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+        }
+
     }
 
 
     public void addVehicleButtonClick(View view) {
 
         Intent intent = new Intent(this, AddVehicle.class);
-        startActivityForResult(intent, 1);
+        startActivity(intent);
     }
 }

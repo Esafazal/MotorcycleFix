@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,6 +32,7 @@ public class ChooseModel extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference bikeModelRef = db.collection("bikes");
     private Bundle bundle;
+    private ProgressBar modelProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class ChooseModel extends AppCompatActivity {
         setContentView(R.layout.rider_choose_model_activity);
         setTitle("Choose Model");
 
+        modelProgressBar = findViewById(R.id.chooseModelProgress);
         bundle = getIntent().getExtras();
         final String selectedMake = bundle.getString("make");
 
@@ -49,7 +52,7 @@ public class ChooseModel extends AppCompatActivity {
 
                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
 
-                   User user =documentSnapshot.toObject(User.class);
+                   User user = documentSnapshot.toObject(User.class);
                    user.setDocumentId(documentSnapshot.getId());
 
                    String documentId = user.getDocumentId();
@@ -61,7 +64,7 @@ public class ChooseModel extends AppCompatActivity {
                        }
                    }
                }
-
+               modelProgressBar.setVisibility(View.GONE);
                ListAdapter listAdapter = new ArrayAdapter<String>(ChooseModel.this, android.R.layout.simple_list_item_1, modelList);
 
                ListView listView = findViewById(R.id.modelListView);

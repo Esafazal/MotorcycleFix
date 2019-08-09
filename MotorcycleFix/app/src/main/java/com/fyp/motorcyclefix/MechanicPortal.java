@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,24 +17,88 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
-import com.fyp.motorcyclefix.MechanicFragments.BookingRequestFragment;
 import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
+import com.fyp.motorcyclefix.MechanicFragments.DashboardFragment;
 import com.fyp.motorcyclefix.MechanicFragments.ProfileFragment;
 import com.fyp.motorcyclefix.MechanicFragments.WorkshopInfoFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MechanicPortal extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MechanicPortal extends AppCompatActivity{
 
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
     private Fragment fragment;
     private FirebaseAuth mAuth;
 
+    private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+
+            @Override
+            public boolean onNavigationItemSelected (@NonNull MenuItem item){
+                // Handle navigation view item clicks here.
+
+                switch (item.getItemId()) {
+
+                    case R.id.nav_dashboard:
+                        setTitle("Dashboard");
+                        fragment = new DashboardFragment();
+                        loadFragment(fragment);
+                        closeDrawer();
+                        return true;
+
+                    case R.id.nav_bookings:
+                        setTitle("Bookings");
+                        fragment = new BookingsFragment();
+                        loadFragment(fragment);
+                        closeDrawer();
+                        return true;
+
+                    case R.id.nav_profile:
+                        setTitle("Profile");
+                        fragment = new ProfileFragment();
+                        loadFragment(fragment);
+                        closeDrawer();
+                        return true;
+
+                    case R.id.nav_workshopDetails:
+                        setTitle("Workshop");
+                        fragment = new WorkshopInfoFragment();
+                        loadFragment(fragment);
+                        closeDrawer();
+                        return true;
+
+                    case R.id.nav_logout:
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MechanicPortal.this);
+                        builder.setMessage("Are you sure you want to logout?")
+                                .setTitle("Confirmation")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        FirebaseAuth.getInstance().signOut();
+                                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.putExtra("type", "2");
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
+                        closeDrawer();
+                        return true;
+                }
+                return false;
+            }
+        };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mechanic_portal_activity);
+        setTitle("Dashboard");
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,9 +108,12 @@ public class MechanicPortal extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
         mechanicPreferenceConfig = new MechanicSharedPreferencesConfig(getApplicationContext());
+
+        navigationView.setCheckedItem(R.id.nav_dashboard);
+        getSupportFragmentManager().beginTransaction().replace(R.id.frameLayMechanic, new DashboardFragment()).commit();
     }
 
     @Override
@@ -58,87 +126,18 @@ public class MechanicPortal extends AppCompatActivity
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.mechanic_portal, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_dashboard) {
-            fragment = new BookingRequestFragment();
-            loadFragment(R.id.frameLayBookingRequests, fragment);
-
-        } else if (id == R.id.nav_bookings) {
-            fragment = new BookingsFragment();
-            loadFragment(R.id.frameLayMechanic, fragment);
-
-        } else if (id == R.id.nav_profile) {
-            fragment = new ProfileFragment();
-            loadFragment(R.id.frameLayMechanic, fragment);
-
-        }else if (id == R.id.nav_workshopDetails) {
-            fragment = new WorkshopInfoFragment();
-            loadFragment(R.id.frameLayMechanic, fragment);
-
-        }else if (id == R.id.nav_logout) {
-//            mechanicPreferenceConfig.writeMechanicLoginStatus(false);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Are you sure you want to logout?")
-                    .setTitle("Confirmation")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FirebaseAuth.getInstance().signOut();
-                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            intent.putExtra("type", "2");
-                            startActivity(intent);
-                            finish();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel();
-                        }
-                    }).show();
-
-
-        }
-
+    public boolean closeDrawer(){
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    public void loadFragment(int viewID, Fragment fragment){
+
+    public void loadFragment(Fragment fragment) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(viewID, fragment);
+        fragmentTransaction.replace(R.id.frameLayMechanic, fragment);
         fragmentTransaction.commit();
     }
 }

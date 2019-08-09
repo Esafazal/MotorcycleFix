@@ -158,7 +158,7 @@
                             android:id="@+id/radioPetrol"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Petrol"
+                            android:text="petrol"
                             android:checked="true"
                             android:layout_marginTop="20sp"/>
 
@@ -166,7 +166,7 @@
                             android:id="@+id/radioDiesal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Diesal"
+                            android:text="diesal"
                             android:layout_marginStart="70dp"
                             android:layout_marginTop="-32dp"
                             />

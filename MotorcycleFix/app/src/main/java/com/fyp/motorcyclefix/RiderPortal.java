@@ -2,7 +2,6 @@ package com.fyp.motorcyclefix;
 
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,8 +18,7 @@ import com.fyp.motorcyclefix.RiderFragments.WorkshopFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class RiderPortal extends AppCompatActivity {
-    private TextView mTextMessage;
-    private FrameLayout frameLayout;
+
     private Fragment selectedFragment;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -64,10 +62,10 @@ public class RiderPortal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_portal_activity);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        mTextMessage = findViewById(R.id.message);
+        TextView mTextMessage = findViewById(R.id.message);
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        frameLayout = findViewById(R.id.framelay);
         setTitle("Nearby Workshops");
+
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
 
