@@ -1,6 +1,7 @@
 package com.fyp.motorcyclefix.Dao;
 
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class User {
     private String email;
     private String gender;
     private List<String> models;
+    private GeoPoint geoPoint;
 
     public User(){
         //public no arg constructor
@@ -23,6 +25,14 @@ public class User {
         this.email = email;
         this.gender = gender;
     }
+
+    public User(String type, String name, String email, String gender, GeoPoint geoPoint) {
+        this.type = type;
+        this.name = name;
+        this.email = email;
+        this.gender = gender;
+        this.geoPoint = geoPoint;
+    }
     @Exclude
     public String getDocumentId() {
         return documentId;
@@ -30,6 +40,14 @@ public class User {
 
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
+    }
+
+    public GeoPoint getGeoPoint() {
+        return geoPoint;
+    }
+
+    public void setGeoPoint(GeoPoint geoPoint) {
+        this.geoPoint = geoPoint;
     }
 
     public String getType() {
@@ -64,6 +82,7 @@ public class User {
         this.gender = gender;
     }
 
+    @Exclude
     public List<String> getModels() {
         return models;
     }

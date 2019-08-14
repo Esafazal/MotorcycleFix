@@ -1,18 +1,23 @@
 package com.fyp.motorcyclefix.Dao;
 
 import com.google.firebase.firestore.Exclude;
-import com.google.type.Date;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 
 public class Booking {
 
     private String documentId;
     private String serviceType;
-    private String dateofService;
+    private String dateOfService;
     private String workshopId;
-    private Date dateOfBooking;
+    private @ServerTimestamp
+    java.util.Date dateOfBooking;
     private String vehicleId;
     private String userId;
     private String status;
+    private String model;
+    private long bookingID;
 
 
     public Booking(){
@@ -28,6 +33,23 @@ public class Booking {
         this.documentId = documentId;
     }
 
+    @Exclude
+    public String getModel() {
+        return model;
+    }
+
+    public long getBookingID() {
+        return bookingID;
+    }
+
+    public void setBookingID(long bookingID) {
+        this.bookingID = bookingID;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+
     public String getServiceType() {
         return serviceType;
     }
@@ -36,12 +58,12 @@ public class Booking {
         this.serviceType = serviceType;
     }
 
-    public String getDateofService() {
-        return dateofService;
+    public String getDateOfService() {
+        return dateOfService;
     }
 
-    public void setDateofService(String dateofService) {
-        this.dateofService = dateofService;
+    public void setDateOfService(String dateOfService) {
+        this.dateOfService = dateOfService;
     }
 
     public Date getDateOfBooking() {

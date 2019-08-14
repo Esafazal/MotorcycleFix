@@ -8,14 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fyp.motorcyclefix.Dao.TrackingDao;
+import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.R;
 
 import java.util.ArrayList;
 
 public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardViewHolder> {
 
-    private ArrayList<TrackingDao> trackingDaos;
+    private ArrayList<Booking> bookings;
     private OnItemClickListener itemClickListener;
 
     public interface OnItemClickListener {
@@ -53,9 +53,9 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
         }
     }
 
-    public TrackingAdapter(ArrayList<TrackingDao> trackingDaos) {
+    public TrackingAdapter(ArrayList<Booking> bookings) {
 
-        this.trackingDaos = trackingDaos;
+        this.bookings = bookings;
     }
 
     @NonNull
@@ -71,16 +71,16 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        TrackingDao trackingDao = trackingDaos.get(position);
+        Booking booking = bookings.get(position);
 
-        holder.bookingID.setText(trackingDao.getBookingID());
-        holder.serviceType.setText(trackingDao.getServiceType());
-        holder.bikeModel.setText(trackingDao.getBikeModel());
+        holder.bookingID.setText("BOOKING #"+booking.getDocumentId());
+        holder.serviceType.setText(booking.getServiceType());
+        holder.bikeModel.setText(booking.getModel());
     }
 
     @Override
     public int getItemCount() {
-        return trackingDaos.size();
+        return bookings.size();
     }
 }
 

@@ -6,13 +6,11 @@ import java.util.List;
 
 public class Workshop {
 
-    private String documentId;
+    private String workshopId;
     private String workshopName;
     private String openingHours;
     private GeoPoint location;
     private String locationName;
-    private double lat;
-    private double lng;
 //    private int imageUrl;
     private List<String> specialized;
 
@@ -20,12 +18,12 @@ public class Workshop {
 
     }
 
-    public String getDocumentId() {
-        return documentId;
+    public String getWorkshopId() {
+        return workshopId;
     }
 
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
+    public void setWorkshopId(String workshopId) {
+        this.workshopId = workshopId;
     }
 
     public String getWorkshopName() {
@@ -58,22 +56,6 @@ public class Workshop {
 
     public void setLocation(GeoPoint location) {
         this.location = location;
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
     }
 
 //    public int getImageUrl() {

@@ -36,7 +36,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
-public class ViewWorkshopActivity extends AppCompatActivity {
+public class    ViewWorkshopActivity extends AppCompatActivity {
 
     private static final String TAG = "viewSelectedWorkshop";
 
@@ -134,10 +134,12 @@ public class ViewWorkshopActivity extends AppCompatActivity {
                             Booking booking = new Booking();
                             booking.setServiceType(serviceType);
                             booking.setWorkshopId(workshopId);
-                            booking.setDateofService(pickedDate);
+                            booking.setDateOfService(pickedDate);
                             booking.setUserId(Uid);
                             booking.setStatus("pending");
                             booking.setVehicleId(Uid);
+                            booking.setDateOfBooking(null);
+                            booking.setBookingID(count);
 
                             final String bookCount = String.valueOf(count);
 

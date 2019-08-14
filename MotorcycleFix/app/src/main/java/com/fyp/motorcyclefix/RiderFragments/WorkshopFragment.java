@@ -77,8 +77,8 @@ public class WorkshopFragment extends Fragment {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Workshop workshop = documentSnapshot.toObject(Workshop.class);
 
-                    workshop.setDocumentId(documentSnapshot.getId());
-                    workshopId = workshop.getDocumentId();
+                    workshop.setWorkshopId(documentSnapshot.getId());
+                    workshopId = workshop.getWorkshopId();
 
                     String data = "|";
                     for (String specialized : workshop.getSpecialized()) {

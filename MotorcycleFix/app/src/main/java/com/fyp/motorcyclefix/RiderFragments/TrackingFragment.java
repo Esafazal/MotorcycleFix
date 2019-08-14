@@ -1,6 +1,8 @@
 package com.fyp.motorcyclefix.RiderFragments;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
-import com.fyp.motorcyclefix.Dao.TrackingDao;
 import com.fyp.motorcyclefix.Patterns.TrackingAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.TrackingViewDetails;
@@ -26,7 +27,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,7 +41,7 @@ public class TrackingFragment extends Fragment {
     private static final String TAG = "trackingFragment";
 
     private RecyclerView recyclerView;
-    private TrackingAdapter adapter;
+    private TrackingAdapter trackingAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,7 +63,7 @@ public class TrackingFragment extends Fragment {
         progressBar = view.findViewById(R.id.viewTrackingProgressBar);
         message = view.findViewById(R.id.viewTrackingMessage);
 
-        final ArrayList<TrackingDao> trackingDaos = new ArrayList<>();
+        final ArrayList<Booking> bookings = new ArrayList<>();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
 
@@ -77,7 +77,7 @@ public class TrackingFragment extends Fragment {
                     Booking booking = bookingInfo.toObject(Booking.class);
                     booking.setDocumentId(bookingInfo.getId());
 
-                    getBikeModel(booking, view, trackingDaos);
+                    getBikeModel(booking, view, bookings);
                 }
             }
         })
@@ -95,37 +95,58 @@ public class TrackingFragment extends Fragment {
         return view;
     }
 
-    public void getBikeModel(final Booking booking, final View view, final ArrayList<TrackingDao> trackingDaos) {
+    public void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
 
-       String vehicle = booking.getVehicleId();
+       final String vehicleId = booking.getVehicleId().trim();
 
-        db.collection("my_vehicle").document(vehicle).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+        db.collection("my_vehicle").get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                //THE FUCKING MODEL VARIABLE IS ALWAYS NULL
-                String model = documentSnapshot.getString("model");
+                        for(QueryDocumentSnapshot snap : queryDocumentSnapshots){
 
-                trackingDaos.add(new TrackingDao("BOOKING #" + booking.getDocumentId(), booking.getServiceType(), booking.getVehicleId()));
+                            String mVehicleId = snap.getId();
+
+                            if(mVehicleId.equals(vehicleId)){
+                                booking.setModel(snap.getString("model"));
+
+                            } else {
+
+                                Toast.makeText(getActivity(), "Vehicle ids don't match!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                trackingDaos.add(booking);
 
                 recyclerView = view.findViewById(R.id.tracking_recycler_view);
                 recyclerView.setHasFixedSize(true);
                 layoutManager = new LinearLayoutManager(getActivity());
-                adapter = new TrackingAdapter(trackingDaos);
+                trackingAdapter = new TrackingAdapter(trackingDaos);
 
                 progressBar.setVisibility(View.GONE);
                 recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
+                recyclerView.setAdapter(trackingAdapter);
 
-                adapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
+                trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
 
+                        Booking data = trackingDaos.get(position);
+                        Bundle bundle = new Bundle();
+
+                        bundle.putString("bookingID", data.getDocumentId());
+                        bundle.putString("bookingStatus", data.getStatus());
+                        bundle.putString("serviceType", data.getServiceType());
+                        bundle.putString("serviceDate", data.getDateOfService());
+                        bundle.putString("model", data.getModel());
+                        bundle.putString("workshopID", data.getWorkshopId());
+
                         TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
+                        trackingViewDetails.setArguments(bundle);
                         trackingViewDetails.show(getFragmentManager(), "View Details");
+
                     }
                 });
-
 
             }
         })
@@ -142,4 +163,24 @@ public class TrackingFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
+
+    private AlertDialog.Builder showDialogBox(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.rider_tracking_view_details, null);
+        builder.setView(view)
+                .setTitle("Booking Details")
+                .setPositiveButton("close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+
+            return builder;
+    }
+
+
 }

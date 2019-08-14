@@ -1,6 +1,9 @@
 package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -13,18 +16,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.LoginActivity;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderPortal;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -37,6 +46,9 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("users");
+    private FusedLocationProviderClient mfusedLocationProviderClient;
+    private User user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +62,10 @@ public class ProfileActivity extends AppCompatActivity {
         PhoneNo = findViewById(R.id.phoneEdit);
         sexGroup = findViewById(R.id.radioSexProfile);
 
+        user = new User();
+
+        mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         getProfileDetails();
     }
 
@@ -57,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if(currentUser != null){
+        if (currentUser != null) {
             String userId = currentUser.getUid();
 
             userRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -69,9 +85,9 @@ public class ProfileActivity extends AppCompatActivity {
 
                     Name.setText(name);
                     Email.setText(email);
-                    if(gender.contentEquals("male")){
+                    if (gender.contentEquals("male")) {
                         sexGroup.check(R.id.radioMaleProfile);
-                    } else{
+                    } else {
                         sexGroup.check(R.id.radioFemaleProfile);
                     }
                 }
@@ -83,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
 
-        } else{
+        } else {
             Toast.makeText(this, "Please login again!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -104,14 +120,45 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void profileUpdateClickHandler(View view) {
 
-        int selectedId = sexGroup.getCheckedRadioButtonId();
-        radioSelected = findViewById(selectedId);
-        String gender = radioSelected.getText().toString();
-        String name = Name.getText().toString();
-        String email = Email.getText().toString();
-        String type = "rider";
+        getLastKnownLocation();
 
-        User user = new User(type, name, email, gender);
+    }
+
+    private void getLastKnownLocation() {
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+
+            mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if(task.isSuccessful()){
+                        Location location = task.getResult();
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        user.setGeoPoint(geoPoint);
+
+                        int selectedId = sexGroup.getCheckedRadioButtonId();
+                        radioSelected = findViewById(selectedId);
+                        String gender = radioSelected.getText().toString();
+                        String name = Name.getText().toString();
+                        String email = Email.getText().toString();
+                        String type = "rider";
+                        GeoPoint point = user.getGeoPoint();
+
+                        user = new User(type, name, email, gender, point);
+
+                        saveUserDetails();
+                    }
+                }
+            });
+    }
+
+    private void saveUserDetails(){
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String userId = currentUser.getUid();
@@ -129,8 +176,6 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Couldn't update details!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
-
 
     }
 }
