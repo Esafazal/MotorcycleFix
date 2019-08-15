@@ -73,7 +73,7 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Booking booking = bookings.get(position);
 
-        holder.bookingID.setText("BOOKING #"+booking.getDocumentId());
+        holder.bookingID.setText("BOOKING #"+booking.getBookingID());
         holder.serviceType.setText(booking.getServiceType());
         holder.bikeModel.setText(booking.getModel());
     }

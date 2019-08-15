@@ -2,7 +2,7 @@ package com.fyp.motorcyclefix.Dao;
 
 import com.google.firebase.firestore.GeoPoint;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class Workshop {
 
@@ -11,8 +11,9 @@ public class Workshop {
     private String openingHours;
     private GeoPoint location;
     private String locationName;
+    private String address;
 //    private int imageUrl;
-    private List<String> specialized;
+    private ArrayList<String> specialized;
 
     public Workshop(){
 
@@ -66,11 +67,19 @@ public class Workshop {
 //        this.imageUrl = imageUrl;
 //    }
 
-    public List<String> getSpecialized() {
+    public ArrayList<String> getSpecialized() {
         return specialized;
     }
 
-    public void setSpecialized(List<String> specialized) {
+    public void setSpecialized(ArrayList<String> specialized) {
         this.specialized = specialized;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

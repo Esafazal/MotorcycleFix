@@ -20,15 +20,22 @@ import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
 import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
 import com.fyp.motorcyclefix.MechanicFragments.DashboardFragment;
 import com.fyp.motorcyclefix.MechanicFragments.ProfileFragment;
+import com.fyp.motorcyclefix.MechanicFragments.ProfileFragments.AddWorkshop;
 import com.fyp.motorcyclefix.MechanicFragments.WorkshopInfoFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MechanicPortal extends AppCompatActivity{
 
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
     private Fragment fragment;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
 
@@ -60,9 +67,7 @@ public class MechanicPortal extends AppCompatActivity{
                         return true;
 
                     case R.id.nav_workshopDetails:
-                        setTitle("Workshop");
-                        fragment = new WorkshopInfoFragment();
-                        loadFragment(fragment);
+                        checkWorkshopExistence();
                         closeDrawer();
                         return true;
 
@@ -114,6 +119,38 @@ public class MechanicPortal extends AppCompatActivity{
 
         navigationView.setCheckedItem(R.id.nav_dashboard);
         getSupportFragmentManager().beginTransaction().replace(R.id.frameLayMechanic, new DashboardFragment()).commit();
+    }
+
+    private void checkWorkshopExistence(){
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String userId = currentUser.getUid();
+
+        db.collection("my_workshop").document(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+
+                    String check = task.getResult().getString("workshopId");
+                    Bundle bundle = new Bundle();
+
+                    if(check == null){
+                        setTitle("Add Workshop");
+                        fragment = new AddWorkshop();
+                        loadFragment(fragment);
+
+                    } else {
+                        setTitle("Workshop Details");
+                        fragment = new WorkshopInfoFragment();
+                        bundle.putString("workshopExists", "yes");
+                        fragment.setArguments(bundle);
+                        loadFragment(fragment);
+
+                    }
+                }
+            }
+        });
     }
 
     @Override

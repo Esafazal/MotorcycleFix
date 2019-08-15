@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -42,12 +42,12 @@ public class ProfileActivity extends AppCompatActivity {
     private EditText Name, Email, PhoneNo;
     private RadioGroup sexGroup;
     private RadioButton radioSelected;
-    private Button updateBtn;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("users");
     private FusedLocationProviderClient mfusedLocationProviderClient;
     private User user;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -57,10 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
         setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Name = findViewById(R.id.nameEdit);
-        Email = findViewById(R.id.emailEdit);
-        PhoneNo = findViewById(R.id.phoneEdit);
-        sexGroup = findViewById(R.id.radioSexProfile);
+        Name = findViewById(R.id.MnameEdit);
+        Email = findViewById(R.id.MemailEdit);
+        PhoneNo = findViewById(R.id.MphoneEdit);
+        sexGroup = findViewById(R.id.MradioSexProfile);
+        progressBar = findViewById(R.id.riderProfileProgressBar);
 
         user = new User();
 
@@ -86,10 +87,11 @@ public class ProfileActivity extends AppCompatActivity {
                     Name.setText(name);
                     Email.setText(email);
                     if (gender.contentEquals("male")) {
-                        sexGroup.check(R.id.radioMaleProfile);
+                        sexGroup.check(R.id.MradioMaleProfile);
                     } else {
-                        sexGroup.check(R.id.radioFemaleProfile);
+                        sexGroup.check(R.id.MradioFemaleProfile);
                     }
+                    progressBar.setVisibility(View.GONE );
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {

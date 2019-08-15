@@ -62,19 +62,21 @@ public class MyVehicle extends AppCompatActivity {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                    String make = documentSnapshot.getString("manufacturer");
-                    String model = documentSnapshot.getString("model");
-                    String regNumber = documentSnapshot.getString("registratioNo");
-                    String powerType = documentSnapshot.getString("powerType");
+                    Vehicle vehicle = documentSnapshot.toObject(Vehicle.class);
 
-                    chosenMake.setText(make);
-                    chosenModel.setText(model);
-                    registrationNo.setText(regNumber);
+//                    String make = documentSnapshot.getString("manufacturer");
+//                    String model = documentSnapshot.getString("model");
+//                    String regNumber = documentSnapshot.getString("registratioNo");
+//                    String powerType = documentSnapshot.getString("powerType");
 
-                    if(powerType.equals("petrol")){
+                    chosenMake.setText(vehicle.getManufacturer());
+                    chosenModel.setText(vehicle.getModel());
+                    registrationNo.setText(vehicle.getRegistrationNo());
+
+                    if(vehicle.getPowerType().equals("petrol")){
                         powerGroup.check(R.id.radioPetrolUpdate);
 
-                    } else if(powerType.equals("diesal")){
+                    } else if(vehicle.getPowerType().equals("diesal")){
                         powerGroup.check(R.id.radioDiesalUpdate);
 
                     } else {

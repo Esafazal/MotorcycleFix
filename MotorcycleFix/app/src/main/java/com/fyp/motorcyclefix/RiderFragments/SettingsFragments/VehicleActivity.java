@@ -76,7 +76,7 @@ public class VehicleActivity extends AppCompatActivity {
 
                             recyclerView.setLayoutManager(layoutManager);
                             recyclerView.setAdapter(adapter);
-
+                            noVehicle.setVisibility(View.GONE);
                             adapter.setOnItemClickListener(new VehicleAdapter.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(int position) {
@@ -87,9 +87,6 @@ public class VehicleActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }
                             });
-                        } else {
-
-                            noVehicle.setVisibility(View.VISIBLE);
                         }
                     }
                 }

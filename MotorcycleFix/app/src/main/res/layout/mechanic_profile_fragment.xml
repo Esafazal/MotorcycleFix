@@ -61,7 +61,7 @@
                     android:textColor="@color/colorblack"/>
 
                 <EditText
-                    android:id="@+id/nameEdit"
+                    android:id="@+id/MnameEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/nameText"
@@ -82,7 +82,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/phoneImg"
-                    android:layout_below="@+id/nameEdit"
+                    android:layout_below="@+id/MnameEdit"
                     android:text="Phone Number"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -91,7 +91,7 @@
                     android:textColor="@color/colorblack" />
 
                 <EditText
-                    android:id="@+id/phoneEdit"
+                    android:id="@+id/MphoneEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/phoneText"
@@ -113,7 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/emailImg"
-                    android:layout_below="@+id/phoneEdit"
+                    android:layout_below="@+id/MphoneEdit"
                     android:text="Email ID"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -122,7 +122,7 @@
                     android:textColor="@color/colorblack"/>
 
                 <EditText
-                    android:id="@+id/emailEdit"
+                    android:id="@+id/MemailEdit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/emailText"
@@ -143,7 +143,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/genderImg"
-                    android:layout_below="@+id/emailEdit"
+                    android:layout_below="@+id/MemailEdit"
                     android:text="Gender"
                     android:textSize="13sp"
                     android:textStyle="bold"
@@ -151,21 +151,27 @@
                     android:layout_marginStart="10sp"
                     android:textColor="@color/colorblack"/>
 
-                <RadioButton
-                    android:id="@+id/maleRadioSignup"
+                <RadioGroup
+                    android:id="@+id/MecRadioSexProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Male"
-                    android:layout_below="@+id/genderText"
-                    android:layout_toRightOf="@+id/genderImg"/>
+                    android:layout_marginStart="50sp"
+                    android:layout_marginTop="5sp"
+                    android:layout_below="@id/genderText">
 
-                <RadioButton
-                    android:id="@+id/femaleRadioSignup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Female"
-                    android:layout_toRightOf="@+id/maleRadioSignup"
-                    android:layout_below="@+id/genderText"/>
+                    <RadioButton
+                        android:id="@+id/MecradioMaleProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="male" />
+
+                    <RadioButton
+                        android:id="@+id/MecradioFemaleProfile"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="female" />
+
+                </RadioGroup>
 
             </RelativeLayout>
         </ScrollView>
@@ -183,6 +189,7 @@
         tools:layout_editor_absoluteY="713dp">
 
         <Button
+            android:id="@+id/MupdateButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Update Profile"
@@ -193,5 +200,16 @@
             android:textStyle="bold"/>
 
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/mechanicProfleProgressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

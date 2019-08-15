@@ -44,7 +44,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
 
 
         String bstat = getArguments().getString("bookingStatus").trim();
-        String bID = getArguments().getString("bookingID");
+        long bID = getArguments().getLong("bookingID");
         String type = getArguments().getString("serviceType");
         String date = getArguments().getString("serviceDate");
         String workID = getArguments().getString("workshopID");
@@ -61,7 +61,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
             bStatus.setTextColor(getResources().getColor(R.color.red));
         }
 
-        bookingId.setText(bID);
+        bookingId.setText(String.valueOf(bID));
         bStatus.setText(bstat);
         sType.setText(type);
         sDate.setText(date);

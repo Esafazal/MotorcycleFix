@@ -3,9 +3,11 @@ package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -32,6 +34,7 @@ public class ChooseManufacturer extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference bikeMakeRef = db.collection("bikes");
     private ProgressBar makeProgressBar;
+    private Button selections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,38 +42,72 @@ public class ChooseManufacturer extends AppCompatActivity {
         setContentView(R.layout.rider_choose_manufacturer_activity);
         setTitle("Choose Manufacturer");
 
+        selections = findViewById(R.id.selectedManufacturers);
         makeProgressBar = findViewById(R.id.chooseMakeProgress);
         bikeMakeRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
                 makeProgressBar.setVisibility(View.GONE);
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
                     List<String> bikeMake = new ArrayList<>();
-                    for(QueryDocumentSnapshot document : task.getResult()){
+                    for (QueryDocumentSnapshot document : task.getResult()) {
 
                         bikeMake.add(document.getId());
 
-                        ListAdapter listAdapter = new ArrayAdapter<String>(ChooseManufacturer.this
+                        final ListAdapter listAdapter = new ArrayAdapter<String>(ChooseManufacturer.this
                                 , android.R.layout.simple_list_item_1, bikeMake);
 
-                        ListView listView = findViewById(R.id.manufacturerListView);
+                        final ListView listView = findViewById(R.id.manufacturerListView);
                         listView.setAdapter(listAdapter);
 
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        boolean isMechanic = userType();
 
-                                String chosenManufactrer = String.valueOf(parent.getItemAtPosition(position));
+                        if (isMechanic) {
+                            selections.setVisibility(View.VISIBLE);
+                            listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                            selections.setOnClickListener(new Button.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
 
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra("result", chosenManufactrer);
-                                setResult(RESULT_OK, resultIntent);
-                                finish();
-                            }
-                        });
+                                    String selected = "";
+                                    int cntChoice = listView.getCount();
+                                    SparseBooleanArray sparseBooleanArray = listView.getCheckedItemPositions();
+                                    ArrayList<String> sel = new ArrayList<>();
+
+                                    for (int i = 0; i < cntChoice; i++) {
+                                        if (sparseBooleanArray.get(i)) {
+                                            selected += listView.getItemAtPosition(i).toString() + "\n";
+                                            sel.add(listView.getItemAtPosition(i).toString());
+
+                                        }
+                                    }
+                                    Intent resultIntent = new Intent();
+                                    resultIntent.putStringArrayListExtra("resultList", sel);
+                                    setResult(RESULT_OK, resultIntent);
+                                    finish();
+
+                                }
+                            });
+
+                        } else {
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                    String chosenManufactrer = String.valueOf(parent.getItemAtPosition(position));
+
+                                    Intent resultIntent = new Intent();
+                                    resultIntent.putExtra("result", chosenManufactrer);
+                                    setResult(RESULT_OK, resultIntent);
+                                    finish();
+                                }
+                            });
+
+                        }
+
                     }
-                } else{
+                } else {
                     Log.d(TAG, "Error fetching documents: ", task.getException());
                 }
             }
@@ -82,13 +119,22 @@ public class ChooseManufacturer extends AppCompatActivity {
                         Log.d(TAG, e.toString());
                     }
                 });
-//        String[] bikeManufacturers = {"Kawasaki", "Hero", "Honda", "Pulsar", "Bajaj", "TVS", "Suzuki", "Kawasaki", "Hero", "Honda", "Pulsar", "Bajaj", "TVS", "Suzuki"};
 
-//        Fragment fragment = new AddVehicleSubOptions();
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.profileBodyFrame, fragment);
-//        fragmentTransaction.commit()
+    }
+
+    private boolean userType() {
+
+        boolean isMechanic;
+
+        String type = getIntent().getStringExtra("user").trim();
+
+        if (type.equals("mechanic")) {
+            isMechanic = true;
+        } else {
+
+            isMechanic = false;
+        }
+        return isMechanic;
     }
 
 

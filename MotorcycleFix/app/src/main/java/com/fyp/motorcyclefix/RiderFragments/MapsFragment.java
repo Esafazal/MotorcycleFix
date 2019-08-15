@@ -4,6 +4,8 @@ package com.fyp.motorcyclefix.RiderFragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -132,10 +134,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         GeoPoint geoPoint = snapshot.getGeoPoint("location");
                         LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
 
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_motorcycle_sexy_round);
+
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .title(workshop.getWorkshopName())
                                 .snippet(workshop.getOpeningHours())
-                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_motorcycle_sexy_round))
+                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
                                 .position(latLng);
 
                         marker = mMap.addMarker(markerOptions);
@@ -266,7 +270,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     // Asks for permission
     private void askPermission() {
         Log.d(TAG, "askPermission()");
-        ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 1);
+        ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
     }
 
 //    @Override

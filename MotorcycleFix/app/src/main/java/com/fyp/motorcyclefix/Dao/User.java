@@ -82,7 +82,6 @@ public class User {
         this.gender = gender;
     }
 
-    @Exclude
     public List<String> getModels() {
         return models;
     }

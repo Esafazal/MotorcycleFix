@@ -41,8 +41,7 @@ public class ChooseModel extends AppCompatActivity {
         setTitle("Choose Model");
 
         modelProgressBar = findViewById(R.id.chooseModelProgress);
-        bundle = getIntent().getExtras();
-        final String selectedMake = bundle.getString("make");
+        final String selectedMake = getIntent().getStringExtra("make");
 
        bikeModelRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
            @Override

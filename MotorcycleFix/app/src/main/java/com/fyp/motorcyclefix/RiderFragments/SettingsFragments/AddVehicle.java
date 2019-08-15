@@ -53,6 +53,7 @@ public class AddVehicle extends AppCompatActivity {
     public void chooseManufacturerCardClick(View view) {
 
         Intent intent = new Intent(this, ChooseManufacturer.class);
+        intent.putExtra("user", "rider");
         startActivityForResult(intent, 1);
     }
 

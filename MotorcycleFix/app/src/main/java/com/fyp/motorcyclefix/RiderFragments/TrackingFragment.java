@@ -73,20 +73,23 @@ public class TrackingFragment extends Fragment {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                 for (QueryDocumentSnapshot bookingInfo : queryDocumentSnapshots) {
-
                     Booking booking = bookingInfo.toObject(Booking.class);
-                    booking.setDocumentId(bookingInfo.getId());
 
-                    getBikeModel(booking, view, bookings);
+                    String bUserId = booking.getUserId().trim();
+
+                    if(bUserId.equals(userId)){
+                        message.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        getBikeModel(booking, view, bookings);
+                    }
+
                 }
+
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
-                        progressBar.setVisibility(View.GONE);
-                        message.setVisibility(View.VISIBLE);
                         Toast.makeText(getActivity(), "No Bookings Found", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, e.toString());
                     }
@@ -97,59 +100,55 @@ public class TrackingFragment extends Fragment {
 
     public void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
 
-       final String vehicleId = booking.getVehicleId().trim();
+        final String vehicleId = booking.getVehicleId().trim();
 
         db.collection("my_vehicle").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-                        for(QueryDocumentSnapshot snap : queryDocumentSnapshots){
+                        for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
 
                             String mVehicleId = snap.getId();
 
-                            if(mVehicleId.equals(vehicleId)){
+                            if (mVehicleId.equals(vehicleId)) {
                                 booking.setModel(snap.getString("model"));
-
-                            } else {
-
-                                Toast.makeText(getActivity(), "Vehicle ids don't match!", Toast.LENGTH_SHORT).show();
                             }
                         }
-                trackingDaos.add(booking);
+                        trackingDaos.add(booking);
 
-                recyclerView = view.findViewById(R.id.tracking_recycler_view);
-                recyclerView.setHasFixedSize(true);
-                layoutManager = new LinearLayoutManager(getActivity());
-                trackingAdapter = new TrackingAdapter(trackingDaos);
+                        recyclerView = view.findViewById(R.id.tracking_recycler_view);
+                        recyclerView.setHasFixedSize(true);
+                        layoutManager = new LinearLayoutManager(getActivity());
+                        trackingAdapter = new TrackingAdapter(trackingDaos);
 
-                progressBar.setVisibility(View.GONE);
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(trackingAdapter);
+                        progressBar.setVisibility(View.GONE);
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(trackingAdapter);
 
-                trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(int position) {
+                        trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(int position) {
 
-                        Booking data = trackingDaos.get(position);
-                        Bundle bundle = new Bundle();
+                                Booking data = trackingDaos.get(position);
+                                Bundle bundle = new Bundle();
 
-                        bundle.putString("bookingID", data.getDocumentId());
-                        bundle.putString("bookingStatus", data.getStatus());
-                        bundle.putString("serviceType", data.getServiceType());
-                        bundle.putString("serviceDate", data.getDateOfService());
-                        bundle.putString("model", data.getModel());
-                        bundle.putString("workshopID", data.getWorkshopId());
+                                bundle.putLong("bookingID", data.getBookingID());
+                                bundle.putString("bookingStatus", data.getStatus());
+                                bundle.putString("serviceType", data.getServiceType());
+                                bundle.putString("serviceDate", data.getDateOfService());
+                                bundle.putString("model", data.getModel());
+                                bundle.putString("workshopID", data.getWorkshopId());
 
-                        TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
-                        trackingViewDetails.setArguments(bundle);
-                        trackingViewDetails.show(getFragmentManager(), "View Details");
+                                TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
+                                trackingViewDetails.setArguments(bundle);
+                                trackingViewDetails.show(getFragmentManager(), "View Details");
+
+                            }
+                        });
 
                     }
-                });
-
-            }
-        })
+                })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -164,7 +163,7 @@ public class TrackingFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
-    private AlertDialog.Builder showDialogBox(){
+    private AlertDialog.Builder showDialogBox() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -179,7 +178,7 @@ public class TrackingFragment extends Fragment {
                     }
                 });
 
-            return builder;
+        return builder;
     }
 
 
