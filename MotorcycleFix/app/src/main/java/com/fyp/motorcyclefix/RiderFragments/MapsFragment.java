@@ -96,28 +96,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private void prepareInfoWindow(){
-
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-            @Override
-            public View getInfoWindow(Marker marker) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                View view = getLayoutInflater().inflate(R.layout.rider_maps_custom_info_window, null);
-
-                ImageView windowImage = view.findViewById(R.id.mapsInfoboxIcon);
-                TextView title = view.findViewById(R.id.mapsInfoboxtitle);
-                TextView openHours = view.findViewById(R.id.mapsOpenHours);
-                RatingBar workshopRating = view.findViewById(R.id.mapsRatingbar);
-
-                return view;
-            }
-        });
-    }
-
     private void getWorkshopLocations() {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();

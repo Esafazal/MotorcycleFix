@@ -2,6 +2,7 @@ package com.fyp.motorcyclefix.RiderFragments.WorkshopFragments;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,12 +15,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
+import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
 import com.fyp.motorcyclefix.RiderPortal;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,7 +39,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
-public class    ViewWorkshopActivity extends AppCompatActivity {
+public class ViewWorkshopActivity extends AppCompatActivity {
 
     private static final String TAG = "viewSelectedWorkshop";
 
@@ -49,12 +52,47 @@ public class    ViewWorkshopActivity extends AppCompatActivity {
     private RadioGroup serviceTypeGroup;
     private DatePicker datePicker;
     private ProgressBar progressBar;
+    private TextView bikeMod;
+    private String bikeId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_view_workshop_activity);
-        setTitle("");
+
+        this.getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setCustomView(R.layout.custom_toolbar);
+
+        View view = getSupportActionBar().getCustomView();
+
+        bikeMod = view.findViewById(R.id.toolbarTextview);
+        bikeMod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ViewWorkshopActivity.this, VehicleActivity.class);
+                intent.putExtra("bikeSelection", "bike");
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        getWorkshopDetials();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @androidx.annotation.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                String makeModel = data.getStringExtra("makeModel");
+                bikeMod.setText(makeModel+" >");
+                bikeId = data.getStringExtra("bikeId");
+            }
+        }
+    }
+
+    private void getWorkshopDetials() {
 
         workshopName = findViewById(R.id.viewWorkshopName);
         specialized = findViewById(R.id.specializedIN);
@@ -65,9 +103,7 @@ public class    ViewWorkshopActivity extends AppCompatActivity {
 
         workshopImg.setImageResource(R.drawable.reliability);
 
-
-        Bundle bundle = getIntent().getExtras();
-        workshopId = bundle.getString("workshopId");
+        workshopId = getIntent().getStringExtra("workshopId");
 
         workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @SuppressLint("SetTextI18n")
@@ -101,12 +137,17 @@ public class    ViewWorkshopActivity extends AppCompatActivity {
                     }
                 });
 
-
     }
 
     public void placeBookingClickHandler(View view) {
-        progressBar.setVisibility(View.VISIBLE);
-        sendBookingRequest();
+
+        if(bikeId == null){
+            Toast.makeText(this, "Please Select a Bike!", Toast.LENGTH_LONG).show();
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            sendBookingRequest();
+        }
+       
     }
 
     private void sendBookingRequest() {
@@ -137,41 +178,13 @@ public class    ViewWorkshopActivity extends AppCompatActivity {
                             booking.setDateOfService(pickedDate);
                             booking.setUserId(Uid);
                             booking.setStatus("pending");
-                            booking.setVehicleId(Uid);
+                            booking.setVehicleId(bikeId);
                             booking.setDateOfBooking(null);
                             booking.setBookingID(count);
 
-                            final String bookCount = String.valueOf(count);
+                            String bookCount = String.valueOf(count);
 
-                            db.collection("bookings").document(bookCount).set(booking).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-
-                                    Toast.makeText(ViewWorkshopActivity.this, "Booking Request Sent", Toast.LENGTH_SHORT).show();
-                                    RiderPortal riderPortal = new RiderPortal();
-//                                    riderPortal.loadFragment(new TrackingFragment());
-                                    progressBar.setVisibility(View.GONE);
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ViewWorkshopActivity.this);
-                                    builder.setTitle("BOOKING #"+bookCount)
-                                            .setMessage("Your booking has been sent to "+workshopName.getText().toString()+
-                                                    " for confirmation. You will be notified shortly." +
-                                                        " \n Goto Trackings tab to view details.")
-                                            .setPositiveButton("Alright, Cool.", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    finish();
-                                                }
-                                            }).show();
-                                }
-                            })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-
-                                            Log.d(TAG, e.toString());
-                                        }
-                                    });
-
+                            addBookingandUpdateCount(bookCount, booking);
                         }
                     });
                 }
@@ -185,6 +198,38 @@ public class    ViewWorkshopActivity extends AppCompatActivity {
                     });
 
         }
+    }
+
+    private void addBookingandUpdateCount(final String bookCount, Booking booking) {
+
+        db.collection("bookings").document(bookCount).set(booking).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
+                Toast.makeText(ViewWorkshopActivity.this, "Booking Request Sent", Toast.LENGTH_SHORT).show();
+                RiderPortal riderPortal = new RiderPortal();
+//                                    riderPortal.loadFragment(new TrackingFragment());
+                progressBar.setVisibility(View.GONE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ViewWorkshopActivity.this);
+                builder.setTitle("BOOKING #" + bookCount)
+                        .setMessage("Your booking has been sent to " + workshopName.getText().toString() +
+                                " for confirmation. You will be notified shortly." +
+                                " \n Goto Trackings tab to view details.")
+                        .setPositiveButton("Alright, Cool.", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                        Log.d(TAG, e.toString());
+                    }
+                });
     }
 
     public Task<Void> updateBookingCount() {

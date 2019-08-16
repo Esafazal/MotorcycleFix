@@ -6,20 +6,30 @@ import java.util.Date;
 
 public class Booking {
 
+    private long bookingID;
     private String serviceType;
     private String dateOfService;
-    private String workshopId;
-    private @ServerTimestamp
-    java.util.Date dateOfBooking;
-    private String vehicleId;
+    private String repairDescription;
     private String userId;
+    private String workshopId;
+    private @ServerTimestamp java.util.Date dateOfBooking;
+    private String vehicleId;
     private String status;
     private String model;
-    private long bookingID;
 
 
     public Booking(){
 
+    }
+
+    public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription
+            , String userId, String vehicleId) {
+        this.bookingID = bookingID;
+        this.serviceType = serviceType;
+        this.dateOfService = dateOfService;
+        this.repairDescription = repairDescription;
+        this.userId = userId;
+        this.vehicleId = vehicleId;
     }
 
     public long getBookingID() {
@@ -92,5 +102,13 @@ public class Booking {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getRepairDescription() {
+        return repairDescription;
+    }
+
+    public void setRepairDescription(String repairDescription) {
+        this.repairDescription = repairDescription;
     }
 }

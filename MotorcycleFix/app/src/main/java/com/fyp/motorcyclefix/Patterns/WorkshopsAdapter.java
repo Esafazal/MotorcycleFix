@@ -59,7 +59,6 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
         }
     }
 
-
     public WorkshopsAdapter(List<WorkshopDao> workshopDaos) {
         this.workshopDaos = workshopDaos;
         workshopList = new ArrayList<>(workshopDaos);

@@ -114,8 +114,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                             }
                         }
-
                         else{
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(getApplicationContext(), "Email Already Exists!", Toast.LENGTH_LONG).show();
                         }
                     }

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
+import com.fyp.motorcyclefix.Dao.Vehicle;
 import com.fyp.motorcyclefix.Patterns.TrackingAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.TrackingViewDetails;
@@ -102,17 +103,19 @@ public class TrackingFragment extends Fragment {
 
         final String vehicleId = booking.getVehicleId().trim();
 
-        db.collection("my_vehicle").get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        db.collection("my_vehicle").whereEqualTo("userId", booking.getUserId())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                         for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
 
+                            Vehicle vehicle = snap.toObject(Vehicle.class);
+
                             String mVehicleId = snap.getId();
 
                             if (mVehicleId.equals(vehicleId)) {
-                                booking.setModel(snap.getString("model"));
+                                booking.setModel(snap.getString("manufacturer")+" "+snap.getString("model"));
                             }
                         }
                         trackingDaos.add(booking);

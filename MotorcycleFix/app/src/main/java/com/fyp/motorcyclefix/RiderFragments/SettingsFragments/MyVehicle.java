@@ -35,6 +35,7 @@ public class MyVehicle extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference vehicleRef = db.collection("my_vehicle");
+    private String documentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,40 +49,38 @@ public class MyVehicle extends AppCompatActivity {
         purchasedYear = findViewById(R.id.myVehiclePurchaseYear);
         powerGroup = findViewById(R.id.radioPowerUpdate);
 
-        getVehicleDetails();
+        documentId = getIntent().getStringExtra("vehicleId");
+
+        getVehicleDetails(documentId);
     }
 
-    public void getVehicleDetails(){
+    public void getVehicleDetails(String id){
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if(currentUser != null){
-            String userId = currentUser.getUid();
 
-            vehicleRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            vehicleRef.document(id)
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                    Vehicle vehicle = documentSnapshot.toObject(Vehicle.class);
+                        Vehicle vehicle = documentSnapshot.toObject(Vehicle.class);
 
-//                    String make = documentSnapshot.getString("manufacturer");
-//                    String model = documentSnapshot.getString("model");
-//                    String regNumber = documentSnapshot.getString("registratioNo");
-//                    String powerType = documentSnapshot.getString("powerType");
+                        chosenMake.setText(vehicle.getManufacturer());
+                        chosenModel.setText(vehicle.getModel());
+                        registrationNo.setText(vehicle.getRegistrationNo());
 
-                    chosenMake.setText(vehicle.getManufacturer());
-                    chosenModel.setText(vehicle.getModel());
-                    registrationNo.setText(vehicle.getRegistrationNo());
+                        if(vehicle.getPowerType().equals("petrol")){
+                            powerGroup.check(R.id.radioPetrolUpdate);
 
-                    if(vehicle.getPowerType().equals("petrol")){
-                        powerGroup.check(R.id.radioPetrolUpdate);
+                        } else if(vehicle.getPowerType().equals("diesal")){
+                            powerGroup.check(R.id.radioDiesalUpdate);
 
-                    } else if(vehicle.getPowerType().equals("diesal")){
-                        powerGroup.check(R.id.radioDiesalUpdate);
+                        } else {
+                            powerGroup.check(R.id.radioElectricUpdate);
+                        }
 
-                    } else {
-                        powerGroup.check(R.id.radioElectricUpdate);
-                    }
                 }
             })
                     .addOnFailureListener(new OnFailureListener() {
@@ -113,16 +112,18 @@ public class MyVehicle extends AppCompatActivity {
         String updateRegNo = registrationNo.getText().toString();
         String updatePurchased = purchasedYear.getText().toString();
 
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+
         Vehicle vehicle = new Vehicle();
         vehicle.setPowerType(Power);
         vehicle.setManufacturer(updateMake);
         vehicle.setModel(updateModel);
         vehicle.setRegistrationNo(updateRegNo);
         vehicle.setPurchasedYear(updatePurchased);
+        vehicle.setUserId(userId);
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String userId = currentUser.getUid();
-        vehicleRef.document(userId).set(vehicle).addOnSuccessListener(new OnSuccessListener<Void>() {
+        vehicleRef.document(documentId).set(vehicle).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
 

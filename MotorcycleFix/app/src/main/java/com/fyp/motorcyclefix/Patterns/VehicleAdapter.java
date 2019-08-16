@@ -8,14 +8,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fyp.motorcyclefix.Dao.TrackingDao;
+import com.fyp.motorcyclefix.Dao.Vehicle;
 import com.fyp.motorcyclefix.R;
 
 import java.util.ArrayList;
 
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.CardViewHolder> {
 
-    private ArrayList<TrackingDao> trackingDaos;
+    private ArrayList<Vehicle> vehicleDaos;
     private OnItemClickListener itemClickListener;
 
     public interface OnItemClickListener{
@@ -49,8 +49,8 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.CardView
         }
     }
 
-    public VehicleAdapter(ArrayList<TrackingDao> trackingDaos) {
-        this.trackingDaos = trackingDaos;
+    public VehicleAdapter(ArrayList<Vehicle> vehicleDaos) {
+        this.vehicleDaos = vehicleDaos;
     }
 
     @NonNull
@@ -66,14 +66,14 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.CardView
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-        TrackingDao trackingDao = trackingDaos.get(position);
+        Vehicle vehicle = vehicleDaos.get(position);
 
-        holder.bikeModel.setText(trackingDao.getBikeModel());
+        holder.bikeModel.setText(vehicle.getManufacturer()+" "+ vehicle.getModel());
     }
 
     @Override
     public int getItemCount() {
 
-        return trackingDaos.size();
+        return vehicleDaos.size();
     }
 }

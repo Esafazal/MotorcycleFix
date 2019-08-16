@@ -4,24 +4,33 @@ import com.google.firebase.firestore.Exclude;
 
 public class Vehicle {
 
-    private String documentId;
+    private String userId;
     private String manufacturer;
     private String model;
     private String registrationNo;
     private String powerType;
     private String purchasedYear;
+    private String vehicleId;
 
     public Vehicle(){
 
     }
 
-    @Exclude
-    public String getDocumentId() {
-        return documentId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setDocumentId(String documentId) {
-        this.documentId = documentId;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    @Exclude
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public String getManufacturer() {

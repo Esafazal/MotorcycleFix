@@ -111,16 +111,18 @@ public class AddVehicle extends AppCompatActivity {
         String regNumber = registrationNo.getText().toString();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        String userId = currentUser.getUid();
 
         final Vehicle vehicle = new Vehicle();
         vehicle.setManufacturer(selectedMake);
         vehicle.setModel(selectedMod);
         vehicle.setRegistrationNo(regNumber);
         vehicle.setPowerType(powerType);
+        vehicle.setUserId(userId);
 
         if(currentUser != null){
-            String userId = currentUser.getUid();
-            db.collection("my_vehicle").document(userId).set(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+            db.collection("my_vehicle").document().set(vehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     Toast.makeText(AddVehicle.this, "Added Your Vehicle!", Toast.LENGTH_LONG).show();
