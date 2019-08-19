@@ -1,11 +1,11 @@
 package com.fyp.motorcyclefix.RiderFragments.TrackingFragments;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,20 +20,21 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class TrackingViewDetails extends AppCompatDialogFragment {
+public class TrackingViewDetails extends AppCompatDialogFragment implements View.OnClickListener {
 
     private static final String TAG = "trackingViewDetails";
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workshopRef = db.collection("my_workshop");
-    private TextView bStatus, sProvider, sType, bookingId, vehicle, sDate;
+    private TextView bStatus, sProvider, sType, bookingId, vehicle, sDate, sRepairS, sRepairD, sCategoryS, sCategoryD;
+    private Button closeBtn;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.rider_tracking_view_details, null);
+        final View view = inflater.inflate(R.layout.rider_tracking_view_details, null);
 
         bStatus = view.findViewById(R.id.bookingStatus);
         sProvider = view.findViewById(R.id.serviceProvider);
@@ -41,7 +42,13 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
         bookingId = view.findViewById(R.id.bookingId);
         vehicle = view.findViewById(R.id.vehicle);
         sDate = view.findViewById(R.id.serviceDate);
+        sRepairS = view.findViewById(R.id.description);
+        sRepairD = view.findViewById(R.id.descriptionDynamic);
+        sCategoryS = view.findViewById(R.id.serviceCategoryStat);
+        sCategoryD = view.findViewById(R.id.serviceCategoryDynamic);
+        closeBtn = view.findViewById(R.id.closeButton);
 
+        closeBtn.setOnClickListener(this);
 
         String bstat = getArguments().getString("bookingStatus").trim();
         long bID = getArguments().getLong("bookingID");
@@ -49,6 +56,17 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
         String date = getArguments().getString("serviceDate");
         String workID = getArguments().getString("workshopID");
         String model = getArguments().getString("model");
+        String serviceCategory = getArguments().getString("repairCat");
+        String serviceDescription = getArguments().getString("repairDesc");
+
+        if(!serviceCategory.equals("")){
+            sRepairS.setVisibility(View.VISIBLE);
+            sRepairD.setVisibility(View.VISIBLE);
+        }
+        if(!serviceDescription.equals("")){
+            sCategoryS.setVisibility(View.VISIBLE);
+            sCategoryD.setVisibility(View.VISIBLE);
+        }
 
         if(bstat.equals("pending")){
             bStatus.setTextColor(getResources().getColor(R.color.orange));
@@ -66,25 +84,15 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
         sType.setText(type);
         sDate.setText(date);
         vehicle.setText(model);
+        sCategoryD.setText(serviceCategory);
+        sRepairD.setText(serviceDescription);
+
         getWorkshopNVehicleName(workID);
 
-
-        return showAlertDialog(view).create();
-    }
-
-    private AlertDialog.Builder showAlertDialog(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setView(view)
-                .setTitle("Booking Details")
-                .setPositiveButton("close", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-        return builder;
+        return builder.setView(view).create();
     }
+
 
     private void getWorkshopNVehicleName(String workshopID){
 
@@ -107,5 +115,8 @@ public class TrackingViewDetails extends AppCompatDialogFragment {
     }
 
 
-
+    @Override
+    public void onClick(View v) {
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
 }

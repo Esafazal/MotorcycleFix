@@ -16,10 +16,14 @@ import com.fyp.motorcyclefix.RiderFragments.SettingsFragment;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragment;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class RiderPortal extends AppCompatActivity {
 
     private Fragment selectedFragment;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -56,6 +60,16 @@ public class RiderPortal extends AppCompatActivity {
             return false;
         }
     };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+
+        FirebaseMessaging.getInstance().subscribeToTopic(userId);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

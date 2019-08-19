@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -18,12 +19,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
 import com.fyp.motorcyclefix.RiderPortal;
+import com.fyp.motorcyclefix.Services.SendNotificationService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -39,11 +42,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public class ViewWorkshopActivity extends AppCompatActivity {
 
-    private static final String TAG = "viewSelectedWorkshop";
+    private static final String TAG = "viewWorkshopActivity";
 
-    private TextView workshopName, specialized;
+    private TextView workshopName, specialized, chosenRepair;
+    private EditText repairDescription;
+    private CardView repairCategory;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workshopRef = db.collection("my_workshop");
@@ -66,6 +74,33 @@ public class ViewWorkshopActivity extends AppCompatActivity {
 
         View view = getSupportActionBar().getCustomView();
 
+        chosenRepair = findViewById(R.id.chosenRepairType);
+        repairCategory = findViewById(R.id.repairTypeCard);
+        repairDescription = findViewById(R.id.repairDescription);
+        datePicker = findViewById(R.id.datePicker);
+
+        Date date = new Date();
+        long minDate = date.getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 2);
+        String fuck = String.valueOf(calendar.getTime());
+         try {
+             datePicker.setMinDate(minDate);
+             long maxDate = Long.valueOf(fuck);
+             datePicker.setMaxDate(maxDate);
+         }
+         catch (Exception e){
+             Log.d(TAG, "Date conversion: "+e.toString());
+         }
+
+        RadioButton repairButton = findViewById(R.id.radioRepair);
+        repairButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSelectedRepairType();
+            }
+        });
+
         bikeMod = view.findViewById(R.id.toolbarTextview);
         bikeMod.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,9 +122,27 @@ public class ViewWorkshopActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 String makeModel = data.getStringExtra("makeModel");
                 bikeMod.setText(makeModel+" >");
-                bikeId = data.getStringExtra("bikeId");
+                bikeId = data.getStringExtra("bikeId").trim();
+            }
+        } else if(requestCode == 2){
+            if(resultCode == RESULT_OK) {
+                String result = data.getStringExtra("result");
+                chosenRepair.setText(result);
             }
         }
+    }
+
+    private void getSelectedRepairType() {
+        repairCategory.setVisibility(View.VISIBLE);
+
+        repairCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(ViewWorkshopActivity.this, SelectRepairCategory.class);
+                startActivityForResult(intent, 2);
+            }
+        });
     }
 
     private void getWorkshopDetials() {
@@ -97,7 +150,6 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         workshopName = findViewById(R.id.viewWorkshopName);
         specialized = findViewById(R.id.specializedIN);
         serviceTypeGroup = findViewById(R.id.radioServiceType);
-        datePicker = findViewById(R.id.datePicker);
         progressBar = findViewById(R.id.bookingProgressBar);
         ImageView workshopImg = findViewById(R.id.workshopImg);
 
@@ -146,6 +198,7 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         } else {
             progressBar.setVisibility(View.VISIBLE);
             sendBookingRequest();
+            sendNotification();
         }
        
     }
@@ -181,6 +234,9 @@ public class ViewWorkshopActivity extends AppCompatActivity {
                             booking.setVehicleId(bikeId);
                             booking.setDateOfBooking(null);
                             booking.setBookingID(count);
+                            booking.setRepairCategory(chosenRepair.getText().toString());
+                            booking.setRepairDescription(repairDescription.getText().toString());
+
 
                             String bookCount = String.valueOf(count);
 
@@ -198,6 +254,14 @@ public class ViewWorkshopActivity extends AppCompatActivity {
                     });
 
         }
+    }
+
+    private void sendNotification(){
+
+        String title = "NEW BOOKING";
+        String message = "Please review the booking and resolve ASAP!";
+
+        SendNotificationService.sendNotification(this, workshopId, title, message);
     }
 
     private void addBookingandUpdateCount(final String bookCount, Booking booking) {

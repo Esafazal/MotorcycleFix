@@ -150,7 +150,7 @@ public class SignUpActivity extends AppCompatActivity {
     private void saveUserMechanic(String name, String email, String gender, GeoPoint geoPoint){
 
         FirebaseUser user = mAuth.getCurrentUser();
-        final String userId = user.getUid();
+        final String userId = user.getUid().trim();
         String type ="mechanic";
         userModel = new User(type, name, email, gender, geoPoint);
 

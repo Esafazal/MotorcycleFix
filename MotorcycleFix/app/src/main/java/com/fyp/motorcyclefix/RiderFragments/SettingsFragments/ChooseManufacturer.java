@@ -44,10 +44,15 @@ public class ChooseManufacturer extends AppCompatActivity {
 
         selections = findViewById(R.id.selectedManufacturers);
         makeProgressBar = findViewById(R.id.chooseMakeProgress);
+
+        getManufacturerSelection();
+
+    }
+
+    private void  getManufacturerSelection(){
         bikeMakeRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                 makeProgressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     List<String> bikeMake = new ArrayList<>();

@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class DateUtil {
 
-    public static String DATE_FORMAT = "yyyy-MM-dd";
+    public static String DATE_FORMAT = "MM-dd-yyyy";
     public static String TIME_FORMAT = "HH:mm";
     public static String TIME_FORMAT_NATURAL = "Ha";
     public static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";

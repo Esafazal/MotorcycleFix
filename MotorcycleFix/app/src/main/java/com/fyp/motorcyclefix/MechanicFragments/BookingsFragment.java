@@ -6,8 +6,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,8 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Vehicle;
-import com.fyp.motorcyclefix.Patterns.AcceptedBookingsAdapter;
+import com.fyp.motorcyclefix.Adapters.AcceptedBookingsAdapter;
 import com.fyp.motorcyclefix.R;
+import com.fyp.motorcyclefix.Services.SendNotificationService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +40,7 @@ import java.util.ArrayList;
 public class BookingsFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private AcceptedBookingsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<Booking> bookings = new ArrayList<>();
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -60,8 +64,6 @@ public class BookingsFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.bookings_recycler_view);
 
         getAcceptedBookings();
-
-
 
         return view;
     }
@@ -117,7 +119,7 @@ public class BookingsFragment extends Fragment {
 
                 bookings.add(new Booking(booking.getBookingID(), booking.getServiceType(), booking.getDateOfService()
                         , booking.getRepairDescription(), user.getName()
-                        , vehicle.getManufacturer()+" "+vehicle.getModel()));
+                        , vehicle.getManufacturer()+" "+vehicle.getModel(), booking.getUserId()));
 
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
@@ -126,7 +128,38 @@ public class BookingsFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
                 progressBar.setVisibility(View.GONE);
 
+                mAdapter.setOnItemClickListener(new AcceptedBookingsAdapter.OnItemClickListener() {
 
+                    @Override
+                    public void onEditNote(int position, Button sendNote) {
+                        sendNote.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onStartServiceClick(int position, Button completeService, Button startService) {
+                        completeService.setBackgroundColor(getResources().getColor(R.color.red));
+                        completeService.setClickable(true);
+                        startService.setBackgroundColor(getResources().getColor(R.color.dimGreem));
+                        startService.setClickable(false);
+                        Toast.makeText(getActivity(), "Start Service Clicked", Toast.LENGTH_SHORT).show();
+
+                         Booking book =  bookings.get(position);
+                         String title = "Job Order Started";
+                         String message = "This is to inform you that your bike service has been started.";
+
+                        SendNotificationService.sendNotification(getContext(), book.getModel(), title, message);
+                    }
+
+                    @Override
+                    public void onCompleteServiceClick(int position, Button startService, Button completeService) {
+
+                    }
+
+                    @Override
+                    public void onSendNoteClick(int position, EditText editNote) {
+
+                    }
+                });
             }
         });
 

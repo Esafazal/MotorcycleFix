@@ -14,6 +14,7 @@ public class Workshop {
     private String address;
 //    private int imageUrl;
     private ArrayList<String> specialized;
+    private long clicks;
 
     public Workshop(){
 
@@ -81,5 +82,13 @@ public class Workshop {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public long getClicks() {
+        return clicks;
+    }
+
+    public void setClicks(long clicks) {
+        this.clicks = clicks;
     }
 }

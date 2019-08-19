@@ -9,6 +9,7 @@ public class Booking {
     private long bookingID;
     private String serviceType;
     private String dateOfService;
+    private String repairCategory;
     private String repairDescription;
     private String userId;
     private String workshopId;
@@ -23,13 +24,14 @@ public class Booking {
     }
 
     public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription
-            , String userId, String vehicleId) {
+            , String userId, String vehicleId, String model) {
         this.bookingID = bookingID;
         this.serviceType = serviceType;
         this.dateOfService = dateOfService;
         this.repairDescription = repairDescription;
         this.userId = userId;
         this.vehicleId = vehicleId;
+        this.model = model;
     }
 
     public long getBookingID() {
@@ -110,5 +112,13 @@ public class Booking {
 
     public void setRepairDescription(String repairDescription) {
         this.repairDescription = repairDescription;
+    }
+
+    public String getRepairCategory() {
+        return repairCategory;
+    }
+
+    public void setRepairCategory(String repairCategory) {
+        this.repairCategory = repairCategory;
     }
 }

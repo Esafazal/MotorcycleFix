@@ -38,10 +38,11 @@ import com.google.firebase.firestore.GeoPoint;
 import java.util.ArrayList;
 
 import static android.app.Activity.RESULT_OK;
-import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 public class WorkshopInfoFragment extends Fragment implements View.OnClickListener {
+
+    public static final String TAG = "workshopFragment";
 
     private EditText wName, wAddress, wPlace, wOpenHours, wLat, wLng;
     private TextView wSpecialized;
@@ -92,7 +93,7 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
         return view;
     }
 
-    private void registerWorkshop(final GeoPoint geoPoint) {
+    private void registerWorkshop(final GeoPoint geoPoint, long clicks) {
         FirebaseUser cUser = mAuth.getCurrentUser();
         String userId = cUser.getUid();
         ArrayList<String> special = new ArrayList<>();
@@ -110,6 +111,7 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
         workshop.setSpecialized(special);
         workshop.setLocation(geoPoint);
         workshop.setWorkshopId(userId);
+        workshop.setClicks(clicks);
 
         db.collection("my_workshop").document(userId).set(workshop)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -134,24 +136,31 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
                 workshop = documentSnapshot.toObject(Workshop.class);
-                final GeoPoint geoPoint = workshop.getLocation();
+               try {
+                   final GeoPoint geoPoint = workshop.getLocation();
 
-                wName.setText(workshop.getWorkshopName());
-                wAddress.setText(workshop.getAddress());
-                wOpenHours.setText(workshop.getOpeningHours());
-                wPlace.setText(workshop.getLocationName());
-                wLat.setText(String.valueOf(geoPoint.getLatitude()));
-                wLng.setText(String.valueOf(geoPoint.getLongitude()));
-                wSpecialized.setText(workshop.getSpecialized().toString());
+                   wName.setText(workshop.getWorkshopName());
+                   wAddress.setText(workshop.getAddress());
+                   wOpenHours.setText(workshop.getOpeningHours());
+                   wPlace.setText(workshop.getLocationName());
+                   wLat.setText(String.valueOf(geoPoint.getLatitude()));
+                   wLng.setText(String.valueOf(geoPoint.getLongitude()));
+                   wSpecialized.setText(workshop.getSpecialized().toString());
 
-                progressBar.setVisibility(View.GONE);
-                update.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        registerWorkshop(geoPoint);
-                        startActivity(new Intent(getActivity(), MechanicPortal.class));
-                    }
-                });
+                   progressBar.setVisibility(View.GONE);
+                   update.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           registerWorkshop(geoPoint, workshop.getClicks());
+                           startActivity(new Intent(getActivity(), MechanicPortal.class));
+                       }
+                   });
+               }
+               catch (Exception e){
+                   progressBar.setVisibility(View.GONE);
+                   Log.d(TAG, e.toString());
+                   Toast.makeText(getActivity(), "Token Space Issue!", Toast.LENGTH_SHORT).show();
+               }
             }
         });
 
@@ -180,10 +189,12 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
 
                     wLat.setText(lat);
                     wLng.setText(lng);
+
+                    final long click = 0;
                     update.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            registerWorkshop(geoPoint);
+                            registerWorkshop(geoPoint, click);
                         }
                     });
                 }

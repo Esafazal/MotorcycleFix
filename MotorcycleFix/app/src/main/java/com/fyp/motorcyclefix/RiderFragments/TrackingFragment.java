@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Vehicle;
-import com.fyp.motorcyclefix.Patterns.TrackingAdapter;
+import com.fyp.motorcyclefix.Adapters.TrackingAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.TrackingViewDetails;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -142,10 +142,12 @@ public class TrackingFragment extends Fragment {
                                 bundle.putString("serviceDate", data.getDateOfService());
                                 bundle.putString("model", data.getModel());
                                 bundle.putString("workshopID", data.getWorkshopId());
+                                bundle.putString("repairCat", data.getRepairCategory());
+                                bundle.putString("repairDesc", data.getRepairDescription());
 
                                 TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
                                 trackingViewDetails.setArguments(bundle);
-                                trackingViewDetails.show(getFragmentManager(), "View Details");
+                                trackingViewDetails.show(getActivity().getSupportFragmentManager(), "View Details");
 
                             }
                         });

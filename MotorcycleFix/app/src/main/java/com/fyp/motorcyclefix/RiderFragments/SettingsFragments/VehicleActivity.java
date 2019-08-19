@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.Vehicle;
-import com.fyp.motorcyclefix.Patterns.VehicleAdapter;
+import com.fyp.motorcyclefix.Adapters.VehicleAdapter;
 import com.fyp.motorcyclefix.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

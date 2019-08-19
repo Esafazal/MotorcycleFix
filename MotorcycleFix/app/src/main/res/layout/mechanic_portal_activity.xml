@@ -19,7 +19,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/mechanic_nav_header"
         app:menu="@menu/activity_mechanic_portal_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

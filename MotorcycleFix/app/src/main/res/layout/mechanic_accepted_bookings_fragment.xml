@@ -21,7 +21,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/bookingBikeModel"
+                android:id="@+id/reqBikeModel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -36,14 +36,14 @@
 
 
             <TextView
-                android:id="@+id/bookingRiderName"
+                android:id="@+id/reqRiderName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Esa Fazal"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bookingBikeModel" />
+                app:layout_constraintTop_toBottomOf="@+id/reqBikeModel" />
 
             <TextView
                 android:id="@+id/bookingIdStatic"
@@ -55,7 +55,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bookingRiderName" />
+                app:layout_constraintTop_toBottomOf="@+id/reqRiderName" />
 
             <TextView
                 android:id="@+id/serviceTypeStatic"
@@ -82,6 +82,31 @@
                 app:layout_constraintTop_toBottomOf="@+id/serviceTypeStatic" />
 
             <TextView
+                android:id="@+id/acceptedRepairCatStat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Repair Category:"
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reqSDateDynamic" />
+
+            <TextView
+                android:id="@+id/acceptedRepairCatDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Engine"
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toEndOf="@+id/acceptedRepairCatStat"
+                app:layout_constraintTop_toBottomOf="@+id/serviceDateStatic" />
+
+
+            <TextView
                 android:id="@+id/bookingIdDynamic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,10 +116,10 @@
                 android:textSize="15sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toEndOf="@+id/serviceTypeStatic"
-                app:layout_constraintTop_toBottomOf="@+id/bookingRiderName" />
+                app:layout_constraintTop_toBottomOf="@+id/reqRiderName" />
 
             <TextView
-                android:id="@+id/serviceTypeDynamic"
+                android:id="@+id/reqSTypeDynamic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -106,7 +131,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/bookingIdStatic" />
 
             <TextView
-                android:id="@+id/serviceDateDynamic"
+                android:id="@+id/reqSDateDynamic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -123,25 +148,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Repair Detail: "
+                android:text="Repair Description:"
                 android:textColor="@color/colorblack"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/serviceDateStatic" />
+                app:layout_constraintTop_toBottomOf="@+id/acceptedRepairCatDynamic" />
 
             <TextView
-                android:id="@+id/repairDetialDynamic"
-                android:layout_width="wrap_content"
+                android:id="@+id/reqRepairDetialDynamic"
+                android:layout_width="0sp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Bike break pads change"
+                android:text="Bike break pads change ajks a jajf jafj ajhj fhjh jhfjhj hjhih ihiu shuifhuh  hui shfiuhiusf huh iuhfsui hsuid h"
                 android:textColor="@color/colorblack"
                 android:textSize="15sp"
                 android:textStyle="italic"
-                app:layout_constraintStart_toEndOf="@+id/serviceDateStatic"
-                app:layout_constraintTop_toBottomOf="@+id/serviceDateStatic" />
+                app:layout_constraintStart_toEndOf="@+id/repairDetailStatic"
+                app:layout_constraintTop_toBottomOf="@+id/acceptedRepairCatStat"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <EditText
                 android:id="@+id/bookingLeaveNote"
@@ -149,16 +175,18 @@
                 android:layout_height="wrap_content"
                 android:hint="Leave Note to Customer"
                 android:layout_marginEnd="5sp"
-                app:layout_constraintTop_toBottomOf="@+id/repairDetailStatic"
+                app:layout_constraintTop_toBottomOf="@+id/reqRepairDetialDynamic"
                 app:layout_constraintEnd_toStartOf="@+id/btnLeaveNote"
                 app:layout_constraintStart_toStartOf="parent"
                 android:focusedByDefault="false"/>
+
 
             <Button
                 android:id="@+id/btnLeaveNote"
                 android:layout_width="60sp"
                 android:layout_height="35sp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="13dp"
+                android:layout_marginEnd="5sp"
                 android:text="Send"
                 android:visibility="gone"
                 android:textColor="@color/white"
@@ -169,7 +197,7 @@
                 app:layout_constraintStart_toEndOf="@+id/bookingLeaveNote"/>
 
             <Button
-                android:id="@+id/bookingStartService"
+                android:id="@+id/bookingDeclineBooking"
                 android:layout_width="0sp"
                 android:layout_height="wrap_content"
                 android:background="@color/green"
@@ -193,7 +221,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bookingLeaveNote"
-                app:layout_constraintStart_toEndOf="@+id/bookingStartService"/>
+                app:layout_constraintStart_toEndOf="@+id/bookingDeclineBooking"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

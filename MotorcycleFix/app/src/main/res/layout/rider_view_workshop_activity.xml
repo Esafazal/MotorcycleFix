@@ -96,7 +96,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/serviceTypeCard"
                 android:layout_width="match_parent"
-                android:layout_height="130sp"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/workshopNameNratings"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8sp"
@@ -145,12 +145,75 @@
 
             </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/repairTypeCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/serviceTypeCard"
+                android:visibility="gone"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8sp"
+                android:layout_marginEnd="8dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/chooseTypeRepair"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Choose type of repair"
+                        android:textColor="@color/colorblack"
+                        android:textSize="20sp"
+                        android:layout_marginTop="10sp"
+                        android:layout_marginStart="5sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_chevron_right"
+                        android:layout_marginEnd="10sp"
+                        android:layout_marginTop="10sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/chosenRepairType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/orange"
+                        android:textStyle="italic"
+                        android:layout_marginTop="5sp"
+                        android:layout_marginStart="10sp"
+                        android:textSize="18sp"
+                        android:padding="3sp"
+                        app:layout_constraintBottom_toTopOf="@+id/repairDescription"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/chooseTypeRepair"/>
+
+                    <EditText
+                        android:id="@+id/repairDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5sp"
+                        android:layout_marginEnd="10sp"
+                        android:hint="Enter specific details of issue if known."
+                        app:layout_constraintTop_toBottomOf="@+id/chosenRepairType"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/dateNTimeCard"
                 android:layout_width="match_parent"
-                android:layout_height="200sp"
-                android:layout_below="@+id/serviceTypeCard"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/repairTypeCard"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8sp"
                 android:layout_marginEnd="8dp">
@@ -159,17 +222,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5sp"
-                    android:text="Choose your date and time of service"
+                    android:text="Choose your desired date of service"
                     android:textColor="@color/colorblack"
                     android:textSize="20sp" />
 
                 <DatePicker
                     android:id="@+id/datePicker"
                     android:layout_width="wrap_content"
+                    android:layout_marginTop="10sp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40sp"
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner" />
+
+
 
                 <!--<TimePicker-->
                 <!--android:id="@+id/timePicker"-->
@@ -179,6 +244,8 @@
                 <!--android:timePickerMode="spinner"/>-->
 
             </androidx.cardview.widget.CardView>
+
+
 
             <Button
                 android:layout_width="match_parent"

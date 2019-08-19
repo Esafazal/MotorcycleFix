@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -21,11 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.Dao.WorkshopDao;
-import com.fyp.motorcyclefix.Patterns.WorkshopsAdapter;
+import com.fyp.motorcyclefix.Adapters.WorkshopsAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
@@ -126,10 +129,12 @@ public class WorkshopFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
 
-                String itemClick = String.valueOf(workshopIDs.get(position));
+                String workshopId = String.valueOf(workshopIDs.get(position));
+
+                incrementClick(workshopId);
 
                 Intent intent = new Intent(getActivity(), ViewWorkshopActivity.class);
-                intent.putExtra("workshopId", itemClick);
+                intent.putExtra("workshopId", workshopId);
                 startActivity(intent);
             }
         });
@@ -153,10 +158,40 @@ public class WorkshopFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                workshopsAdapter.getFilter().filter(newText);
+               try {
+                   workshopsAdapter.getFilter().filter(newText);
+               } catch (Exception e){
+                   Log.d(TAG, e.toString());
+               }
                 return false;
             }
         });
 
+    }
+
+    private void incrementClick(final String workshopId){
+        final CollectionReference workshopClickRef = db.collection("my_workshop");
+        workshopClickRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                   String id2 = snapshot.getId();
+
+                   if(workshopId.equals(id2)){
+                       long count = snapshot.getLong("clicks");
+                       long newCount = count + 1;
+                       workshopClickRef.document(workshopId).update("clicks",newCount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                           @Override
+                           public void onComplete(@NonNull Task<Void> task) {
+                               Toast.makeText(getActivity(), "Click registered!", Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                }
+
+
+                }
+            }
+        });
     }
 }

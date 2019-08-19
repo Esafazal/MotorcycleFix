@@ -4,8 +4,6 @@ package com.fyp.motorcyclefix.RiderFragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -112,15 +110,19 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         GeoPoint geoPoint = snapshot.getGeoPoint("location");
                         LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
 
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_motorcycle_sexy_round);
+//                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_motorcycle_sexy_round);
 
                         MarkerOptions markerOptions = new MarkerOptions()
                                 .title(workshop.getWorkshopName())
                                 .snippet(workshop.getOpeningHours())
-                                .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_motorcycle_sexy_round))
                                 .position(latLng);
 
-                        marker = mMap.addMarker(markerOptions);
+                       try {
+                           marker = mMap.addMarker(markerOptions);
+                       } catch (Exception e){
+                           Log.d(TAG, e.toString());
+                       }
 
                         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                             @Override

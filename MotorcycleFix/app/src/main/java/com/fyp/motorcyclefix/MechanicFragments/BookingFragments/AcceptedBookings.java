@@ -35,7 +35,7 @@ public class AcceptedBookings extends Fragment {
         sendNote = view.findViewById(R.id.btnLeaveNote);
         sendNoteEditText = view.findViewById(R.id.bookingLeaveNote);
         String note = sendNoteEditText.getText().toString();
-        startService = view.findViewById(R.id.bookingStartService);
+        startService = view.findViewById(R.id.bookingDeclineBooking);
         completeService = view.findViewById(R.id.bookingCompleteService);
 
         startService.setOnClickListener(new View.OnClickListener() {
