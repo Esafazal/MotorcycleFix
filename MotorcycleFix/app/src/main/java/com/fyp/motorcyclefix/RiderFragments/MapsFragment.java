@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
@@ -139,35 +140,84 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                        } catch (Exception e){
                            Log.d(TAG, "Marker: "+e.toString());
                        }
+                       getStarRating(workshop.getWorkshopId());
 
-                        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                            @Override
-                            public View getInfoWindow(Marker marker) {
-                                return null;
-                            }
-
-                            @Override
-                            public View getInfoContents(Marker marker) {
-                                View view = getLayoutInflater().inflate(R.layout.rider_maps_custom_info_window, null);
-
-                                ImageView windowImage = view.findViewById(R.id.mapsInfoboxIcon);
-                                TextView title = view.findViewById(R.id.mapsInfoboxtitle);
-                                TextView openHours = view.findViewById(R.id.mapsOpenHours);
-                                RatingBar workshopRating = view.findViewById(R.id.mapsRatingbar);
-
-                                title.setText(marker.getTitle());
-                                openHours.setText("Open hours: " + marker.getSnippet());
-
-                                return view;
-                            }
-                        });
                     }
-
-
                 }
             });
         }
 
+    }
+
+    private void getStarRating(final String workshopId){
+
+        db.collection("bookings")
+                .whereEqualTo("workshopId", workshopId)
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot snap) {
+                float rating = 0;
+                int count = 0;
+                float average = 0;
+
+                for(QueryDocumentSnapshot snapshot : snap){
+                    Booking booking = snapshot.toObject(Booking.class);
+                    String status = booking.getStatus().trim();
+
+                    try {
+                        if(status.equals("completed")){
+                            count++;
+                            rating += booking.getStarRating();
+                        }
+                    } catch (Exception e){
+                        Log.d(TAG, e.toString());
+                    }
+
+                }
+                average = rating / count;
+//                workshopRating.setRating(average);
+
+                final float finalAverage = average;
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        View view = getLayoutInflater().inflate(R.layout.rider_maps_custom_info_window, null);
+
+                        ImageView windowImage = view.findViewById(R.id.mapsInfoboxIcon);
+                        TextView title = view.findViewById(R.id.mapsInfoboxtitle);
+                        TextView openHours = view.findViewById(R.id.mapsOpenHours);
+                        RatingBar workshopRating = view.findViewById(R.id.mapsRatingbar);
+                        TextView suggestion = view.findViewById(R.id.mapsSuggestion);
+
+                        title.setText(marker.getTitle());
+                        openHours.setText("Open hours: " + marker.getSnippet());
+                        workshopRating.setRating(finalAverage);
+                        if(finalAverage <= 1.4){
+                            suggestion.setText("(Poor)");
+                        }
+                        else if(finalAverage <= 2){
+                            suggestion.setText("(Average)");
+                        }
+                        else if(finalAverage <= 3.4){
+                            suggestion.setText("(Good)");
+                        }
+                        else if(finalAverage <= 4.4){
+                            suggestion.setText("(Very Good)");
+                        }
+                        else {
+                            suggestion.setText("(Ecellent)");
+                        }
+
+                        return view;
+                    }
+                });
+            }
+        });
     }
 
     private void getCurrentUserPosition() {

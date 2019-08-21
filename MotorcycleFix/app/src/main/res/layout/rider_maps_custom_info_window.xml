@@ -44,14 +44,22 @@
 
             <RatingBar
                 android:id="@+id/mapsRatingbar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:rating="3"
+                android:layout_height="13dp"
+                android:isIndicator="true"
                 android:layout_marginStart="5sp"
                 android:layout_marginTop="3sp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/mapsOpenHours" />
+
+            <TextView
+                android:id="@+id/mapsSuggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/mapsOpenHours"
-                style="@style/Widget.AppCompat.RatingBar.Small"/>
+                app:layout_constraintStart_toEndOf="@+id/mapsRatingbar"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

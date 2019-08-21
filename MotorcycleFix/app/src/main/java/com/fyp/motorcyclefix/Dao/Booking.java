@@ -20,6 +20,8 @@ public class Booking {
     private String model;
     private Date serviceStartTime;
     private Date serviceEndTime;
+    private float starRating;
+    private String ratingStatus;
 
     public Booking() {
 
@@ -140,5 +142,21 @@ public class Booking {
 
     public void setServiceEndTime(Date serviceEndTime) {
         this.serviceEndTime = serviceEndTime;
+    }
+
+    public float getStarRating() {
+        return starRating;
+    }
+
+    public void setStarRating(float starRating) {
+        this.starRating = starRating;
+    }
+
+    public String getRatingStatus() {
+        return ratingStatus;
+    }
+
+    public void setRatingStatus(String ratingStatus) {
+        this.ratingStatus = ratingStatus;
     }
 }

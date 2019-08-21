@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Listeners.CalculateDistance;
@@ -20,6 +21,7 @@ import com.fyp.motorcyclefix.RiderFragments.EmergencyFragment;
 import com.fyp.motorcyclefix.RiderFragments.MapsFragment;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragment;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragment;
+import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.GetServiceRating;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -99,14 +101,41 @@ public class RiderPortal extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setTitle("Nearby Workshops");
 
-        getAnyEmergenciesSOS();
+        FirebaseUser user = mAuth.getCurrentUser();
+        String userId = user.getUid();
+
+        leaveFeedback(userId);
+        getAnyEmergenciesSOS(userId);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
 
-    private void getAnyEmergenciesSOS() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        final String userId = user.getUid();
+    private void leaveFeedback(String userId){
+
+        db.collection("bookings")
+                .whereEqualTo("status", "completed")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("ratingStatus", "unrated")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+
+                for(QueryDocumentSnapshot snap : snapshot){
+                    Booking booking = snap.toObject(Booking.class);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putString("bookId", snap.getId());
+                    bundle.putString("workId", booking.getWorkshopId());
+
+                    GetServiceRating getServiceRating = new GetServiceRating();
+                    getServiceRating.setArguments(bundle);
+                    getServiceRating.show(getSupportFragmentManager(), TAG);
+                }
+            }
+        });
+    }
+
+    private void getAnyEmergenciesSOS(final String userId) {
         db.collection("SOS").whereEqualTo("status", "pending")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class DashboardFragment extends Fragment {
     private TextView workshopName, location, onGoing, upComing, completed, cancelled, mVisitors, mUsers;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private RatingBar ratingBar;
 
 
     public DashboardFragment() {
@@ -65,6 +67,7 @@ public class DashboardFragment extends Fragment {
                 int came = 0;
                 int nope = 0;
                 int happening = 0;
+                float additonOfRating = 0;
                 int allUsers = queryDocumentSnapshots.getDocuments().size();
 
                 for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
@@ -73,11 +76,13 @@ public class DashboardFragment extends Fragment {
                        Booking booking = snapshot.toObject(Booking.class);
                        String status = booking.getStatus().trim();
 
+
                        if(status.equals("accepted")){
                            coming++;
                        }
                        else if(status.equals("completed")){
                            came++;
+                           additonOfRating += booking.getStarRating();
                        }
                        else if(status.equals("declined")){
                            nope++;
@@ -92,12 +97,16 @@ public class DashboardFragment extends Fragment {
 
                 }
                 try {
+
+                    float average = additonOfRating/came;
+
                     getWorkshopClicks();
                     onGoing.setText(String.valueOf(happening));
                     upComing.setText(String.valueOf(coming));
                     completed.setText(String.valueOf(came));
                     cancelled.setText(String.valueOf(nope));
                     mUsers.setText(String.valueOf(allUsers));
+                    ratingBar.setRating(average);
 
 
                 } catch (Exception e){
@@ -111,7 +120,6 @@ public class DashboardFragment extends Fragment {
     private void getWorkshopClicks(){
         FirebaseUser user = mAuth.getCurrentUser();
         String workshopId = user.getUid();
-
 
            db.collection("my_workshop").document(workshopId)
                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -141,6 +149,7 @@ public class DashboardFragment extends Fragment {
         cancelled = view.findViewById(R.id.cancelled);
         mVisitors = view.findViewById(R.id.mVisitors);
         mUsers = view.findViewById(R.id.mUsers);
+        ratingBar = view.findViewById(R.id.dashboardRatingBar);
     }
 
 }

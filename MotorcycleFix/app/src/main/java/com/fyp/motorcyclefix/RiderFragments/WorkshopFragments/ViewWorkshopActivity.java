@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import androidx.cardview.widget.CardView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
+import com.fyp.motorcyclefix.Listeners.CalculateDistance;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
 import com.fyp.motorcyclefix.RiderPortal;
@@ -49,7 +51,8 @@ public class ViewWorkshopActivity extends AppCompatActivity {
 
     private static final String TAG = "viewWorkshopActivity";
 
-    private TextView workshopName, specialized, chosenRepair;
+    private TextView workshopName, specialized, chosenRepair, suggestion;
+    private RatingBar ratingBar;
     private EditText repairDescription;
     private CardView repairCategory;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -78,6 +81,8 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         repairCategory = findViewById(R.id.repairTypeCard);
         repairDescription = findViewById(R.id.repairDescription);
         datePicker = findViewById(R.id.datePicker);
+        ratingBar = findViewById(R.id.ratingBar);
+        suggestion = findViewById(R.id.reviewsCount);
 
         Date date = new Date();
         long minDate = date.getTime();
@@ -111,7 +116,7 @@ public class ViewWorkshopActivity extends AppCompatActivity {
             }
         });
 
-        getWorkshopDetials();
+        getWorkshopDetails();
     }
 
     @Override
@@ -145,7 +150,7 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         });
     }
 
-    private void getWorkshopDetials() {
+    private void getWorkshopDetails() {
 
         workshopName = findViewById(R.id.viewWorkshopName);
         specialized = findViewById(R.id.specializedIN);
@@ -156,6 +161,7 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         workshopImg.setImageResource(R.drawable.reliability);
 
         workshopId = getIntent().getStringExtra("workshopId");
+        CalculateDistance.getStarRating(workshopId, ratingBar, suggestion);
 
         workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @SuppressLint("SetTextI18n")
@@ -236,6 +242,8 @@ public class ViewWorkshopActivity extends AppCompatActivity {
                             booking.setBookingID(count);
                             booking.setRepairCategory(chosenRepair.getText().toString());
                             booking.setRepairDescription(repairDescription.getText().toString());
+                            booking.setStarRating(0);
+                            booking.setRatingStatus("unrated");
 
 
                             String bookCount = String.valueOf(count);
