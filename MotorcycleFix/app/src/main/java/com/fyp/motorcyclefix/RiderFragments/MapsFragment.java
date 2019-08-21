@@ -4,6 +4,9 @@ package com.fyp.motorcyclefix.RiderFragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,9 +19,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -32,6 +39,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -49,15 +57,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import static androidx.constraintlayout.widget.Constraints.TAG;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
-    private ProgressBar progressBar;
+    public static final String TAG = "mapsFragment";
 
+    private ProgressBar progressBar;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -94,6 +101,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
+        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        DrawableCompat.setTint(vectorDrawable, color);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+
     private void getWorkshopLocations() {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -108,20 +127,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         workshopList.add(workshop);
 
                         GeoPoint geoPoint = snapshot.getGeoPoint("location");
-                        LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-
-//                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_motorcycle_sexy_round);
-
-                        MarkerOptions markerOptions = new MarkerOptions()
-                                .title(workshop.getWorkshopName())
-                                .snippet(workshop.getOpeningHours())
-                                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_motorcycle_sexy_round))
-                                .position(latLng);
-
                        try {
+                           LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+                           MarkerOptions markerOptions = new MarkerOptions()
+                                   .title(workshop.getWorkshopName())
+                                   .snippet(workshop.getOpeningHours())
+                                   .icon(vectorToBitmap(R.drawable.ic_actual_bike, getResources().getColor(R.color.colorblack)))
+                                   .position(latLng);
+
                            marker = mMap.addMarker(markerOptions);
                        } catch (Exception e){
-                           Log.d(TAG, e.toString());
+                           Log.d(TAG, "Marker: "+e.toString());
                        }
 
                         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -141,7 +157,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
                                 title.setText(marker.getTitle());
                                 openHours.setText("Open hours: " + marker.getSnippet());
-
 
                                 return view;
                             }
@@ -180,8 +195,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -254,39 +267,4 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mapFragment.onResume();
-//    }
-//
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mapFragment.onStart();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        mapFragment.onStop();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        mapFragment.onPause();
-//    }
-//
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        mapFragment.onDestroy();
-//    }
-//
-//    @Override
-//    public void onLowMemory() {
-//        super.onLowMemory();
-//        mapFragment.onLowMemory();
-//    }
 }

@@ -47,6 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
     private CollectionReference userRef = db.collection("users");
     private FusedLocationProviderClient mfusedLocationProviderClient;
     private User user;
+    private String docId;
     private ProgressBar progressBar;
 
 
@@ -76,17 +77,18 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (currentUser != null) {
             String userId = currentUser.getUid();
+            docId = userId;
 
             userRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    String name = documentSnapshot.getString("name");
-                    String email = documentSnapshot.getString("email");
-                    String gender = documentSnapshot.getString("gender");
+                    User user = documentSnapshot.toObject(User.class);
 
-                    Name.setText(name);
-                    Email.setText(email);
-                    if (gender.contentEquals("male")) {
+                    Name.setText(user.getName());
+                    Email.setText(user.getEmail());
+                    PhoneNo.setText(String.valueOf(user.getPhoneNumber()));
+
+                    if (user.getGender().contentEquals("male")) {
                         sexGroup.check(R.id.MradioMaleProfile);
                     } else {
                         sexGroup.check(R.id.MradioFemaleProfile);
@@ -108,16 +110,14 @@ public class ProfileActivity extends AppCompatActivity {
             intent.putExtra("type", "1");
             startActivity(intent);
             finish();
-
         }
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        return false;
+        onBackPressed();
+        return true;
     }
 
     public void profileUpdateClickHandler(View view) {
@@ -151,8 +151,9 @@ public class ProfileActivity extends AppCompatActivity {
                         String email = Email.getText().toString();
                         String type = "rider";
                         GeoPoint point = user.getGeoPoint();
+                        long phone = Long.valueOf(PhoneNo.getText().toString());
 
-                        user = new User(type, name, email, gender, point);
+                        user = new User(type, name, email, gender, point, phone, docId);
 
                         saveUserDetails();
                     }
@@ -178,6 +179,5 @@ public class ProfileActivity extends AppCompatActivity {
                         Toast.makeText(ProfileActivity.this, "Couldn't update details!", Toast.LENGTH_SHORT).show();
                     }
                 });
-
     }
 }

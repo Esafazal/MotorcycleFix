@@ -52,9 +52,8 @@ public class ChooseModel extends AppCompatActivity {
                for(QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
 
                    User user = documentSnapshot.toObject(User.class);
-                   user.setDocumentId(documentSnapshot.getId());
 
-                   String documentId = user.getDocumentId();
+                   String documentId = documentSnapshot.getId();
 
                    if(documentId.equals(selectedMake)){
 

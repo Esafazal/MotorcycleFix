@@ -68,9 +68,10 @@ public class DashboardFragment extends Fragment {
                 int allUsers = queryDocumentSnapshots.getDocuments().size();
 
                 for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-                    Booking booking = snapshot.toObject(Booking.class);
 
-                    String status = booking.getStatus().trim();
+                   try {
+                       Booking booking = snapshot.toObject(Booking.class);
+                       String status = booking.getStatus().trim();
 
                        if(status.equals("accepted")){
                            coming++;
@@ -84,6 +85,11 @@ public class DashboardFragment extends Fragment {
                        else if(status.equals("progress")){
                            happening++;
                        }
+                   }
+                   catch (Exception e){
+                       Log.d(TAG, "Get Dashboard updates: "+e.toString());
+                   }
+
                 }
                 try {
                     getWorkshopClicks();

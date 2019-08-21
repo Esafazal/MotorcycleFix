@@ -10,11 +10,11 @@
     <color name="anotherAsh">#C4C0C0</color>
     <color name="red">#F02727</color>
     <color name="dimRed">#CA7D7D</color>
-    <color name="green">#71D51C</color>
+    <color name="green">#4EA808</color>
     <color name="blue">#0288D1</color>
     <color name="kindaRed">#FF1744</color>
     <color name="purple">#D500F9</color>
-    <color name="lightAsh">#F8F7F7</color>
+    <color name="lightAsh">#FCFCFC</color>
     <color name="royalBlue">#0A0AF5</color>
     <color name="brightGreen">#76FF03</color>
     <color name="yellow">#FFC400</color>
@@ -22,7 +22,8 @@
     <color name="lightblue">#6890DF</color>
     <color name="orange">#DB7400</color>
     <color name="yelloOrange">#FFAC22</color>
-    <color name="dimGreem">#7FA352</color>
+    <color name="dimGreem">#9FB497</color>
+    <color name="maroon">#661518</color>
 
 
 </resources>

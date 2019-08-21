@@ -26,7 +26,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".RiderFragments.WorkshopFragments.SelectRepairCategory"></activity>
+        <activity android:name=".Listeners.ShowEmergencyAlert"></activity>
+        <activity android:name=".RiderFragments.WorkshopFragments.SelectRepairCategory" />
 
         <service android:name=".Services.RecieveFirebaseNotificationService">
             <intent-filter>

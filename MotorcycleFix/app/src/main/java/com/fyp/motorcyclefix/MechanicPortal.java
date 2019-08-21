@@ -19,7 +19,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
 import com.fyp.motorcyclefix.Dao.Booking;
+import com.fyp.motorcyclefix.Dao.SOS;
+import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Workshop;
+import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.Listeners.ShowEmergencyAlert;
 import com.fyp.motorcyclefix.MechanicFragments.BookingRequestFragment;
 import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
 import com.fyp.motorcyclefix.MechanicFragments.DashboardFragment;
@@ -30,9 +34,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -134,8 +140,61 @@ public class MechanicPortal extends AppCompatActivity {
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
 
+        getAnyEmergenciesSOS();
+
         navigationView.setCheckedItem(R.id.nav_dashboard);
         checkWorkshopExistence("dash");
+    }
+
+    private void getAnyEmergenciesSOS() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        final String userId = user.getUid();
+        db.collection("SOS").whereEqualTo("status", "pending")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
+
+                        for(QueryDocumentSnapshot snap : snapshot){
+                            SOS sos = snap.toObject(SOS.class);
+
+                            String docId = snap.getId();
+
+                            if(docId.equals(userId)){
+                                return;
+                            }
+                            GeoPoint sosGeopoint = sos.getGeoPoint();
+                            getCurrentUserGeoPoint(sosGeopoint, sos, userId);
+                        }
+                    }
+                });
+    }
+
+    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
+        db.collection("users").document(id)
+                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User me = documentSnapshot.toObject(User.class);
+                GeoPoint currentUserGeo = me.getGeoPoint();
+
+                try {
+                    double distance = CalculateDistance.calculateDistanceFormulae(sosGeoPoint, currentUserGeo);
+
+                    if (distance <= 1.2) {
+                        Intent intent = new Intent(MechanicPortal.this, ShowEmergencyAlert.class);
+                        intent.putExtra("userId", sos.getUserId());
+                        intent.putExtra("issue", sos.getIssue());
+                        intent.putExtra("mark", sos.getLandmark());
+                        intent.putExtra("lat", sos.getGeoPoint().getLatitude());
+                        intent.putExtra("lng", sos.getGeoPoint().getLongitude());
+                        startActivity(intent);
+                    }
+                } catch (Exception e){
+                    Log.i(TAG, e.toString());
+                }
+            }
+        });
+
     }
 
 

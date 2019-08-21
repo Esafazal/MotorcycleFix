@@ -38,7 +38,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private static final String TAG = "Signup Activity";
 
-    private EditText Email, Password, Name;
+    private EditText Email, Password, Name, phoneNumber;
     private RadioGroup sexGroup;
     private RadioButton radioSelected;
     private FirebaseAuth mAuth;
@@ -57,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         Email = findViewById(R.id.emailEditText);
         Password = findViewById(R.id.passwordEditText);
         Name = findViewById(R.id.nameEditText);
+        phoneNumber = findViewById(R.id.phoneNumber);
         sexGroup = findViewById(R.id.radioSex);
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -79,14 +80,16 @@ public class SignUpActivity extends AppCompatActivity {
 
         String email = Email.getText().toString().trim();
         String password = Password.getText().toString().trim();
-
-        createUser(email, password);
+        final String name = Name.getText().toString();
+        final String phone = phoneNumber.getText().toString();
+        progressBar.setVisibility(View.VISIBLE);
+        createUser(email, password, name, phone);
     }
 
 
-    private void createUser(final String email, final String password){
+    private void createUser(final String email, final String password, final String name, final String phone){
 
-        if(!validateForm(email, password)){
+        if(!validateForm(email, password, name, phone)){
             return;
         }
 
@@ -94,9 +97,8 @@ public class SignUpActivity extends AppCompatActivity {
         int selectedId = sexGroup.getCheckedRadioButtonId();
         radioSelected = findViewById(selectedId);
         final String gender = radioSelected.getText().toString();
-        final String name = Name.getText().toString();
 
-        progressBar.setVisibility(View.VISIBLE);
+
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -106,11 +108,11 @@ public class SignUpActivity extends AppCompatActivity {
 
                             //if user type is rider, execute the follwoing
                             if (bundle.getString("type").equals("1")) {
-                               saveUserRider(name, email, gender);
+                               saveUserRider(name, email, gender, Long.valueOf(phone));
 
                                 //if the user type is mechanic, execute the following
                             } else if (bundle.getString("type").equals("2")) {
-                               getLastKnownLocation(name, email, gender);
+                               getLastKnownLocation(name, email, gender, Long.valueOf(phone));
 
                             }
                         }
@@ -123,7 +125,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     }
 
-    private void getLastKnownLocation(final String name, final String email, final String gender) {
+    private void getLastKnownLocation(final String name, final String email, final String gender, final long phone) {
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -140,19 +142,20 @@ public class SignUpActivity extends AppCompatActivity {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-                    saveUserMechanic(name, email, gender, geoPoint);
+                    saveUserMechanic(name, email, gender, geoPoint, phone);
 
                 }
             }
         });
     }
 
-    private void saveUserMechanic(String name, String email, String gender, GeoPoint geoPoint){
+    private void saveUserMechanic(String name, String email, String gender, GeoPoint geoPoint, long phone){
 
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid().trim();
         String type ="mechanic";
-        userModel = new User(type, name, email, gender, geoPoint);
+
+        userModel = new User(type, name, email, gender, geoPoint, phone, userId);
 
         progressBar.setVisibility(View.GONE);
         db.collection("users").document(userId).set(userModel)
@@ -178,11 +181,11 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private void saveUserRider(String name, String email, String gender){
+    private void saveUserRider(String name, String email, String gender, long phone){
         FirebaseUser user = mAuth.getCurrentUser();
         String userId = user.getUid();
         String type ="rider";
-        userModel = new User(type, name, email, gender);
+        userModel = new User(type, name, email, gender, phone, userId);
 
         progressBar.setVisibility(View.GONE);
         db.collection("users").document(userId).set(userModel)
@@ -222,34 +225,43 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private boolean validateForm(String email, String password){
+    private boolean validateForm(String email, String password, String name, String phoneN) {
 
         boolean valid = true;
 
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             Email.setError("Please Enter an Email Address!");
             Email.requestFocus();
             valid = false;
-        }
-
-        else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Email.setError("Please Enter an Valid Email Address!");
             Email.requestFocus();
             valid = false;
-        }
-
-        else if(password.isEmpty()){
+        } else if (password.isEmpty()) {
             Password.setError("Please Enter a Password!");
             Password.requestFocus();
             valid = false;
-        }
-
-        else if(password.length() < 6){
+        } else if (password.length() < 6) {
             Password.setError("Password Too Short!");
             Password.requestFocus();
             valid = false;
+
+        } else if (name.isEmpty()) {
+            Name.setError("Please enter name");
+            Name.requestFocus();
+            valid = false;
+
+        } else if (phoneN.length() < 10) {
+            phoneNumber.setError("Contains less than 10 digits");
+            phoneNumber.requestFocus();
+            valid = false;
+
+        } else if (phoneN.length() > 10) {
+            phoneNumber.setError("Contains more than 10 digits");
+            phoneNumber.requestFocus();
+            valid = false;
         }
 
-        return valid;
-    }
+            return valid;
+        }
 }

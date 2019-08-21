@@ -104,6 +104,10 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 String type = documentSnapshot.getString("type");
+                                if(type == null){
+                                    Toast.makeText(LoginActivity.this, "No Users Available!", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
                                 progressBar.setVisibility(View.GONE);
                                 bundle = getIntent().getExtras();
                                 if (bundle.getString("type").equals("1") && type.contentEquals("rider")) {

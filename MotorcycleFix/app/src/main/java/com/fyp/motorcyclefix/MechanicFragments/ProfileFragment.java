@@ -54,6 +54,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private CollectionReference userRef = db.collection("users");
     private FusedLocationProviderClient mfusedLocationProviderClient;
     private User user;
+    private String docId;
     private ProgressBar progressBar;
 
 
@@ -91,17 +92,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         if (currentUser != null) {
             String userId = currentUser.getUid();
+            docId = userId;
 
             userRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                    String name = documentSnapshot.getString("name");
-                    String email = documentSnapshot.getString("email");
-                    String gender = documentSnapshot.getString("gender");
+                    User user1 = documentSnapshot.toObject(User.class);
 
-                    Name.setText(name);
-                    Email.setText(email);
-                    if (gender.contentEquals("male")) {
+                    Name.setText(user1.getName());
+                    Email.setText(user1.getEmail());
+                    PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
+
+                    if (user1.getGender().contentEquals("male")) {
                         sexGroup.check(R.id.MecradioMaleProfile);
                     } else {
                         sexGroup.check(R.id.MecradioFemaleProfile);
@@ -161,8 +163,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     String email = Email.getText().toString();
                     String type = "mechanic";
                     GeoPoint point = user.getGeoPoint();
+                    long phone = Long.valueOf(PhoneNo.getText().toString());
 
-                    user = new User(type, name, email, gender, point);
+                    user = new User(type, name, email, gender, point, phone, docId);
 
                     saveUserDetails();
                 }

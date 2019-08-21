@@ -13,18 +13,21 @@ public class Booking {
     private String repairDescription;
     private String userId;
     private String workshopId;
-    private @ServerTimestamp java.util.Date dateOfBooking;
+    private @ServerTimestamp
+    java.util.Date dateOfBooking;
     private String vehicleId;
     private String status;
     private String model;
+    private Date serviceStartTime;
+    private Date serviceEndTime;
 
-
-    public Booking(){
+    public Booking() {
 
     }
 
     public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription
-            , String userId, String vehicleId, String model) {
+            , String userId, String vehicleId, String model, String status) {
+
         this.bookingID = bookingID;
         this.serviceType = serviceType;
         this.dateOfService = dateOfService;
@@ -32,6 +35,7 @@ public class Booking {
         this.userId = userId;
         this.vehicleId = vehicleId;
         this.model = model;
+        this.status = status;
     }
 
     public long getBookingID() {
@@ -120,5 +124,21 @@ public class Booking {
 
     public void setRepairCategory(String repairCategory) {
         this.repairCategory = repairCategory;
+    }
+
+    public Date getServiceStartTime() {
+        return serviceStartTime;
+    }
+
+    public void setServiceStartTime(Date serviceStartTime) {
+        this.serviceStartTime = serviceStartTime;
+    }
+
+    public Date getServiceEndTime() {
+        return serviceEndTime;
+    }
+
+    public void setServiceEndTime(Date serviceEndTime) {
+        this.serviceEndTime = serviceEndTime;
     }
 }

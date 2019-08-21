@@ -9,7 +9,8 @@
         android:id="@+id/mapsInfoboxIcon"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@mipmap/ic_motorcycle_sexy"
+        android:src="@drawable/ic_actual_bike"
+        android:background="@color/colorPrimary"
         android:contentDescription="infowindow" />
 
     <LinearLayout

@@ -10,9 +10,11 @@
         android:id="@+id/logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:src="@drawable/logo"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:foregroundGravity="center" />
 
     <Button
@@ -28,7 +30,8 @@
         android:textColor="@color/white"
         android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@+id/logo"
-        tools:layout_editor_absoluteX="25dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/btn2"
@@ -42,7 +45,9 @@
         android:layout_marginEnd="25sp"
         android:background="@drawable/rounded_button"
         android:textColor="@color/white"
-        android:textSize="15sp"/>
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <ProgressBar
         android:id="@+id/mainActivityProgressBar"

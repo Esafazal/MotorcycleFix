@@ -149,6 +149,13 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
 //            Log.d("acceptedBookings", "Booking: "+e.toString());
 //        }
 
+//        if(booking.getStatus().equals("progress")){
+////            holder.completeService.setBackgroundColor(getResources().getColor(R.color.red));
+//            holder.completeService.setClickable(true);
+////            holder.startService.setBackgroundColor(getResources().getColor(R.color.dimGreem));
+//            holder.startService.setClickable(false);
+//        }
+
         holder.bikeMakeNModel.setText(booking.getVehicleId());
         holder.riderName.setText(booking.getUserId());
         holder.sType.setText(booking.getServiceType());

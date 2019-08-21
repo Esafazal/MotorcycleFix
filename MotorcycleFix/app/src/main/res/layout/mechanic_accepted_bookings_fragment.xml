@@ -161,7 +161,7 @@
                 android:layout_width="0sp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Bike break pads change ajks a jajf jafj ajhj fhjh jhfjhj hjhih ihiu shuifhuh  hui shfiuhiusf huh iuhfsui hsuid h"
+                android:text="Bike break pads change"
                 android:textColor="@color/colorblack"
                 android:textSize="15sp"
                 android:textStyle="italic"
