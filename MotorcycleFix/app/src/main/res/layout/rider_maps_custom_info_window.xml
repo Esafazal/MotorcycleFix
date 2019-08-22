@@ -10,7 +10,7 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:src="@drawable/ic_actual_bike"
-        android:background="@color/colorPrimary"
+        android:background="@color/yelloOrange"
         android:contentDescription="infowindow" />
 
     <LinearLayout

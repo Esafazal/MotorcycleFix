@@ -1,8 +1,10 @@
 package com.fyp.motorcyclefix.Adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,6 +33,8 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
         public TextView bookingID;
         public TextView serviceType;
         public TextView bikeModel;
+        public TextView viewDetails;
+        public ImageView notify;
 
 
         public CardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
@@ -38,6 +42,8 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
             bookingID = itemView.findViewById(R.id.bookingID);
             serviceType = itemView.findViewById(R.id.serviceType);
             bikeModel = itemView.findViewById(R.id.bikeModel);
+            viewDetails = itemView.findViewById(R.id.viewDetails);
+            notify = itemView.findViewById(R.id.notify);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,9 +80,18 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Booking booking = bookings.get(position);
 
-        holder.bookingID.setText("BOOKING #"+booking.getBookingID());
-        holder.serviceType.setText(booking.getServiceType());
-        holder.bikeModel.setText(booking.getModel());
+       try {
+           if(booking.getMessage() != null && booking.getMessageSeen() == null){
+               holder.notify.setVisibility(View.VISIBLE);
+           }
+           holder.viewDetails.setTextColor(Integer.valueOf(booking.getRatingStatus()));
+           holder.bookingID.setText("BOOKING #"+booking.getBookingID());
+           holder.serviceType.setText(booking.getServiceType());
+           holder.bikeModel.setText(booking.getModel());
+
+       } catch (Exception e){
+           Log.d("trackingAdapter", e.toString());
+       }
     }
 
     @Override

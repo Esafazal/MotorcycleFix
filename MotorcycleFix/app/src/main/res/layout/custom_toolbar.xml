@@ -10,15 +10,34 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:id="@+id/toolbarTextview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT BIKE >"
-            android:textColor="@color/yelloOrange"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/toolbarTextview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SELECT BIKE"
+                android:textColor="@color/colorblack"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_right_black_24dp"
+                app:layout_constraintStart_toEndOf="@+id/toolbarTextview"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </RelativeLayout>
 

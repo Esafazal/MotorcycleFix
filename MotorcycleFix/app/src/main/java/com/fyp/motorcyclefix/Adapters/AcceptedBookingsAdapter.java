@@ -1,5 +1,6 @@
 package com.fyp.motorcyclefix.Adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +55,9 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
             completeService = itemView.findViewById(R.id.bookingCompleteService);
             bookingId = itemView.findViewById(R.id.bookingIdDynamic);
             riderNo = itemView.findViewById(R.id.riderNumberD);
-//            sDescriptionS = itemView.findViewById(R.id.repairDetailStatic);
-//            rRepairS = itemView.findViewById(R.id.acceptedRepairCatStat);
-//            rRepairD = itemView.findViewById(R.id.acceptedRepairCatDynamic);
+            sDescriptionS = itemView.findViewById(R.id.repairDetailStatic);
+            rRepairS = itemView.findViewById(R.id.acceptedRepairCatStat);
+            rRepairD = itemView.findViewById(R.id.acceptedRepairCatDynamic);
 
             startService.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -106,8 +107,6 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
                     }
                 }
             });
-
-
         }
     }
 
@@ -132,24 +131,30 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
 
         Booking booking = mBookings.get(position);
 
-//        String category = "";
-//        String description = "";
-//        category = booking.getRepairCategory();
-//        description = booking.getRepairDescription();
-//
-//        try {
-//            if (!category.equals("")){
-//                holder.rRepairS.setVisibility(View.VISIBLE);
-//                holder.rRepairD.setVisibility(View.VISIBLE);
-//            }
-//            if (!description.equals("")) {
-//                holder.sDescriptionS.setVisibility(View.VISIBLE);
-//                holder.sDescriptionD.setVisibility(View.VISIBLE);
-//            }
-//        }
-//        catch (Exception e){
-//            Log.d("acceptedBookings", "Booking: "+e.toString());
-//        }
+       String category = booking.getRepairCategory();
+       String description = booking.getRepairDescription();
+       String status = booking.getStatus();
+
+        try {
+            if (category != null){
+                holder.rRepairS.setVisibility(View.VISIBLE);
+                holder.rRepairD.setVisibility(View.VISIBLE);
+            }
+            if (description != null) {
+                holder.sDescriptionS.setVisibility(View.VISIBLE);
+                holder.sDescriptionD.setVisibility(View.VISIBLE);
+            }
+
+            if(status.equals("progress")){
+                holder.startService.setClickable(false);
+                holder.startService.setBackgroundColor(Integer.valueOf(booking.getRatingStatus()));
+                holder.completeService.setBackgroundColor(Integer.valueOf(booking.getWorkshopId()));
+                holder.completeService.setClickable(true);
+            }
+        }
+        catch (Exception e){
+            Log.d("acceptedBookings", "Booking: "+e.toString());
+        }
 
 //        if(booking.getStatus().equals("progress")){
 ////            holder.completeService.setBackgroundColor(getResources().getColor(R.color.red));
@@ -164,7 +169,7 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
         holder.sDate.setText(booking.getDateOfService());
         holder.sDescriptionD.setText(booking.getRepairDescription());
         holder.bookingId.setText(String.valueOf(booking.getBookingID()));
-        holder.riderNo.setText(booking.getMessage());
+        holder.riderNo.setText("+94"+booking.getMessage());
     }
 
     @Override

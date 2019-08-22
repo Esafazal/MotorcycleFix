@@ -14,7 +14,7 @@
             android:paddingStart="20sp"
             android:paddingEnd="20sp"
             android:layout_margin="7sp"
-            android:background="@color/colorblack"
+            android:background="@color/yelloOrange"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:layout_gravity="center"/>

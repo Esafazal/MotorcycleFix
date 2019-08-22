@@ -7,8 +7,11 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.fyp.motorcyclefix.Listeners.CalculateDistance;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,12 +25,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference userRef = db.collection("users");
     private ProgressBar progressBar;
+    private ConstraintLayout constraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         progressBar = findViewById(R.id.mainActivityProgressBar);
+        constraintLayout = findViewById(R.id.mainActivityConstraint);
 
     }
 
@@ -51,6 +56,13 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        boolean isConnected = CalculateDistance.isNetworkAvailable(this);
+        if(!isConnected){
+            Snackbar.make(constraintLayout, "NO CONNECTION!", Snackbar.LENGTH_INDEFINITE).show();
+            progressBar.setVisibility(View.GONE);
+            return;
+        }
 
         if (currentUser != null) {
             String uId = currentUser.getUid();

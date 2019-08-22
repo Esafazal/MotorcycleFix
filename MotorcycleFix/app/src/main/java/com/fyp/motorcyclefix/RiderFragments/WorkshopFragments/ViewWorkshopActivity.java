@@ -54,7 +54,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
     private TextView workshopName, specialized, chosenRepair, suggestion, ETA;
     private RatingBar ratingBar;
     private EditText repairDescription;
-    private CardView repairCategory;
+    private CardView repairCategory, estimateCard;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workshopRef = db.collection("my_workshop");
@@ -84,6 +84,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         ratingBar = findViewById(R.id.ratingBar);
         suggestion = findViewById(R.id.reviewsCount);
         ETA = findViewById(R.id.ETA);
+        estimateCard = findViewById(R.id.estimateCardNew);
 
         Date date = new Date();
         long minDate = date.getTime();
@@ -332,11 +333,11 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
                 return;
 
             case R.id.radioGeneral:
-//                CalculateDistance.getTimeEstimateForGeneralService(ETA);
+//                CalculateDistance.getTimeEstimateForGeneralService(ETA, estimateCard);
                 return;
 
             case R.id.radioPolish:
-//                CalculateDistance.getTimeEstimateForWashNWaxService(ETA);
+//                CalculateDistance.getTimeEstimateForWashNWaxService(ETA, estimateCard);
                 return;
         }
     }

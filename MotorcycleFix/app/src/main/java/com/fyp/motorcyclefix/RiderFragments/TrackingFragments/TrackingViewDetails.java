@@ -33,6 +33,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
             , sRepairS, sRepairD, sCategoryS, sCategoryD, messageS, mechanicNumber;
     private Button closeBtn;
     private EditText messageD;
+    private long bID;
 
     @NonNull
     @Override
@@ -59,7 +60,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         closeBtn.setOnClickListener(this);
 
         String bstat = getArguments().getString("bookingStatus").trim();
-        long bID = getArguments().getLong("bookingID");
+        bID = getArguments().getLong("bookingID");
         String type = getArguments().getString("serviceType");
         String date = getArguments().getString("serviceDate");
         String workID = getArguments().getString("workshopID");
@@ -129,7 +130,9 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         User user = documentSnapshot.toObject(User.class);
                         String no = String.valueOf(user.getPhoneNumber());
-                        mechanicNumber.setText(no);
+                        mechanicNumber.setText("+94"+no);
+
+                        updateMessageSeen();
                     }
                 });
 
@@ -139,6 +142,17 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
             public void onFailure(@NonNull Exception e) {
 
                 Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    private void updateMessageSeen(){
+
+        db.collection("bookings").document(String.valueOf(bID))
+                .update("messageSeen", "seen").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+
             }
         });
     }

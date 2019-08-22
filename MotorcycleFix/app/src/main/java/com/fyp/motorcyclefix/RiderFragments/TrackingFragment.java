@@ -118,7 +118,28 @@ public class TrackingFragment extends Fragment {
                                 booking.setModel(snap.getString("manufacturer")+" "+snap.getString("model"));
                             }
                         }
-                        trackingDaos.add(booking);
+
+                        long bookId = booking.getBookingID();
+                        String sType = booking.getServiceType();
+                        String makeNModel = booking.getModel();
+                        String status = booking.getStatus();
+                        String message = booking.getMessage();
+                        String dateOfService = booking.getDateOfService();
+                        String workshopId = booking.getWorkshopId();
+                        String category = booking.getRepairCategory();
+                        String description = booking.getRepairDescription();
+                        String messageSeen = booking.getMessageSeen();
+                        String viewColor = null;
+
+                        if(status.equals("accepted") || status.equals("progress")){
+                            viewColor = String.valueOf(getResources().getColor(R.color.green));
+                        }
+                        if(status.equals("completed")){
+                            viewColor = String.valueOf(getResources().getColor(R.color.red));
+                        }
+
+                        trackingDaos.add(new Booking(bookId, sType, viewColor, makeNModel, message
+                                        , status, messageSeen, category, description, workshopId, dateOfService, ""));
 
                         recyclerView = view.findViewById(R.id.tracking_recycler_view);
                         recyclerView.setHasFixedSize(true);

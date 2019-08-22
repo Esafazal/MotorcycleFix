@@ -123,10 +123,28 @@ public class BookingsFragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
 
-                bookings.add(new Booking(booking.getBookingID(), booking.getServiceType(), booking.getDateOfService()
-                        , booking.getRepairDescription(), user.getName()
-                        , vehicle.getManufacturer()+" "+vehicle.getModel(), booking.getUserId()
-                        , booking.getStatus(), String.valueOf(user.getPhoneNumber())));
+                long bID = booking.getBookingID();
+                String sType = booking.getServiceType();
+                String dateOfService = booking.getDateOfService();
+                String repairDesc = booking.getRepairDescription();
+                String userName = user.getName();
+                String makeNmodel = vehicle.getManufacturer()+" "+vehicle.getModel();
+                String uID = booking.getUserId();
+                String status = booking.getStatus();
+                String phoneNumber = String.valueOf(user.getPhoneNumber());
+                String startColor;
+                String endColor;
+                if(status.equals("accepted")){
+                  startColor =  String.valueOf(getResources().getColor(R.color.green));
+                  endColor =  String.valueOf(getResources().getColor(R.color.dimRed));
+                } else {
+                    startColor =  String.valueOf(getResources().getColor(R.color.dimGreem));
+                    endColor =  String.valueOf(getResources().getColor(R.color.red));
+                }
+
+
+                bookings.add(new Booking(bID, sType, dateOfService, repairDesc, userName
+                        , makeNmodel, uID, status, phoneNumber,startColor, endColor));
 
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());

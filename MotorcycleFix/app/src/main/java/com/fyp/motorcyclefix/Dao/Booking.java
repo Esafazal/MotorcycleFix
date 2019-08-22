@@ -23,13 +23,14 @@ public class Booking {
     private float starRating;
     private String ratingStatus;
     private String message;
+    private String messageSeen;
 
     public Booking() {
 
     }
 
-    public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription
-            , String userId, String vehicleId, String model, String status, String  message) {
+    public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription ,String userId
+            , String vehicleId, String model, String status, String  message, String startColor, String endColor) {
 
         this.bookingID = bookingID;
         this.serviceType = serviceType;
@@ -40,6 +41,25 @@ public class Booking {
         this.model = model;
         this.status = status;
         this.message = message;
+        this.ratingStatus = startColor;
+        this.workshopId = endColor;
+    }
+
+    public Booking(long bookingID, String serviceType, String color, String model, String message,String status, String messageSeen
+                        ,String repairCategory, String repairDescription, String workshopId, String dateOfService, String userId) {
+
+        this.bookingID = bookingID;
+        this.serviceType = serviceType;
+        this.ratingStatus = color;
+        this.model = model;
+        this.message = message;
+        this.status = status;
+        this.repairCategory = repairCategory;
+        this.repairDescription = repairDescription;
+        this.workshopId = workshopId;
+        this.dateOfService = dateOfService;
+        this.messageSeen = messageSeen;
+        this.userId = userId;
     }
 
     public long getBookingID() {
@@ -168,5 +188,13 @@ public class Booking {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getMessageSeen() {
+        return messageSeen;
+    }
+
+    public void setMessageSeen(String messageSeen) {
+        this.messageSeen = messageSeen;
     }
 }

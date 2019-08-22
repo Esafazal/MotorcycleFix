@@ -242,25 +242,41 @@
                 android:layout_marginTop="8sp"
                 android:layout_marginEnd="8dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5sp"
-                    android:text="Estimated time for Service completion:"
-                    android:textColor="@color/colorblack"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/ETA"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/estimateCardNew"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20sp"
-                    android:layout_marginTop="30sp"
-                    android:gravity="center"
-                    android:textStyle="italic|bold"
-                    android:text="2h 30m"
-                    android:textColor="@color/kindaRed"
-                    android:textSize="18sp" />
+                    android:visibility="gone"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/estimated"
+                        android:layout_width="0sp"
+                        android:layout_height="wrap_content"
+                        android:text="Estimated time for Service completion:"
+                        android:textColor="@color/colorblack"
+                        android:textSize="20sp"
+                        app:layout_constraintEnd_toStartOf="@id/ETA"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/ETA"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="dasdssd"
+                        android:textColor="@color/yelloOrange"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="20sp"
+                        android:textStyle="italic"
+                        app:layout_constraintStart_toEndOf="@+id/estimated"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
 

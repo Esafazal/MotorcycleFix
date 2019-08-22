@@ -88,6 +88,20 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <ImageView
+            android:id="@+id/notify"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:visibility="gone"
+            android:layout_marginEnd="10sp"
+            android:layout_marginTop="5sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_message_notify_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/viewDetails"/>
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
