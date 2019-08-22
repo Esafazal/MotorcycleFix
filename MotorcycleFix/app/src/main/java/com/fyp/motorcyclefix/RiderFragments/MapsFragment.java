@@ -137,10 +137,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                    .position(latLng);
 
                            marker = mMap.addMarker(markerOptions);
+
+                           getStarRating(workshop.getWorkshopId());
                        } catch (Exception e){
                            Log.d(TAG, "Marker: "+e.toString());
                        }
-                       getStarRating(workshop.getWorkshopId());
 
                     }
                 }

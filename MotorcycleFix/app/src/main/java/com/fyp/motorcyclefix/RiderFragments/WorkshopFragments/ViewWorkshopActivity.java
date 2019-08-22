@@ -84,7 +84,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         ratingBar = findViewById(R.id.ratingBar);
         suggestion = findViewById(R.id.reviewsCount);
         ETA = findViewById(R.id.ETA);
-        estimateCard = findViewById(R.id.estimateCardNew);
+//        estimateCard = findViewById(R.id.estimateCardNew);
 
         Date date = new Date();
         long minDate = date.getTime();

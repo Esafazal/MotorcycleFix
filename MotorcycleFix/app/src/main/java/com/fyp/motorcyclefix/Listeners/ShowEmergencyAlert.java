@@ -88,7 +88,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 User user1 = documentSnapshot.toObject(User.class);
                 phoneNo = user1.getPhoneNumber();
                 name.setText(user1.getName());
-                number.setText(String.valueOf(user1.getPhoneNumber()));
+                number.setText(String.valueOf("+94"+user1.getPhoneNumber()));
             }
         });
 
