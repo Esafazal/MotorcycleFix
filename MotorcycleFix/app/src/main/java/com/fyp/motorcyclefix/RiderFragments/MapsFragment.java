@@ -178,6 +178,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 //                workshopRating.setRating(average);
 
                 final float finalAverage = average;
+                final int finalCount = count;
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
                     @Override
                     public View getInfoWindow(Marker marker) {
@@ -197,20 +198,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         title.setText(marker.getTitle());
                         openHours.setText("Open hours: " + marker.getSnippet());
                         workshopRating.setRating(finalAverage);
-                        if(finalAverage <= 1.4){
-                            suggestion.setText("(Poor)");
-                        }
-                        else if(finalAverage <= 2){
-                            suggestion.setText("(Average)");
-                        }
-                        else if(finalAverage <= 3.4){
-                            suggestion.setText("(Good)");
-                        }
-                        else if(finalAverage <= 4.4){
-                            suggestion.setText("(Very Good)");
-                        }
-                        else {
-                            suggestion.setText("(Ecellent)");
+
+                        if(finalCount != 0) {
+
+                            if(finalAverage <= 1.4){
+                                suggestion.setText("(Poor)");
+                            }
+                            else if(finalAverage <= 2){
+                                suggestion.setText("(Average)");
+                            }
+                            else if(finalAverage <= 3.4){
+                                suggestion.setText("(Good)");
+                            }
+                            else if(finalAverage <= 4.4){
+                                suggestion.setText("(Very Good)");
+                            }
+                            else {
+                                suggestion.setText("(Excellent)");
+                            }
                         }
 
                         return view;

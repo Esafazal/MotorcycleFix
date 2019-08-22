@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.fyp.motorcyclefix.Dao.User;
+import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -26,8 +29,10 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workshopRef = db.collection("my_workshop");
-    private TextView bStatus, sProvider, sType, bookingId, vehicle, sDate, sRepairS, sRepairD, sCategoryS, sCategoryD;
+    private TextView bStatus, sProvider, sType, bookingId, vehicle, sDate
+            , sRepairS, sRepairD, sCategoryS, sCategoryD, messageS, mechanicNumber;
     private Button closeBtn;
+    private EditText messageD;
 
     @NonNull
     @Override
@@ -47,6 +52,9 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         sCategoryS = view.findViewById(R.id.serviceCategoryStat);
         sCategoryD = view.findViewById(R.id.serviceCategoryDynamic);
         closeBtn = view.findViewById(R.id.closeButton);
+        messageS = view.findViewById(R.id.messageStat);
+        messageD = view.findViewById(R.id.messageDynamic);
+        mechanicNumber = view.findViewById(R.id.mechanicNumberDynamic);
 
         closeBtn.setOnClickListener(this);
 
@@ -58,15 +66,25 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         String model = getArguments().getString("model");
         String serviceCategory = getArguments().getString("repairCat");
         String serviceDescription = getArguments().getString("repairDesc");
+        String mechanicMessage = getArguments().getString("message");
 
-        if(!serviceCategory.equals("")){
-            sRepairS.setVisibility(View.VISIBLE);
-            sRepairD.setVisibility(View.VISIBLE);
-        }
-        if(!serviceDescription.equals("")){
-            sCategoryS.setVisibility(View.VISIBLE);
-            sCategoryD.setVisibility(View.VISIBLE);
-        }
+      try {
+          if (!serviceCategory.equals("")) {
+              sRepairS.setVisibility(View.VISIBLE);
+              sRepairD.setVisibility(View.VISIBLE);
+          }
+
+          if (!serviceDescription.equals("")) {
+              sCategoryS.setVisibility(View.VISIBLE);
+              sCategoryD.setVisibility(View.VISIBLE);
+          }
+          if (!mechanicMessage.equals("")) {
+              messageS.setVisibility(View.VISIBLE);
+              messageD.setVisibility(View.VISIBLE);
+          }
+      } catch (Exception e){
+          Log.d(TAG, e.toString());
+      }
 
         if(bstat.equals("pending")){
             bStatus.setTextColor(getResources().getColor(R.color.orange));
@@ -86,6 +104,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         vehicle.setText(model);
         sCategoryD.setText(serviceCategory);
         sRepairD.setText(serviceDescription);
+        messageD.setText(mechanicMessage);
 
         getWorkshopNVehicleName(workID);
 
@@ -94,15 +113,25 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
     }
 
 
-    private void getWorkshopNVehicleName(String workshopID){
+    private void getWorkshopNVehicleName(final String workshopID){
 
         workshopRef.document(workshopID).get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                String workshopName = documentSnapshot.getString("workshopName");
-                sProvider.setText(workshopName);
+                Workshop workshop = documentSnapshot.toObject(Workshop.class);
+                sProvider.setText(workshop.getWorkshopName());
+
+                db.collection("users").document(workshopID)
+                        .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        User user = documentSnapshot.toObject(User.class);
+                        String no = String.valueOf(user.getPhoneNumber());
+                        mechanicNumber.setText(no);
+                    }
+                });
 
             }
         }).addOnFailureListener(new OnFailureListener() {

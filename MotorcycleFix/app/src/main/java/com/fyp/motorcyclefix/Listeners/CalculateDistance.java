@@ -11,6 +11,8 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Date;
+
 public class CalculateDistance {
 
     public static final String TAG = "calculateDistance";
@@ -73,5 +75,54 @@ public class CalculateDistance {
 
             }
         });
+    }
+
+    public static void getTimeEstimateForGeneralService(final TextView textView){
+
+        workRef.collection("bookings").whereEqualTo("serviceType", "General Service")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot snapshot) {
+                int count = 1;
+                long timeDiff = 0;
+                for (QueryDocumentSnapshot snap : snapshot) {
+                    Booking booking = snap.toObject(Booking.class);
+                    count++;
+
+                    Date startTime = booking.getServiceStartTime();
+                    Date endTime = booking.getServiceEndTime();
+
+                    timeDiff += endTime.getTime() - startTime.getTime();
+                }
+
+                long average = timeDiff / count;
+                textView.setText(String.valueOf(average));
+            }
+        });
+    }
+
+    public static void getTimeEstimateForWashNWaxService(final TextView textView){
+        workRef.collection("bookings").whereEqualTo("serviceType", "Wash and Wax")
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot snapshot) {
+                int count = 1;
+                long timeDiff = 0;
+                for(QueryDocumentSnapshot snap : snapshot){
+                    Booking booking = snap.toObject(Booking.class);
+                    count++;
+
+                   Date startTime = booking.getServiceStartTime();
+                   Date endTime = booking.getServiceEndTime();
+
+                    timeDiff += endTime.getTime() - startTime.getTime();
+                }
+
+                long average = timeDiff / count;
+                textView.setText(String.valueOf(average));
+
+            }
+        });
+
     }
 }

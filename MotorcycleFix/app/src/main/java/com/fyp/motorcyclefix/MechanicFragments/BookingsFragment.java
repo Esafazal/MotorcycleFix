@@ -125,7 +125,8 @@ public class BookingsFragment extends Fragment {
 
                 bookings.add(new Booking(booking.getBookingID(), booking.getServiceType(), booking.getDateOfService()
                         , booking.getRepairDescription(), user.getName()
-                        , vehicle.getManufacturer()+" "+vehicle.getModel(), booking.getUserId(), booking.getStatus()));
+                        , vehicle.getManufacturer()+" "+vehicle.getModel(), booking.getUserId()
+                        , booking.getStatus(), String.valueOf(user.getPhoneNumber())));
 
                 mRecyclerView.setHasFixedSize(true);
                 mLayoutManager = new LinearLayoutManager(getActivity());
@@ -189,8 +190,26 @@ public class BookingsFragment extends Fragment {
                     }
 
                     @Override
-                    public void onSendNoteClick(int position, EditText editNote) {
+                    public void onSendNoteClick(int position, final EditText editNote, final Button btnSend) {
 
+                        final String note = editNote.getText().toString();
+                        if(note.isEmpty()){
+                            editNote.setError("Please enter message!");
+                            editNote.requestFocus();
+                        }
+
+                        final String bookId = String.valueOf(booking.getBookingID());
+
+                        db.collection("bookings").document(bookId)
+                                .update("message", note).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                btnSend.setVisibility(View.GONE);
+                                editNote.setEnabled(false);
+                                String title = "Message From Mechanic!";
+                                SendNotificationService.sendNotification(getContext(), booking.getUserId(), title, note);
+                            }
+                        });
                     }
                 });
             }

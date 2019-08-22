@@ -47,11 +47,11 @@ import com.google.firebase.firestore.Transaction;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ViewWorkshopActivity extends AppCompatActivity {
+public class ViewWorkshopActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = "viewWorkshopActivity";
 
-    private TextView workshopName, specialized, chosenRepair, suggestion;
+    private TextView workshopName, specialized, chosenRepair, suggestion, ETA;
     private RatingBar ratingBar;
     private EditText repairDescription;
     private CardView repairCategory;
@@ -83,6 +83,7 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         datePicker = findViewById(R.id.datePicker);
         ratingBar = findViewById(R.id.ratingBar);
         suggestion = findViewById(R.id.reviewsCount);
+        ETA = findViewById(R.id.ETA);
 
         Date date = new Date();
         long minDate = date.getTime();
@@ -99,12 +100,13 @@ public class ViewWorkshopActivity extends AppCompatActivity {
          }
 
         RadioButton repairButton = findViewById(R.id.radioRepair);
-        repairButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSelectedRepairType();
-            }
-        });
+        RadioButton generalService = findViewById(R.id.radioGeneral);
+        RadioButton washNWax = findViewById(R.id.radioPolish);
+
+        repairButton.setOnClickListener(this);
+        generalService.setOnClickListener(this);
+        washNWax.setOnClickListener(this);
+
 
         bikeMod = view.findViewById(R.id.toolbarTextview);
         bikeMod.setOnClickListener(new View.OnClickListener() {
@@ -319,4 +321,24 @@ public class ViewWorkshopActivity extends AppCompatActivity {
         });
 
     }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()){
+
+            case R.id.radioRepair:
+                getSelectedRepairType();
+                return;
+
+            case R.id.radioGeneral:
+//                CalculateDistance.getTimeEstimateForGeneralService(ETA);
+                return;
+
+            case R.id.radioPolish:
+//                CalculateDistance.getTimeEstimateForWashNWaxService(ETA);
+                return;
+        }
+    }
+
 }

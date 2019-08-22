@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/trackingCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,66 +8,86 @@
     android:layout_marginBottom="5sp"
     app:cardElevation="10sp">
 
-    <TextView
-        android:id="@+id/bookingID"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10sp"
-        android:text="Booking ID"
-        android:textColor="@color/colorblack"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/serviceType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40sp"
-        android:layout_marginTop="40sp"
-        android:text="Service Type" />
+        <TextView
+            android:id="@+id/bookingID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Booking ID"
+            android:layout_marginStart="10sp"
+            android:textColor="@color/colorblack"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
-        android:id="@+id/service"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10sp"
-        android:layout_marginTop="40sp"
-        android:contentDescription="@string/serviceIcon"
-        android:src="@drawable/ic_bike_black_24dp" />
+        <TextView
+            android:id="@+id/serviceType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_marginStart="5sp"
+            android:text="Service Type"
+            app:layout_constraintTop_toBottomOf="@+id/bookingID"
+            app:layout_constraintStart_toEndOf="@+id/service"/>
 
-    <TextView
-        android:id="@+id/bikeModel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40sp"
-        android:layout_marginTop="65sp"
-        android:text="Bike Model" />
+        <ImageView
+            android:id="@+id/service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="5sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_bike_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bookingID"/>
 
-    <ImageView
-        android:id="@+id/bikeModelIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10sp"
-        android:layout_marginTop="65sp"
-        android:contentDescription="@string/serviceIcon"
-        android:src="@drawable/ic_bike_model_black_24dp" />
+        <TextView
+            android:id="@+id/bikeModel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_marginStart="5sp"
+            android:text="Bike Model"
+            app:layout_constraintTop_toBottomOf="@+id/serviceType"
+            app:layout_constraintStart_toEndOf="@+id/bikeModelIcon"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
-        android:id="@+id/viewDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="220sp"
-        android:layout_marginTop="35sp"
-        android:text="@string/viewDetails"
-        android:textColor="@color/colorAsh2"
-        android:textSize="18sp" />
+        <ImageView
+            android:id="@+id/bikeModelIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10sp"
+            android:layout_marginTop="5sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_bike_model_black_24dp"
+            app:layout_constraintTop_toBottomOf="@+id/serviceType"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <ImageView
-        android:id="@+id/viewDetailsIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="320sp"
-        android:layout_marginTop="37sp"
-        android:contentDescription="@string/serviceIcon"
-        android:src="@drawable/ic_right_black_24dp" />
+        <TextView
+            android:id="@+id/viewDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Details"
+            android:textColor="@color/yelloOrange"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/viewDetailsIcon"/>
+
+        <ImageView
+            android:id="@+id/viewDetailsIcon"
+            android:layout_width="40sp"
+            android:layout_height="40sp"
+            android:contentDescription="@string/serviceIcon"
+            android:src="@drawable/ic_right_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

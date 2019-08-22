@@ -67,6 +67,34 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/riderNumberD" />
+
+            <TextView
+                android:id="@+id/riderNumberS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Rider Mobile: "
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookingIdDynamic" />
+
+            <TextView
+                android:id="@+id/riderNumberD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="+94771719914"
+                android:clickable="true"
+                android:autoLink="phone"
+                android:textIsSelectable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toEndOf="@+id/serviceTypeStatic"
                 app:layout_constraintTop_toBottomOf="@+id/bookingIdStatic" />
 
             <TextView
@@ -128,7 +156,7 @@
                 android:textSize="15sp"
                 android:textStyle="italic"
                 app:layout_constraintStart_toEndOf="@+id/serviceTypeStatic"
-                app:layout_constraintTop_toBottomOf="@+id/bookingIdStatic" />
+                app:layout_constraintTop_toBottomOf="@+id/riderNumberS" />
 
             <TextView
                 android:id="@+id/reqSDateDynamic"

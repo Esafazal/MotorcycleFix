@@ -46,6 +46,18 @@
         app:layout_constraintTop_toBottomOf="@+id/bookingStatus"
         android:textColor="@color/colorblack"/>
 
+    <TextView
+        android:id="@+id/mechanicNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Mechanic Mobile |"
+        android:textSize="18sp"
+        android:layout_marginTop="5sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/serviceProvider"
+        android:textColor="@color/colorblack"/>
+
     <!--SERVICE TYPE-->
     <TextView
         android:id="@+id/serviceTypeView"
@@ -56,7 +68,7 @@
         android:textSize="18sp"
         android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serviceProvider"
+        app:layout_constraintTop_toBottomOf="@+id/mechanicNumberDynamic"
         android:textColor="@color/colorblack"/>
 
     <!--BOOKING ID-->
@@ -151,12 +163,31 @@
         android:layout_marginStart="5sp"/>
 
     <TextView
+        android:id="@+id/mechanicNumberDynamic"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:text="+94771719914"
+        android:textSize="18sp"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        android:textIsSelectable="true"
+        android:autoLink="phone"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@+id/serviceProviderView"
+        app:layout_constraintStart_toEndOf="@+id/serviceProviderView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5sp"
+        android:layout_marginStart="5sp"/>
+
+    <TextView
         android:id="@+id/serviceType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Repair Service"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/serviceProvider"
+        app:layout_constraintTop_toBottomOf="@+id/mechanicNumber"
         app:layout_constraintLeft_toRightOf="@+id/serviceTypeView"
         android:layout_marginTop="6sp"
         android:layout_marginStart="5sp"/>
@@ -220,6 +251,35 @@
         android:layout_marginTop="6sp"
         android:layout_marginStart="5sp"/>
 
+    <TextView
+        android:id="@+id/messageStat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Message from Workshop :"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionDynamic" />
+
+    <EditText
+        android:id="@+id/messageDynamic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/kindaRed"
+        android:inputType="none"
+        android:visibility="gone"
+        android:focusableInTouchMode="false"
+        android:text="Please come at 4pm on your selected date. Bring a clutch cable along with you."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageStat" />
+
+
 
     <View
         android:id="@+id/divider"
@@ -240,22 +300,18 @@
         android:layout_height="1dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="5sp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="154dp"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionDynamic"/>
+        app:layout_constraintTop_toBottomOf="@+id/messageDynamic" />
 
     <Button
         android:id="@+id/closeButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/lightAsh"
         android:text="Close"
         android:textSize="20sp"
-        android:background="@color/lightAsh"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"/>
-
-
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

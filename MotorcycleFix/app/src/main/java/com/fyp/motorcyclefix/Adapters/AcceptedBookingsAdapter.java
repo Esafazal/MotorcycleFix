@@ -24,7 +24,7 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
         void onEditNote(int position, Button sendNote);
         void onStartServiceClick(int position, Button completeService, Button startService);
         void onCompleteServiceClick(int position, Button startService, Button completeService);
-        void onSendNoteClick(int position, EditText editNote);
+        void onSendNoteClick(int position, EditText editNote, Button sendBtn);
 
 
     }
@@ -36,7 +36,8 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
     //created a static class inheriting recyclerview.viewholder
     public static class BookingsCardviewHolder extends RecyclerView.ViewHolder{
 
-        public TextView riderName, bikeMakeNModel, sType, sDate, sDescriptionD, bookingId, sDescriptionS, rRepairS, rRepairD;
+        public TextView riderName, bikeMakeNModel, sType, sDate,
+                sDescriptionD, bookingId, sDescriptionS, rRepairS, rRepairD, riderNo;
         public EditText editNote;
         public Button sendNote, startService, completeService;
 
@@ -52,6 +53,7 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
             startService = itemView.findViewById(R.id.bookingDeclineBooking);
             completeService = itemView.findViewById(R.id.bookingCompleteService);
             bookingId = itemView.findViewById(R.id.bookingIdDynamic);
+            riderNo = itemView.findViewById(R.id.riderNumberD);
 //            sDescriptionS = itemView.findViewById(R.id.repairDetailStatic);
 //            rRepairS = itemView.findViewById(R.id.acceptedRepairCatStat);
 //            rRepairD = itemView.findViewById(R.id.acceptedRepairCatDynamic);
@@ -87,7 +89,7 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            listener.onSendNoteClick(position, editNote);
+                            listener.onSendNoteClick(position, editNote, sendNote);
                         }
                     }
                 }
@@ -162,6 +164,7 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
         holder.sDate.setText(booking.getDateOfService());
         holder.sDescriptionD.setText(booking.getRepairDescription());
         holder.bookingId.setText(String.valueOf(booking.getBookingID()));
+        holder.riderNo.setText(booking.getMessage());
     }
 
     @Override

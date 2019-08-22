@@ -22,13 +22,14 @@ public class Booking {
     private Date serviceEndTime;
     private float starRating;
     private String ratingStatus;
+    private String message;
 
     public Booking() {
 
     }
 
     public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription
-            , String userId, String vehicleId, String model, String status) {
+            , String userId, String vehicleId, String model, String status, String  message) {
 
         this.bookingID = bookingID;
         this.serviceType = serviceType;
@@ -38,6 +39,7 @@ public class Booking {
         this.vehicleId = vehicleId;
         this.model = model;
         this.status = status;
+        this.message = message;
     }
 
     public long getBookingID() {
@@ -158,5 +160,13 @@ public class Booking {
 
     public void setRatingStatus(String ratingStatus) {
         this.ratingStatus = ratingStatus;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

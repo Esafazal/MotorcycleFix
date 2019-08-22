@@ -32,6 +32,7 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
         public TextView serviceType;
         public TextView bikeModel;
 
+
         public CardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             bookingID = itemView.findViewById(R.id.bookingID);

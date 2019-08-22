@@ -106,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5sp"
-                    android:text="Choose your desired type of service"
+                    android:text="Choose your desired type of service:"
                     android:textColor="@color/colorblack"
                     android:textSize="20sp" />
 
@@ -138,7 +138,6 @@
                         android:text="Wash and Wax" />
 
                 </RadioGroup>
-
 
             </androidx.cardview.widget.CardView>
 
@@ -231,14 +230,37 @@
                     android:calendarViewShown="false"
                     android:datePickerMode="spinner" />
 
+            </androidx.cardview.widget.CardView>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/timeEstimateCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/dateNTimeCard"
+                android:layout_marginStart="8dp"
+                android:visibility="visible"
+                android:layout_marginTop="8sp"
+                android:layout_marginEnd="8dp">
 
-                <!--<TimePicker-->
-                <!--android:id="@+id/timePicker"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="230sp"-->
-                <!--android:timePickerMode="spinner"/>-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5sp"
+                    android:text="Estimated time for Service completion:"
+                    android:textColor="@color/colorblack"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/ETA"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="30sp"
+                    android:gravity="center"
+                    android:textStyle="italic|bold"
+                    android:text="2h 30m"
+                    android:textColor="@color/kindaRed"
+                    android:textSize="18sp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -247,7 +269,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="60sp"
-                android:layout_below="@+id/dateNTimeCard"
+                android:layout_below="@+id/timeEstimateCard"
                 android:layout_marginStart="7sp"
                 android:layout_marginTop="20sp"
                 android:layout_marginEnd="7sp"

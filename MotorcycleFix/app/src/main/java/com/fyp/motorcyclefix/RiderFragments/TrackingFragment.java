@@ -129,6 +129,7 @@ public class TrackingFragment extends Fragment {
                         recyclerView.setLayoutManager(layoutManager);
                         recyclerView.setAdapter(trackingAdapter);
 
+
                         trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(int position) {
@@ -144,6 +145,7 @@ public class TrackingFragment extends Fragment {
                                 bundle.putString("workshopID", data.getWorkshopId());
                                 bundle.putString("repairCat", data.getRepairCategory());
                                 bundle.putString("repairDesc", data.getRepairDescription());
+                                bundle.putString("message", data.getMessage());
 
                                 TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
                                 trackingViewDetails.setArguments(bundle);
