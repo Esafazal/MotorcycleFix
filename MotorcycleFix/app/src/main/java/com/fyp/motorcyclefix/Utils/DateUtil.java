@@ -22,7 +22,7 @@ public class DateUtil {
 
     public static Date convertToDate(String date, String format) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
-        Date date1 = (Date) formatter.parse(date);
+        Date date1 = formatter.parse(date);
         return date1;
     }
 

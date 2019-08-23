@@ -55,8 +55,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.signInProgressBar);
 
         //delete once development completed
-        Email.setText("esafazal72@gmail.com");
-        Password.setText("123456");
+//        Email.setText("esafazal72@gmail.com");
+//        Password.setText("123456");
 
     }
 
@@ -126,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(LoginActivity.this, "Invalid User", Toast.LENGTH_SHORT).show();
 
                                 }
@@ -134,12 +135,14 @@ public class LoginActivity extends AppCompatActivity {
                                 .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
+                                        progressBar.setVisibility(View.GONE);
                                         Toast.makeText(LoginActivity.this, "serious fail", Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
                     }
                 } else {
+                    progressBar.setVisibility(View.GONE);
                     // If sign in fails, display a message to the user.
                     Toast.makeText(getApplicationContext(), "Invalid Credentials.", Toast.LENGTH_SHORT).show();
                 }

@@ -27,23 +27,30 @@ public class CalculateDistance {
     private static FirebaseFirestore workRef = FirebaseFirestore.getInstance();
 
     public static double calculateDistanceFormulae(GeoPoint victimeUserGeo, GeoPoint userGeo) {
+        Double distance = 0.0;
+     try {
+         // Radious of the earth
 
-        // Radious of the earth
-        final int R = 6371;
-        Double lat1 = victimeUserGeo.getLatitude();
-        Double lon1 = victimeUserGeo.getLongitude();
-        Double lat2 = userGeo.getLatitude();
-        Double lon2 = userGeo.getLongitude();
+         final int R = 6371;
+         Double lat1 = victimeUserGeo.getLatitude();
+         Double lon1 = victimeUserGeo.getLongitude();
+         Double lat2 = userGeo.getLatitude();
+         Double lon2 = userGeo.getLongitude();
 
-        Double latDistance = toRad(lat2 - lat1);
-        Double lonDistance = toRad(lon2 - lon1);
-        Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
-                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-                        Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+         Double latDistance = toRad(lat2 - lat1);
+         Double lonDistance = toRad(lon2 - lon1);
+         Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) +
+                 Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                         Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
 
-        Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        Double distance = R * c;
+         Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+         distance = R * c;
 
+
+     } catch (Exception e){
+
+         Log.d(TAG, e.toString());
+     }
         return distance;
     }
 
@@ -78,7 +85,7 @@ public class CalculateDistance {
                 }
                 average = rating / count;
                 ratingBar.setRating(average);
-                suggestion.setText("(" + count + "+)");
+                suggestion.setText("(" + count + ")");
 
             }
         });

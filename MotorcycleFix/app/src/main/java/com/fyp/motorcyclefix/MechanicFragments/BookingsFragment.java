@@ -125,7 +125,7 @@ public class BookingsFragment extends Fragment {
 
                 long bID = booking.getBookingID();
                 String sType = booking.getServiceType();
-                String dateOfService = booking.getDateOfService();
+                Date dateOfService = booking.getDateOfService();
                 String repairDesc = booking.getRepairDescription();
                 String userName = user.getName();
                 String makeNmodel = vehicle.getManufacturer()+" "+vehicle.getModel();

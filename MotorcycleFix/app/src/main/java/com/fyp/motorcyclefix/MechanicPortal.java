@@ -287,7 +287,7 @@ public class MechanicPortal extends AppCompatActivity {
                             Bundle bundle = new Bundle();
                             bundle.putString("userId", booking.getUserId());
                             bundle.putString("sType", booking.getServiceType());
-                            bundle.putString("sDate", booking.getDateOfService());
+                            bundle.putString("sDate", String.valueOf(booking.getDateOfService()));
                             bundle.putString("vId", booking.getVehicleId());
                             bundle.putString("sDesc", booking.getRepairDescription());
                             bundle.putString("rCat", booking.getRepairCategory());

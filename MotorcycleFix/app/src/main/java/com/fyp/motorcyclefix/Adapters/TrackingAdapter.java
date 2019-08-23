@@ -79,18 +79,34 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
         Booking booking = bookings.get(position);
+        String status = booking.getStatus();
 
        try {
            if(booking.getMessage() != null && booking.getMessageSeen() == null){
                holder.notify.setVisibility(View.VISIBLE);
            }
+
+           if(status.equals("completed")){
+               holder.viewDetails.setText("Completed");
+           }
+           if(status.equals("accepted")){
+               holder.viewDetails.setText("Accepted");
+           }
+           if(status.equals("progress")){
+               holder.viewDetails.setText("In Progress");
+           }
+           if(status.equals("pending")){
+               holder.viewDetails.setText("Pending");
+           }
+
+
            holder.viewDetails.setTextColor(Integer.valueOf(booking.getRatingStatus()));
            holder.bookingID.setText("BOOKING #"+booking.getBookingID());
            holder.serviceType.setText(booking.getServiceType());
            holder.bikeModel.setText(booking.getModel());
 
        } catch (Exception e){
-           Log.d("trackingAdapter", e.toString());
+           Log.d("trackingAdapter", "Holder View: "+e.toString());
        }
     }
 

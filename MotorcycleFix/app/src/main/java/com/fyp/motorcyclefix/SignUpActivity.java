@@ -104,17 +104,8 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            bundle = getIntent().getExtras();
 
-                            //if user type is rider, execute the follwoing
-                            if (bundle.getString("type").equals("1")) {
-                               saveUserRider(name, email, gender, Long.valueOf(phone));
-
-                                //if the user type is mechanic, execute the following
-                            } else if (bundle.getString("type").equals("2")) {
-                               getLastKnownLocation(name, email, gender, Long.valueOf(phone));
-
-                            }
+                            getLastKnownLocation(name, email, gender, Long.valueOf(phone));
                         }
                         else{
                             progressBar.setVisibility(View.GONE);
@@ -142,7 +133,17 @@ public class SignUpActivity extends AppCompatActivity {
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
-                    saveUserMechanic(name, email, gender, geoPoint, phone);
+                    bundle = getIntent().getExtras();
+
+                    //if user type is rider, execute the follwoing
+                    if (bundle.getString("type").equals("1")) {
+                        saveUserRider(name, email, gender, geoPoint,phone);
+
+                        //if the user type is mechanic, execute the following
+                    } else if (bundle.getString("type").equals("2")) {
+                        saveUserMechanic(name, email, gender, geoPoint,phone);
+
+                    }
 
                 }
             }
@@ -181,11 +182,11 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private void saveUserRider(String name, String email, String gender, long phone){
+    private void saveUserRider(String name, String email, String gender, GeoPoint geoPoint,long phone){
         FirebaseUser user = mAuth.getCurrentUser();
         String userId = user.getUid();
         String type ="rider";
-        userModel = new User(type, name, email, gender, phone, userId);
+        userModel = new User(type, name, email, gender, geoPoint,phone, userId);
 
         progressBar.setVisibility(View.GONE);
         db.collection("users").document(userId).set(userModel)

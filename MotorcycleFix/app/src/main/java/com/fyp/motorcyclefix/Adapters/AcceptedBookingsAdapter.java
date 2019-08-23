@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookingsAdapter.BookingsCardviewHolder> {
 
@@ -156,17 +160,20 @@ public class AcceptedBookingsAdapter extends RecyclerView.Adapter<AcceptedBookin
             Log.d("acceptedBookings", "Booking: "+e.toString());
         }
 
-//        if(booking.getStatus().equals("progress")){
-////            holder.completeService.setBackgroundColor(getResources().getColor(R.color.red));
-//            holder.completeService.setClickable(true);
-////            holder.startService.setBackgroundColor(getResources().getColor(R.color.dimGreem));
-//            holder.startService.setClickable(false);
-//        }
+        String date1 = String.valueOf(booking.getDateOfService());
+        String date = null;
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("E dd MMM", Locale.ENGLISH);
+            Date d = new Date(date1);
+            date = dateFormat.format(d);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         holder.bikeMakeNModel.setText(booking.getVehicleId());
         holder.riderName.setText(booking.getUserId());
         holder.sType.setText(booking.getServiceType());
-        holder.sDate.setText(booking.getDateOfService());
+        holder.sDate.setText(date);
         holder.sDescriptionD.setText(booking.getRepairDescription());
         holder.bookingId.setText(String.valueOf(booking.getBookingID()));
         holder.riderNo.setText("+94"+booking.getMessage());

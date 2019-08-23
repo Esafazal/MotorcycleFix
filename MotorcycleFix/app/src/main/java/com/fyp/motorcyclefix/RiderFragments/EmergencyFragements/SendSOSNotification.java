@@ -185,7 +185,10 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
                     GeoPoint userGeo = user.getGeoPoint();
 
                     if (!recipientId.equals(currentUserId)) {
-                        calculateDistanceFormulae(victimUserGeo, userGeo, recipientId);
+
+                        if(userGeo != null) {
+                            calculateDistanceFormulae(victimUserGeo, userGeo, recipientId);
+                        }
                     }
                 }
             }
@@ -219,6 +222,7 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
         sos.setLandmark(landmark.getText().toString());
         sos.setUserId(victimUserId);
         sos.setStatus("pending");
+        sos.setTime(null);
 
         db.collection("SOS").document(victimUserId).set(sos)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

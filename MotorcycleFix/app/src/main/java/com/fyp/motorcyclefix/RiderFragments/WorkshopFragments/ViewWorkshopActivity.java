@@ -89,11 +89,11 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         Date date = new Date();
         long minDate = date.getTime();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 2);
-        String fuck = String.valueOf(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, 3);
+        date = calendar.getTime();
+        long maxDate = date.getTime();
          try {
              datePicker.setMinDate(minDate);
-             long maxDate = Long.valueOf(fuck);
              datePicker.setMaxDate(maxDate);
          }
          catch (Exception e){
@@ -129,7 +129,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
                 String makeModel = data.getStringExtra("makeModel");
-                bikeMod.setText(makeModel+" >");
+                bikeMod.setText(makeModel);
                 bikeId = data.getStringExtra("bikeId").trim();
             }
         } else if(requestCode == 2){
@@ -217,8 +217,12 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         final int selectedId = serviceTypeGroup.getCheckedRadioButtonId();
         RadioButton radioSelected = findViewById(selectedId);
         final String serviceType = radioSelected.getText().toString();
-        final String pickedDate = datePicker.getMonth() + "/" + datePicker.getDayOfMonth() + "/" + datePicker.getYear();
+//        final String pickedDate = datePicker.getMonth() + "/" + datePicker.getDayOfMonth() + "/" + datePicker.getYear();
 
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, datePicker.getYear());
+        calendar.set(Calendar.MONTH, datePicker.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -237,7 +241,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
                             Booking booking = new Booking();
                             booking.setServiceType(serviceType);
                             booking.setWorkshopId(workshopId);
-                            booking.setDateOfService(pickedDate);
+                            booking.setDateOfService(calendar.getTime());
                             booking.setUserId(Uid);
                             booking.setStatus("pending");
                             booking.setVehicleId(bikeId);
@@ -333,10 +337,12 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
                 return;
 
             case R.id.radioGeneral:
+                repairCategory.setVisibility(View.GONE);
 //                CalculateDistance.getTimeEstimateForGeneralService(ETA, estimateCard);
                 return;
 
             case R.id.radioPolish:
+                repairCategory.setVisibility(View.GONE);
 //                CalculateDistance.getTimeEstimateForWashNWaxService(ETA, estimateCard);
                 return;
         }

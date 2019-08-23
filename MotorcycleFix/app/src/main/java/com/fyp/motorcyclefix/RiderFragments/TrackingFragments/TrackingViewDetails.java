@@ -23,6 +23,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class TrackingViewDetails extends AppCompatDialogFragment implements View.OnClickListener {
 
     private static final String TAG = "trackingViewDetails";
@@ -34,6 +39,7 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
     private Button closeBtn;
     private EditText messageD;
     private long bID;
+    private String mechanicMessage;
 
     @NonNull
     @Override
@@ -62,12 +68,12 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         String bstat = getArguments().getString("bookingStatus").trim();
         bID = getArguments().getLong("bookingID");
         String type = getArguments().getString("serviceType");
-        String date = getArguments().getString("serviceDate");
+        String date1 = getArguments().getString("serviceDate");
         String workID = getArguments().getString("workshopID");
         String model = getArguments().getString("model");
         String serviceCategory = getArguments().getString("repairCat");
         String serviceDescription = getArguments().getString("repairDesc");
-        String mechanicMessage = getArguments().getString("message");
+        mechanicMessage = getArguments().getString("message");
 
       try {
           if (!serviceCategory.equals("")) {
@@ -88,18 +94,32 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
       }
 
         if(bstat.equals("pending")){
-            bStatus.setTextColor(getResources().getColor(R.color.orange));
+            bStatus.setTextColor(getResources().getColor(R.color.yelloOrange));
+            bStatus.setText("Pending");
 
         } else if (bstat.equals("accepted")){
             bStatus.setTextColor(getResources().getColor(R.color.green));
+            bStatus.setText("Accepted");
+
         }else if (bstat.equals("progress")){
-            bStatus.setTextColor(getResources().getColor(R.color.colorAccent));
+            bStatus.setTextColor(getResources().getColor(R.color.green));
+            bStatus.setText("In Progress...");
         } else{
             bStatus.setTextColor(getResources().getColor(R.color.red));
+            bStatus.setText("Completed!");
         }
 
+        String date = null;
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("E dd MMM", Locale.ENGLISH);
+            Date d = new Date(date1);
+            date = dateFormat.format(d);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        
+
         bookingId.setText(String.valueOf(bID));
-        bStatus.setText(bstat);
         sType.setText(type);
         sDate.setText(date);
         vehicle.setText(model);
@@ -132,7 +152,10 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
                         String no = String.valueOf(user.getPhoneNumber());
                         mechanicNumber.setText("+94"+no);
 
-                        updateMessageSeen();
+                        if(mechanicMessage != null){
+                            updateMessageSeen();
+                        }
+
                     }
                 });
 

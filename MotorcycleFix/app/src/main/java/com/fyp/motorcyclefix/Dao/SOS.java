@@ -1,6 +1,9 @@
 package com.fyp.motorcyclefix.Dao;
 
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 
 public class SOS {
 
@@ -9,6 +12,8 @@ public class SOS {
     private String landmark;
     private GeoPoint geoPoint;
     private String status;
+    private @ServerTimestamp
+    java.util.Date time;
 
     public SOS() {
     }
@@ -51,5 +56,13 @@ public class SOS {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 }

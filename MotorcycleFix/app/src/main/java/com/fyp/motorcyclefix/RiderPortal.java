@@ -70,7 +70,7 @@ public class RiderPortal extends AppCompatActivity {
                 case R.id.navigation_tracking:
                     selectedFragment = new TrackingFragment();
                     loadFragment(selectedFragment);
-                    setTitle("Track Booking");
+                    setTitle("Track Bookings");
                     return true;
                 case R.id.navigation_settings:
                     selectedFragment = new SettingsFragment();

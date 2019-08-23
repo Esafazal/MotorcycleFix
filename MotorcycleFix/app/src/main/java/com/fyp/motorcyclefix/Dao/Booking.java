@@ -8,7 +8,7 @@ public class Booking {
 
     private long bookingID;
     private String serviceType;
-    private String dateOfService;
+    private Date dateOfService;
     private String repairCategory;
     private String repairDescription;
     private String userId;
@@ -29,7 +29,7 @@ public class Booking {
 
     }
 
-    public Booking(long bookingID, String serviceType, String dateOfService, String repairDescription ,String userId
+    public Booking(long bookingID, String serviceType, Date dateOfService, String repairDescription ,String userId
             , String vehicleId, String model, String status, String  message, String startColor, String endColor) {
 
         this.bookingID = bookingID;
@@ -46,7 +46,7 @@ public class Booking {
     }
 
     public Booking(long bookingID, String serviceType, String color, String model, String message,String status, String messageSeen
-                        ,String repairCategory, String repairDescription, String workshopId, String dateOfService, String userId) {
+                        ,String repairCategory, String repairDescription, String workshopId, Date dateOfService, String userId) {
 
         this.bookingID = bookingID;
         this.serviceType = serviceType;
@@ -86,11 +86,11 @@ public class Booking {
         this.serviceType = serviceType;
     }
 
-    public String getDateOfService() {
+    public Date getDateOfService() {
         return dateOfService;
     }
 
-    public void setDateOfService(String dateOfService) {
+    public void setDateOfService(Date dateOfService) {
         this.dateOfService = dateOfService;
     }
 

@@ -18,9 +18,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fyp.motorcyclefix.Adapters.TrackingAdapter;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Vehicle;
-import com.fyp.motorcyclefix.Adapters.TrackingAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.TrackingViewDetails;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +33,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -124,7 +125,7 @@ public class TrackingFragment extends Fragment {
                         String makeNModel = booking.getModel();
                         String status = booking.getStatus();
                         String message = booking.getMessage();
-                        String dateOfService = booking.getDateOfService();
+                        Date dateOfService = booking.getDateOfService();
                         String workshopId = booking.getWorkshopId();
                         String category = booking.getRepairCategory();
                         String description = booking.getRepairDescription();
@@ -161,7 +162,7 @@ public class TrackingFragment extends Fragment {
                                 bundle.putLong("bookingID", data.getBookingID());
                                 bundle.putString("bookingStatus", data.getStatus());
                                 bundle.putString("serviceType", data.getServiceType());
-                                bundle.putString("serviceDate", data.getDateOfService());
+                                bundle.putString("serviceDate", String.valueOf(data.getDateOfService()));
                                 bundle.putString("model", data.getModel());
                                 bundle.putString("workshopID", data.getWorkshopId());
                                 bundle.putString("repairCat", data.getRepairCategory());

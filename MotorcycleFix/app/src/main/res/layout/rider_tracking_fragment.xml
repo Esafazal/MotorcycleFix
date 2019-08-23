@@ -14,35 +14,36 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="20sp"
+        android:visibility="gone"
         android:textColor="@color/yelloOrange"
         android:text="Pending"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>
 
-    <TextView
-        android:id="@+id/green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20sp"
-        android:textColor="@color/green"
-        android:text="Accepted/In Progress"
-        app:layout_constraintStart_toEndOf="@+id/yellow"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>
+    <!--<TextView-->
+        <!--android:id="@+id/green"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="20sp"-->
+        <!--android:textColor="@color/green"-->
+        <!--android:text="Accepted/In Progress"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/yellow"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>-->
 
-    <TextView
-        android:id="@+id/red"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20sp"
-        android:textColor="@color/red"
-        android:text="Completed/Message"
-        app:layout_constraintStart_toEndOf="@+id/green"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>
+    <!--<TextView-->
+        <!--android:id="@+id/red"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="20sp"-->
+        <!--android:textColor="@color/red"-->
+        <!--android:text="Completed/Message"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/green"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>-->
 
 
     <androidx.recyclerview.widget.RecyclerView
