@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fyp.motorcyclefix.Configs.MechanicSharedPreferencesConfig;
 import com.fyp.motorcyclefix.Configs.RiderSharedPreferenceConfig;
+import com.fyp.motorcyclefix.Dao.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
+    //variable declarations and initilizations
     private RiderSharedPreferenceConfig riderPreferenceConfig;
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
     public EditText Email, Password;
@@ -45,18 +47,15 @@ public class LoginActivity extends AppCompatActivity {
         setTitle("Login");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //create sharepreference config instances
-//        riderPreferenceConfig = new RiderSharedPreferenceConfig(getApplicationContext());
-//        mechanicPreferenceConfig = new MechanicSharedPreferencesConfig(getApplicationContext());
+        //initilize firebase instance and view widgets
         mAuth = FirebaseAuth.getInstance();
-
         Email = findViewById(R.id.email);
         Password = findViewById(R.id.password);
         progressBar = findViewById(R.id.signInProgressBar);
 
         //delete once development completed
-//        Email.setText("esafazal72@gmail.com");
-//        Password.setText("123456");
+        Email.setText("esafazal72@gmail.com");
+        Password.setText("123456");
 
     }
 
@@ -88,9 +87,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void signInUser(String email, String password) {
 
+        //check if the validtion is false
         if (!validateForm(email, password)) {
             return;
         }
+        //make progress bar visible and and sign in user with username and password
         progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
@@ -98,48 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     FirebaseUser user = mAuth.getCurrentUser();
                     if (user != null) {
-                        String id = user.getUid();
-
-                        userRef.document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                String type = documentSnapshot.getString("type");
-                                if(type == null){
-                                    Toast.makeText(LoginActivity.this, "No Users Available!", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                progressBar.setVisibility(View.GONE);
-                                bundle = getIntent().getExtras();
-                                if (bundle.getString("type").equals("1") && type.contentEquals("rider")) {
-                                    Toast.makeText(LoginActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-
-                                } else if (bundle.getString("type").equals("2") && type.contentEquals("mechanic")) {
-                                    Toast.makeText(LoginActivity.this, "Hi Mechanic!", Toast.LENGTH_SHORT).show();
-                                    Intent intent = (new Intent(getApplicationContext(), MechanicPortal.class));
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    progressBar.setVisibility(View.GONE);
-                                    Toast.makeText(LoginActivity.this, "Invalid User", Toast.LENGTH_SHORT).show();
-
-                                }
-                            }
-                        })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        progressBar.setVisibility(View.GONE);
-                                        Toast.makeText(LoginActivity.this, "serious fail", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
+                        //get userID of current user and method call to check user type and login to portal
+                        String uId = user.getUid();
+                        checkUserTypeAndLoginUser(uId);
                     }
                 } else {
                     progressBar.setVisibility(View.GONE);
@@ -152,6 +114,54 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void checkUserTypeAndLoginUser(final String uId){
+        //get user info from "Users" collection and check type of user
+        userRef.document(uId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+                String type = user.getType();
+                //check if users collection is empty
+                if(type == null){
+                    Toast.makeText(LoginActivity.this, "No Users Available!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                progressBar.setVisibility(View.GONE);
+                bundle = getIntent().getExtras();
+                //if user type is rider then goto rider portal activity
+                if (bundle.getString("type").equals("1") && type.contentEquals("rider")) {
+                    Toast.makeText(LoginActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();
+                    Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                    //if user type is mechanic then goto mechanic portal activity
+                } else if (bundle.getString("type").equals("2") && type.contentEquals("mechanic")) {
+                    Toast.makeText(LoginActivity.this, "Hi Mechanic!", Toast.LENGTH_SHORT).show();
+                    Intent intent = (new Intent(getApplicationContext(), MechanicPortal.class));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    //if user type is none of above then display toast
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(LoginActivity.this, "Invalid User", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(LoginActivity.this, "serious fail", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    //method to validate login form
     public boolean validateForm(String email, String password) {
 
         boolean valid = true;
@@ -185,10 +195,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void forgotPasswordClickHandler(View view) {
 
+        //method call to check user type
         checkUserType(PasswordReset.class);
 
     }
-
+    //check user type and goto respective portal
     public void checkUserType(Class activity) {
 
         Intent intent;

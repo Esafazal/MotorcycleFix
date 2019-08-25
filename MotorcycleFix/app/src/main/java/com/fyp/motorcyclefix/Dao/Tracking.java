@@ -1,12 +1,12 @@
 package com.fyp.motorcyclefix.Dao;
 
-public class TrackingDao {
+public class Tracking {
 
     private String bookingID;
     private String serviceType;
     private String bikeModel;
 
-    public TrackingDao(String bookingID, String serviceType, String bikeModel) {
+    public Tracking(String bookingID, String serviceType, String bikeModel) {
         this.bookingID = bookingID;
         this.serviceType = serviceType;
         this.bikeModel = bikeModel;

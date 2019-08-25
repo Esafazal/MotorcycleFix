@@ -51,9 +51,11 @@ public class SettingsFragment extends Fragment {
         vehicleSetting = view.findViewById(R.id.settingVehicleCard);
         logoutSetting = view.findViewById(R.id.settingLogoutCard);
 
+
         profileSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(getActivity(), ProfileActivity.class);
                 startActivity(intent);
             }
@@ -71,33 +73,36 @@ public class SettingsFragment extends Fragment {
         logoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                FirebaseUser user = mAuth.getCurrentUser();
-                final String userId = user.getUid();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("Are you sure you want to logout?")
-                        .setTitle("Confirmation")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FirebaseMessaging.getInstance().unsubscribeFromTopic(userId);
-                                FirebaseAuth.getInstance().signOut();
-                                Intent intent = new Intent(getContext(), LoginActivity.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra("type", "1");
-                                startActivity(intent);
-                                getActivity().finish();
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        }).show();
+                 logoutUser();
             }
         });
+    }
+
+    private void logoutUser(){
+        FirebaseUser user = mAuth.getCurrentUser();
+        final String userId = user.getUid();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage("Are you sure you want to logout?")
+                .setTitle("Confirmation")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(userId);
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(getContext(), LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra("type", "1");
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
     }
 
 }

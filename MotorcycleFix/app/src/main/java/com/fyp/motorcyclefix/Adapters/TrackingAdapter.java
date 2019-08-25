@@ -98,15 +98,18 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
            if(status.equals("pending")){
                holder.viewDetails.setText("Pending");
            }
-
-
-           holder.viewDetails.setTextColor(Integer.valueOf(booking.getRatingStatus()));
+           if(booking.getRatingStatus() != null){
+               holder.viewDetails.setTextColor(Integer.valueOf(booking.getRatingStatus()));
+           }
            holder.bookingID.setText("BOOKING #"+booking.getBookingID());
            holder.serviceType.setText(booking.getServiceType());
            holder.bikeModel.setText(booking.getModel());
 
+
+
        } catch (Exception e){
-           Log.d("trackingAdapter", "Holder View: "+e.toString());
+           Log.d("trackingAdapter", e.toString());
+           e.printStackTrace();
        }
     }
 

@@ -18,14 +18,15 @@ import java.util.Map;
 
 public class SendNotificationService {
 
+    //Constants
     private static final String  FCM_API = "https://fcm.googleapis.com/fcm/send";
     private static final String serverKey = "key=" + "AAAAkzPIZqg:APA91bHGefpHFuCN9DFHP_NMq9Xqfgg29JTjhelCpIniwj0ZROv_i51eFDLdZkAAgWhl3oEEKU9ItVrudjzDPvEYl5wF6ty7rFGGUDWfjy47TGcd68_-h1YCodyCA4lx8sKtUYcgo714";
     private static final String contentType = "application/json";
     private static final String TAG = "NOTIFICATION TAG";
 
-
+    //Method creates a json type method body
     public static void sendNotification(Context context, String topic, String title, String message){
-
+        //instance of json Object
         JSONObject notification = new JSONObject();
         JSONObject notifcationBody = new JSONObject();
         try {
@@ -40,6 +41,7 @@ public class SendNotificationService {
         notificationWrapper(notification, context);
     }
 
+    //Method creates a jason based post request to firebase cloud messsaging service and gets a response back
     private static void notificationWrapper(JSONObject notification, final Context context) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
                 new Response.Listener<JSONObject>() {
@@ -57,12 +59,14 @@ public class SendNotificationService {
                 }){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                //json request header
                 Map<String, String> params = new HashMap<>();
                 params.put("Authorization", serverKey);
                 params.put("Content-Type", contentType);
                 return params;
             }
         };
+        //c
         MySingleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
     }
 }

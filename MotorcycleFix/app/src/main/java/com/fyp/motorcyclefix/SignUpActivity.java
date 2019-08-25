@@ -36,8 +36,9 @@ import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
 
+    //TAG Constant
     private static final String TAG = "Signup Activity";
-
+    //Variables for widgets, model and firebase/firestore
     private EditText Email, Password, Name, phoneNumber;
     private RadioGroup sexGroup;
     private RadioButton radioSelected;
@@ -54,13 +55,13 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.sign_up_activity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //initialize widgets
         Email = findViewById(R.id.emailEditText);
         Password = findViewById(R.id.passwordEditText);
         Name = findViewById(R.id.nameEditText);
         phoneNumber = findViewById(R.id.phoneNumber);
         sexGroup = findViewById(R.id.radioSex);
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         progressBar = findViewById(R.id.signUpProgressBar);
 
         // Initialize Firebase Auth
@@ -69,26 +70,27 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra("type", "1");
-        startActivity(intent);
+        //go back to login activity
+        onBackPressed();
         return true;
     }
 
     public void registerClickHandler(View view) {
 
+        //get user inputs from widgets
         String email = Email.getText().toString().trim();
         String password = Password.getText().toString().trim();
         final String name = Name.getText().toString();
         final String phone = phoneNumber.getText().toString();
         progressBar.setVisibility(View.VISIBLE);
+        //method call to create user
         createUser(email, password, name, phone);
     }
 
 
     private void createUser(final String email, final String password, final String name, final String phone){
 
+        //boolean to validate user inputs to widgets
         if(!validateForm(email, password, name, phone)){
             return;
         }
@@ -98,13 +100,13 @@ public class SignUpActivity extends AppCompatActivity {
         radioSelected = findViewById(selectedId);
         final String gender = radioSelected.getText().toString();
 
-
+        //create user in firebase auth with username and password
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-
+                            //method call to get location of registering use
                             getLastKnownLocation(name, email, gender, Long.valueOf(phone));
                         }
                         else{
@@ -117,31 +119,36 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void getLastKnownLocation(final String name, final String email, final String gender, final long phone) {
-
+        //check if user has given permission to use gps
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            return;
+        //method call to request permission
+           askPermission();
         }
-
+        //get last known location of user
         mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
+                //check if location was retrieved
                 if(task.isSuccessful()){
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
 
                     bundle = getIntent().getExtras();
+                    //Firebase user instance to get session of current user
+                    FirebaseUser user = mAuth.getCurrentUser();
+                    final String userId = user.getUid().trim();
 
-                    //if user type is rider, execute the follwoing
+                    //if user type is rider, method call to save rider details
                     if (bundle.getString("type").equals("1")) {
-                        saveUserRider(name, email, gender, geoPoint,phone);
+                        saveUserRider(name, email, gender, geoPoint,phone,userId);
 
-                        //if the user type is mechanic, execute the following
+                    //if the user type is mechanic, method call to save Mechnaic details
                     } else if (bundle.getString("type").equals("2")) {
-                        saveUserMechanic(name, email, gender, geoPoint,phone);
+                        saveUserMechanic(name, email, gender, geoPoint,phone, userId);
 
                     }
 
@@ -150,21 +157,23 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
-    private void saveUserMechanic(String name, String email, String gender, GeoPoint geoPoint, long phone){
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        final String userId = user.getUid().trim();
+    private void saveUserMechanic(String name, String email, String gender, GeoPoint geoPoint, long phone, final String userId){
+        //user type
         String type ="mechanic";
-
+        //initlizing usermodel constructor
         userModel = new User(type, name, email, gender, geoPoint, phone, userId);
 
         progressBar.setVisibility(View.GONE);
+        //Save additional details of mechanic to "Users" collection in firestore database
         db.collection("users").document(userId).set(userModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(SignUpActivity.this, "Mechanic Registration Successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Mechanic Registration Successful!"
+                                , Toast.LENGTH_SHORT).show();
+                        //Method call to add workshop as empty
                         addWorkshoptoDBAsNull(userId);
+                        //goto mechnic portal activity
                         Intent intent = (new Intent(getApplicationContext(), MechanicPortal.class));
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -175,25 +184,28 @@ public class SignUpActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(SignUpActivity.this, "Mechanic Registration Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this, "Mechanic Registration Failed!"
+                                , Toast.LENGTH_SHORT).show();
                         Log.d(TAG, e.toString());
 
                     }
                 });
     }
 
-    private void saveUserRider(String name, String email, String gender, GeoPoint geoPoint,long phone){
-        FirebaseUser user = mAuth.getCurrentUser();
-        String userId = user.getUid();
+    private void saveUserRider(String name, String email, String gender, GeoPoint geoPoint,long phone, String userId){
+        //user type
         String type ="rider";
+        //initlizing usermodel constructor
         userModel = new User(type, name, email, gender, geoPoint,phone, userId);
 
         progressBar.setVisibility(View.GONE);
+        //Save additional details of rider to "Users" collection in firestore database
         db.collection("users").document(userId).set(userModel)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(SignUpActivity.this, "Rider Registration Successful!", Toast.LENGTH_SHORT).show();
+                        //goto rider portal activity
                         Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -213,10 +225,11 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void addWorkshoptoDBAsNull(String userID){
-
+        //To insert data as key and value pairs
         HashMap<String, Object> emptyWorkshop = new HashMap<>();
         emptyWorkshop.put("workshopId", null);
 
+        //Add empty worksho to "my_workshop" collection, Denoting mechanic signed up, but didnt't register workshop
         db.collection("my_workshop").document(userID).set(emptyWorkshop)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -226,6 +239,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
     }
 
+    //method to check if the edit texts(widgets) are null, valid and length
     private boolean validateForm(String email, String password, String name, String phoneN) {
 
         boolean valid = true;
@@ -265,4 +279,11 @@ public class SignUpActivity extends AppCompatActivity {
 
             return valid;
         }
+
+    // Asks for permission to access gps
+    private void askPermission() {
+        Log.d(TAG, "askPermission()");
+        ActivityCompat.requestPermissions(this , new String[] { Manifest.permission.ACCESS_FINE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
+    }
 }

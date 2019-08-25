@@ -65,10 +65,18 @@ public class TrackingFragment extends Fragment {
         progressBar = view.findViewById(R.id.viewTrackingProgressBar);
         message = view.findViewById(R.id.viewTrackingMessage);
 
+        getPlacedBookings(view);
+
+        return view;
+    }
+
+    private void getPlacedBookings(final View view){
         final ArrayList<Booking> bookings = new ArrayList<>();
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
 
+        message.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         bookingRef.whereEqualTo("userId", userId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -80,27 +88,24 @@ public class TrackingFragment extends Fragment {
                     String bUserId = booking.getUserId().trim();
 
                     if(bUserId.equals(userId)){
-                        message.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.VISIBLE);
                         getBikeModel(booking, view, bookings);
                     }
-
                 }
-
             }
         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getActivity(), "No Bookings Found", Toast.LENGTH_SHORT).show();
+                        message.setVisibility(View.VISIBLE);
                         Log.d(TAG, e.toString());
                     }
                 });
-
-        return view;
     }
 
-    public void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
+
+
+    private void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
 
         final String vehicleId = booking.getVehicleId().trim();
 
@@ -116,7 +121,7 @@ public class TrackingFragment extends Fragment {
                             String mVehicleId = snap.getId();
 
                             if (mVehicleId.equals(vehicleId)) {
-                                booking.setModel(snap.getString("manufacturer")+" "+snap.getString("model"));
+                                booking.setModel(vehicle.getManufacturer()+" "+vehicle.getModel());
                             }
                         }
 
@@ -190,6 +195,7 @@ public class TrackingFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
     }
 
     private AlertDialog.Builder showDialogBox() {

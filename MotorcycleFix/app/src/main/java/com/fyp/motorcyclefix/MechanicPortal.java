@@ -47,19 +47,64 @@ import javax.annotation.Nullable;
 
 public class MechanicPortal extends AppCompatActivity {
 
+    //constant tag
     public static final String TAG = "mechanicPortal";
-
+    //variable declaration and initilization
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
     private Fragment fragment;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;
+    private FirebaseUser currentUser;
 
-    private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener = new NavigationView.OnNavigationItemSelectedListener() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //firebase user instance is initilized and the user id is retrieved
+        currentUser = mAuth.getCurrentUser();
+        String newUser = currentUser.getUid();
+        //initilization of firebase messaging to subscribe to a topic to get notifications sent to that particular topic.
+        FirebaseMessaging.getInstance().subscribeToTopic(newUser);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.mechanic_portal_activity);
+        setTitle("Dashboard");
+
+        /*Initilizing widgets from layout */
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
+
+        //method call to check for SOS messages
+        getAnyEmergenciesSOS();
+
+        navigationView.setCheckedItem(R.id.nav_dashboard);
+        //method call to check if there is a registered workshop of current user mechanic
+        checkWorkshopExistence("dash");
+    }
+
+    //bottom  navigation view with item click listener
+    private NavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
+            = new NavigationView.OnNavigationItemSelectedListener() {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             // Handle navigation view item clicks here.
+
+            /* switch case to identify 5 button clicks, wihtin each case, a fragment instance
+             is created and the loadFragment method is called with the fragment instance as
+              the argument and lastly setting a suitable title  for the fragment class*/
 
             switch (item.getItemId()) {
 
@@ -88,27 +133,7 @@ public class MechanicPortal extends AppCompatActivity {
                     return true;
 
                 case R.id.nav_logout:
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MechanicPortal.this);
-                    builder.setMessage("Are you sure you want to logout?")
-                            .setTitle("Confirmation")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    FirebaseMessaging.getInstance().unsubscribeFromTopic(userId);
-                                    FirebaseAuth.getInstance().signOut();
-                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    intent.putExtra("type", "2");
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
+                   displayAlertDialogandLogout();
                     closeDrawer();
                     return true;
             }
@@ -116,44 +141,41 @@ public class MechanicPortal extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String newUser = currentUser.getUid();
-        FirebaseMessaging.getInstance().subscribeToTopic(newUser);
+    private void displayAlertDialogandLogout(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MechanicPortal.this);
+        builder.setMessage("Are you sure you want to logout?")
+                .setTitle("Confirmation")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseMessaging.getInstance().unsubscribeFromTopic(userId);
+                        FirebaseAuth.getInstance().signOut();
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("type", "2");
+                        startActivity(intent);
+                        finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.mechanic_portal_activity);
-        setTitle("Dashboard");
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        navigationView.setNavigationItemSelectedListener(onNavigationItemSelectedListener);
-
-        getAnyEmergenciesSOS();
-
-        navigationView.setCheckedItem(R.id.nav_dashboard);
-        checkWorkshopExistence("dash");
-    }
-
+    //method contains a snapsho listner to listen to SOS messages from riders facing breakdowns nearby to current user
     private void getAnyEmergenciesSOS() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        final String userId = user.getUid();
+        currentUser = mAuth.getCurrentUser();
+        final String userId = currentUser.getUid();
+        //Query
         db.collection("SOS").whereEqualTo("status", "pending")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-
+                        //loop to get location of rider facing breakdown
                         for(QueryDocumentSnapshot snap : snapshot){
                             SOS sos = snap.toObject(SOS.class);
 
@@ -163,6 +185,7 @@ public class MechanicPortal extends AppCompatActivity {
                                 return;
                             }
                             GeoPoint sosGeopoint = sos.getGeoPoint();
+                            //method call to get current user location
                             getCurrentUserGeoPoint(sosGeopoint, sos, userId);
                         }
                     }
@@ -170,6 +193,7 @@ public class MechanicPortal extends AppCompatActivity {
     }
 
     private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
+        //Query to get current user info
         db.collection("users").document(id)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -178,9 +202,11 @@ public class MechanicPortal extends AppCompatActivity {
                 GeoPoint currentUserGeo = me.getGeoPoint();
 
                 try {
+                    //static method call to distance between distance between current user and rider facing breakdown
                     double distance = CalculateDistance.calculateDistanceFormulae(sosGeoPoint, currentUserGeo);
-
+                    //checking if distance in less or equal to 1.2km
                     if (distance <= 1.2) {
+                        //show alertDialog to show emergency
                         Intent intent = new Intent(MechanicPortal.this, ShowEmergencyAlert.class);
                         intent.putExtra("userId", sos.getUserId());
                         intent.putExtra("issue", sos.getIssue());
@@ -197,12 +223,12 @@ public class MechanicPortal extends AppCompatActivity {
 
     }
 
-
+    //Method to check id current user has a registered workshop, if not prompt to add one.
     private void checkWorkshopExistence(final String tab) {
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        //get current user id
+        currentUser = mAuth.getCurrentUser();
         userId = currentUser.getUid();
-
+        //Query to get workshop details
         db.collection("my_workshop").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -259,17 +285,17 @@ public class MechanicPortal extends AppCompatActivity {
         return true;
     }
 
-
+    //this method will load the desired fragment when called
     public void loadFragment(Fragment fragment) {
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.frameLayMechanic, fragment);
         fragmentTransaction.commit();
     }
 
+    //Method with snapshop listener to check if there is a any pending booking request for the registered workshop
     private void bookingRequestListener() {
-
+        //Query to check pending request
         db.collection("bookings").whereEqualTo("workshopId", userId)
                 . whereEqualTo("status", "pending")
                 .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
@@ -293,6 +319,7 @@ public class MechanicPortal extends AppCompatActivity {
                             bundle.putString("rCat", booking.getRepairCategory());
                             bundle.putLong("bookingId", booking.getBookingID());
 
+                            //Display booking via alertDialog
                             BookingRequestFragment fragment = new BookingRequestFragment();
                             fragment.setArguments(bundle);
                             fragment.show(getSupportFragmentManager(), "ViewBookingRequest");

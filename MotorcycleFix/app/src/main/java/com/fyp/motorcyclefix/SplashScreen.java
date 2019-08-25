@@ -6,24 +6,16 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import gr.net.maroulis.library.EasySplashScreen;
 
 public class SplashScreen extends AppCompatActivity {
-
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference userRef = db.collection("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-
+        //Easy splash screen library instance to display splash screen
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)

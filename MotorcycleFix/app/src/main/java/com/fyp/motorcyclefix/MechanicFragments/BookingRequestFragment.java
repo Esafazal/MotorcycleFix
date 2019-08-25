@@ -23,7 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class BookingRequestFragment extends AppCompatDialogFragment {
@@ -63,6 +67,15 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         if(!sDesc.equals("")){
             rDetailS.setVisibility(View.VISIBLE);
             rDetailD.setVisibility(View.VISIBLE);
+        }
+
+        String date = null;
+        try {
+            DateFormat dateFormat = new SimpleDateFormat("E dd MMM", Locale.ENGLISH);
+            Date d = new Date(serviceDate);
+            date = dateFormat.format(d);
+        } catch (Exception e){
+            e.printStackTrace();
         }
 
         getUserVehicle();

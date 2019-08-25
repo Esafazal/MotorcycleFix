@@ -84,16 +84,25 @@ public class WorkshopFragment extends Fragment {
                     workshopId = workshop.getWorkshopId();
 
                     String data = "|";
-                    for (String specialized : workshop.getSpecialized()) {
+                    if(workshop.getSpecialized() != null){
 
-                        data += "| " + specialized + " |";
+                        for (String specialized : workshop.getSpecialized()) {
 
+                            data += "| " + specialized + " |";
+
+                        }
                     }
-                        data += "|";
-                    workshopDaoList.add(new WorkshopDao(R.drawable.reliability
-                            , workshop.getWorkshopName()+" - "+workshop.getLocationName(), data));
+                    if(workshop.getSpecialized() == null){
+                        data += "All Models";
+                    }
 
-                    workshopIDs.add(workshopId);
+                        data += "|";
+
+                    if(workshop.getWorkshopName() != null){
+                        workshopDaoList.add(new WorkshopDao(R.drawable.reliability
+                                , workshop.getWorkshopName()+" - "+workshop.getLocationName(), data));
+                        workshopIDs.add(workshopId);
+                    }
 
                 }
 

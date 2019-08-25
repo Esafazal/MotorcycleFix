@@ -134,6 +134,7 @@ public class BookingsFragment extends Fragment {
                 String phoneNumber = String.valueOf(user.getPhoneNumber());
                 String startColor;
                 String endColor;
+
                 if(status.equals("accepted")){
                   startColor =  String.valueOf(getResources().getColor(R.color.green));
                   endColor =  String.valueOf(getResources().getColor(R.color.dimRed));
