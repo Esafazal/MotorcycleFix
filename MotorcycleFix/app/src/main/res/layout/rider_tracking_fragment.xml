@@ -8,6 +8,43 @@
     android:background="@color/white"
     tools:context=".RiderFragments.TrackingFragment">
 
+    <TextView
+        android:id="@+id/yellow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20sp"
+        android:visibility="gone"
+        android:textColor="@color/yelloOrange"
+        android:text="Pending"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/green"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="20sp"-->
+        <!--android:textColor="@color/green"-->
+        <!--android:text="Accepted/In Progress"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/yellow"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/red"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="20sp"-->
+        <!--android:textColor="@color/red"-->
+        <!--android:text="Completed/Message"-->
+        <!--app:layout_constraintStart_toEndOf="@+id/green"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/tracking_recycler_view"/>-->
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tracking_recycler_view"
@@ -16,7 +53,33 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/yellow"
         android:background="@color/white"
         android:padding="5sp"/>
+
+    <TextView
+        android:id="@+id/viewTrackingMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Bookings"
+        android:textSize="17sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/viewTrackingProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tracking_recycler_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>

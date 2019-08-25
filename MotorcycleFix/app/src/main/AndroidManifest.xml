@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <uses-feature
@@ -26,7 +26,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".PasswordReset"></activity>
+        <activity android:name=".Listeners.ShowEmergencyAlert"></activity>
+        <activity android:name=".RiderFragments.WorkshopFragments.SelectRepairCategory" />
+
+        <service android:name=".Services.RecieveFirebaseNotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".RiderFragments.WorkshopFragments.SelectBike" />
+        <activity android:name=".PasswordReset" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity" />
         <activity android:name=".RiderFragments.SettingsFragments.MyVehicle" />
@@ -52,14 +62,17 @@
             android:value="@string/google_maps_key" />
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-
+            android:value="@integer/google_play_services_version" /> <!-- [START fcm_default_icon] -->
         <activity
             android:name=".RiderPortal"
             android:label="@string/title_activity_rider_portal" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

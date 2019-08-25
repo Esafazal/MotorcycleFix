@@ -29,12 +29,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-      <TextView
-          android:visibility="invisible"
-            android:id="@+id/txtview"
-            android:layout_width="138dp"
-            android:layout_height="52dp"
-            android:text="TextView" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

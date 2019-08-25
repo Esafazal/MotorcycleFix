@@ -31,7 +31,7 @@
         android:text="Lasantha Mechanic n Malli"
         android:layout_below="@+id/workshopImg"
         android:textColor="@color/colorblack"
-        android:textSize="20sp" />
+        android:textSize="17sp" />
 
     <TextView
         android:id="@+id/specialized"
@@ -47,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10sp"
+        android:layout_marginBottom="10sp"
         android:contentDescription="@string/serviceIcon"
         android:src="@drawable/ic_ash_motorbike"
         android:layout_below="@+id/workshopName"/>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Listeners.ShowEmergencyAlert">
+
+    <TextView
+        android:id="@+id/sosTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="8dp"
+        android:text="Help Required!"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/maroon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/emergencyStatement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sosMessage"
+        android:textSize="14sp"
+        android:layout_marginTop="5sp"
+        android:paddingStart="10sp"
+        android:paddingEnd="10sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sosTitle" />
+
+
+    <TextView
+        android:id="@+id/riderName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:text="Name:"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emergencyStatement" />
+
+    <TextView
+        android:id="@+id/riderNameDynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="Esa Fazal "
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/riderName"
+        app:layout_constraintTop_toBottomOf="@+id/emergencyStatement" />
+
+    <TextView
+        android:id="@+id/phoneNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:text="Phone No:"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/riderNameDynamic" />
+
+    <TextView
+        android:id="@+id/riderPhoneDynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:autoLink="phone"
+        android:clickable="true"
+        android:text="0771719914"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/phoneNo"
+        app:layout_constraintTop_toBottomOf="@+id/riderName"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/issue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:text="Issue:"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/riderPhoneDynamic" />
+
+    <TextView
+        android:id="@+id/issueDynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:text="Cluth cable broken."
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/issue"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNo" />
+
+    <TextView
+        android:id="@+id/landmark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:text="LandMark:"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/issueDynamic" />
+
+    <TextView
+        android:id="@+id/landmarkDynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:text="Opposite NTB bank wattala."
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/landmark"
+        app:layout_constraintTop_toBottomOf="@+id/issue" />
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/miniFrameMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toTopOf="@id/sosFrame"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/landmarkDynamic"
+        tools:context=".Listeners.EmergencyAlertListener">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/sosFrame"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/miniFrameMap"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteY="713dp">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/acceptedSOS"
+                android:layout_width="0sp"
+                android:layout_height="match_parent"
+                android:text="Accept"
+                android:textSize="20sp"
+                android:layout_margin="3sp"
+                android:background="@color/colorblack"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/rejectSos"/>
+
+            <Button
+                android:id="@+id/rejectSos"
+                android:layout_width="0sp"
+                android:layout_height="match_parent"
+                android:text="Reject"
+                android:textSize="20sp"
+                android:layout_margin="2sp"
+                android:background="@color/red"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@+id/acceptedSOS"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/closeSOS"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Close"
+                android:visibility="gone"
+                android:textSize="20sp"
+                android:background="@color/lightAsh"
+                android:textStyle="bold"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

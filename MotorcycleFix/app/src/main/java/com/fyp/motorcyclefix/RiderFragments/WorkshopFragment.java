@@ -3,6 +3,7 @@ package com.fyp.motorcyclefix.RiderFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,16 +11,31 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.Dao.WorkshopDao;
-import com.fyp.motorcyclefix.Patterns.WorkshopsAdapter;
+import com.fyp.motorcyclefix.Adapters.WorkshopsAdapter;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +45,18 @@ import java.util.List;
  */
 public class WorkshopFragment extends Fragment {
 
+    private static final String TAG = "workshopFragment";
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference workshopRef = db.collection("my_workshop");
     private WorkshopsAdapter workshopsAdapter;
     private List<WorkshopDao> workshopDaoList;
+    private List<String> workshopIDs;
+    private StorageReference imgRef = FirebaseStorage.getInstance().getReference();
+    private GeoPoint geoPoint;
+    private String workshopId;
+    private ProgressBar progressBar;
+
 
     public WorkshopFragment() {
         // Required empty public constructor
@@ -41,49 +67,84 @@ public class WorkshopFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.rider_workshop_fragment, container, false);
+        final View view = inflater.inflate(R.layout.rider_workshop_fragment, container, false);
         setHasOptionsMenu(true);
 
-        fillExampleList();
-        setUpRecyclerView(view);
+        workshopDaoList = new ArrayList<>();
+        workshopIDs = new ArrayList<>();
+
+        workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Workshop workshop = documentSnapshot.toObject(Workshop.class);
+
+                    workshop.setWorkshopId(documentSnapshot.getId());
+                    workshopId = workshop.getWorkshopId();
+
+                    String data = "|";
+                    if(workshop.getSpecialized() != null){
+
+                        for (String specialized : workshop.getSpecialized()) {
+
+                            data += "| " + specialized + " |";
+
+                        }
+                    }
+                    if(workshop.getSpecialized() == null){
+                        data += "All Models";
+                    }
+
+                        data += "|";
+
+                    if(workshop.getWorkshopName() != null){
+                        workshopDaoList.add(new WorkshopDao(R.drawable.reliability
+                                , workshop.getWorkshopName()+" - "+workshop.getLocationName(), data));
+                        workshopIDs.add(workshopId);
+                    }
+
+                }
+
+                setUpRecyclerView(view);
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
 
         return view;
     }
 
-    private void fillExampleList() {
-        workshopDaoList = new ArrayList<>();
-        workshopDaoList.add(new WorkshopDao(R.drawable.weather_wallpaper
-                , "Sagara Mechanical Solutions", "Kawasaki | Hero-Honda"));
-        workshopDaoList.add(new WorkshopDao(R.drawable.workshop_image
-                , "MR Local Repairer", "TVS "));
-        workshopDaoList.add(new WorkshopDao(R.drawable.rider_bike
-                , "Raja motors", " Suzuki "));
-        workshopDaoList.add(new WorkshopDao(R.drawable.weather_wallpaper
-                , "Colombo motorists", "Hero-Honda | Ducati"));
-        workshopDaoList.add(new WorkshopDao(R.drawable.workshop_image
-                , "24/7 Unu Unu Repair", "Bajaj"));
-        workshopDaoList.add(new WorkshopDao(R.drawable.rider_bike
-                , "Sarath Engineering", "BMW | Yamaha"));
-    }
+
 
     private void setUpRecyclerView(View view) {
+
+        progressBar = view.findViewById(R.id.findWorkshopProgressBar);
+
         RecyclerView recyclerView = view.findViewById(R.id.workshop_recycler_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getActivity());
+
         workshopsAdapter = new WorkshopsAdapter(workshopDaoList);
 
         recyclerView.setLayoutManager(layoutManager);
+        progressBar.setVisibility(View.GONE);
         recyclerView.setAdapter(workshopsAdapter);
         workshopsAdapter.setOnItemClickListener(new WorkshopsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
 
-                String itemClick = String.valueOf(workshopDaoList.get(position));
+                String workshopId = String.valueOf(workshopIDs.get(position));
+
+                incrementClick(workshopId);
 
                 Intent intent = new Intent(getActivity(), ViewWorkshopActivity.class);
-                intent.putExtra("workshopID", "1");
-                intent.putExtra("workshop", itemClick);
-                startActivityForResult(intent, 1);
+                intent.putExtra("workshopId", workshopId);
+                startActivity(intent);
             }
         });
     }
@@ -106,10 +167,40 @@ public class WorkshopFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                workshopsAdapter.getFilter().filter(newText);
+               try {
+                   workshopsAdapter.getFilter().filter(newText);
+               } catch (Exception e){
+                   Log.d(TAG, e.toString());
+               }
                 return false;
             }
         });
 
+    }
+
+    private void incrementClick(final String workshopId){
+        final CollectionReference workshopClickRef = db.collection("my_workshop");
+        workshopClickRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                   String id2 = snapshot.getId();
+
+                   if(workshopId.equals(id2)){
+                       long count = snapshot.getLong("clicks");
+                       long newCount = count + 1;
+                       workshopClickRef.document(workshopId).update("clicks",newCount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                           @Override
+                           public void onComplete(@NonNull Task<Void> task) {
+                               Toast.makeText(getActivity(), "Click registered!", Toast.LENGTH_SHORT).show();
+                           }
+                       });
+                }
+
+
+                }
+            }
+        });
     }
 }

@@ -1,4 +1,4 @@
-package com.fyp.motorcyclefix.Patterns;
+package com.fyp.motorcyclefix.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,7 +58,6 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
 
         }
     }
-
 
     public WorkshopsAdapter(List<WorkshopDao> workshopDaos) {
         this.workshopDaos = workshopDaos;

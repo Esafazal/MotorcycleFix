@@ -6,6 +6,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".RiderFragments.TrackingFragments.TrackingViewDetails">
 
+
+    <TextView
+        android:id="@+id/bookingSummaryHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Booking Summary"
+        android:textColor="@color/yelloOrange"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginTop="5sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <!--BOOKING STATUS-->
+    <TextView
+        android:id="@+id/bookingStatusView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Booking Status     |"
+        android:textSize="18sp"
+        android:layout_marginTop="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        android:textColor="@color/colorblack"/>
+
     <!--SERVICE PROVIDER-->
     <TextView
         android:id="@+id/serviceProviderView"
@@ -14,9 +41,21 @@
         android:layout_marginStart="8dp"
         android:text="Service Provider   |"
         android:textSize="18sp"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookingStatus"
+        android:textColor="@color/colorblack"/>
+
+    <TextView
+        android:id="@+id/mechanicNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Mechanic Mobile |"
+        android:textSize="18sp"
+        android:layout_marginTop="5sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/serviceProvider"
         android:textColor="@color/colorblack"/>
 
     <!--SERVICE TYPE-->
@@ -29,7 +68,7 @@
         android:textSize="18sp"
         android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serviceProviderView"
+        app:layout_constraintTop_toBottomOf="@+id/mechanicNumberDynamic"
         android:textColor="@color/colorblack"/>
 
     <!--BOOKING ID-->
@@ -42,7 +81,7 @@
         android:textSize="18sp"
         android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/serviceTypeView"
+        app:layout_constraintTop_toBottomOf="@+id/serviceType"
         android:textColor="@color/colorblack"/>
 
     <!--VEHICLE-->
@@ -55,7 +94,7 @@
         android:textSize="18sp"
         android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bookingIdView"
+        app:layout_constraintTop_toBottomOf="@+id/bookingId"
         android:textColor="@color/colorblack"/>
 
     <!--SERVICE DATE AND TIME-->
@@ -68,27 +107,83 @@
         android:textSize="18sp"
         android:layout_marginTop="5sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/vehicleView"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle"
         android:textColor="@color/colorblack"/>
 
     <TextView
-        android:id="@+id/serviceProvider"
+        android:id="@+id/serviceCategoryStat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="dinesh motors"
+        android:layout_marginStart="8dp"
+        android:text="Category               |"
         android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
+        android:layout_marginTop="5sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/serviceDate"
+        android:textColor="@color/colorblack"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Description           |"
+        android:textSize="18sp"
+        android:layout_marginTop="5sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/serviceCategoryDynamic"
+        android:textColor="@color/colorblack"/>
+
+    <TextView
+        android:id="@+id/bookingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintLeft_toRightOf="@+id/serviceProviderView"
         android:layout_marginTop="10sp"
+        android:layout_marginStart="5sp"/>
+
+    <TextView
+        android:id="@+id/serviceProvider"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@+id/bookingStatus"
+        app:layout_constraintStart_toEndOf="@+id/serviceProviderView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5sp"
+        android:layout_marginStart="5sp"/>
+
+    <TextView
+        android:id="@+id/mechanicNumberDynamic"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:scrollHorizontally="true"
+        android:maxLines="1"
+        android:textIsSelectable="true"
+        android:autoLink="phone"
+        android:clickable="true"
+        android:focusableInTouchMode="true"
+        android:ellipsize="end"
+        app:layout_constraintTop_toBottomOf="@+id/serviceProviderView"
+        app:layout_constraintStart_toEndOf="@+id/serviceProviderView"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5sp"
         android:layout_marginStart="5sp"/>
 
     <TextView
         android:id="@+id/serviceType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Repair Service"
         android:textSize="18sp"
-        app:layout_constraintTop_toBottomOf="@+id/serviceProvider"
+        app:layout_constraintTop_toBottomOf="@+id/mechanicNumber"
         app:layout_constraintLeft_toRightOf="@+id/serviceTypeView"
         android:layout_marginTop="6sp"
         android:layout_marginStart="5sp"/>
@@ -97,7 +192,6 @@
         android:id="@+id/bookingId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0025"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/serviceType"
         app:layout_constraintLeft_toRightOf="@+id/bookingIdView"
@@ -108,7 +202,6 @@
         android:id="@+id/vehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bajaj Xcd 125"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/bookingId"
         app:layout_constraintLeft_toRightOf="@+id/vehicleView"
@@ -119,11 +212,99 @@
         android:id="@+id/serviceDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="10/07/2019 3pm"
         android:textSize="18sp"
         app:layout_constraintTop_toBottomOf="@+id/vehicle"
         app:layout_constraintLeft_toRightOf="@+id/serviceDateView"
         android:layout_marginTop="6sp"
         android:layout_marginStart="5sp"/>
+
+    <TextView
+        android:id="@+id/serviceCategoryDynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Engine"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/serviceDateView"
+        app:layout_constraintStart_toEndOf="@+id/serviceCategoryStat"
+        android:layout_marginTop="6sp"
+        android:layout_marginStart="5sp"/>
+
+    <TextView
+        android:id="@+id/descriptionDynamic"
+        android:layout_width="0sp"
+        android:layout_height="wrap_content"
+        android:text="The engine is making weird noises and has an incredible vibration!"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/serviceCategoryStat"
+        app:layout_constraintStart_toEndOf="@+id/description"
+        app:layout_constraintEnd_toEndOf="parent
+"
+        android:layout_marginTop="6sp"
+        android:layout_marginStart="5sp"/>
+
+    <TextView
+        android:id="@+id/messageStat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Message from Workshop :"
+        android:textColor="@color/colorblack"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionDynamic" />
+
+    <EditText
+        android:id="@+id/messageDynamic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/kindaRed"
+        android:inputType="none"
+        android:visibility="gone"
+        android:focusableInTouchMode="false"
+        android:text="Please come at 4pm on your selected date. Bring a clutch cable along with you."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageStat" />
+
+
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="395dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="5sp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bookingSummaryHeading"
+        tools:layout_editor_absoluteY="10dp" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="395dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/messageDynamic" />
+
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightAsh"
+        android:text="Close"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

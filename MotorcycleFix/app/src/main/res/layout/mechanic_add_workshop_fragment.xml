@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MechanicFragments.ProfileFragments.AddWorkshop">
+
+        <Button
+            android:id="@+id/workshopAddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Workshop"
+            android:textSize="15sp"
+            android:paddingStart="20sp"
+            android:paddingEnd="20sp"
+            android:layout_margin="7sp"
+            android:background="@color/yelloOrange"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_gravity="center"/>
+
+</FrameLayout>

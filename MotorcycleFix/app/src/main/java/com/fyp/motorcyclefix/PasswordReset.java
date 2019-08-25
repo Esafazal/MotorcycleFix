@@ -16,7 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class PasswordReset extends AppCompatActivity {
-
+    //Variables for widgets, bundle and firebase
     private FirebaseAuth mAuth;
     private EditText Email;
     private Bundle bundle;
@@ -28,6 +28,7 @@ public class PasswordReset extends AppCompatActivity {
         setTitle("Password Reset");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //initilize firebase auth
         mAuth = FirebaseAuth.getInstance();
 
         Email = findViewById(R.id.resetEmail);
@@ -35,29 +36,30 @@ public class PasswordReset extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //method call to check  user type
        checkUserType();
        return true;
     }
 
     public void passwordResetClickHandler(View view) {
+        //get user input from widget
         String email = Email.getText().toString().trim();
+        //method call to reset password
         passwordReset(email);
     }
 
     public void passwordReset(String email){
-
+        //boolean to validate form
         if(!validateForm(email)){
             return;
         }
-
+        //send password reset link to users email address
         mAuth.sendPasswordResetEmail(email).addOnCompleteListener(this, new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-
                 if(task.isSuccessful()){
                     Toast.makeText(getApplicationContext(), "Reset Link Sent.", Toast.LENGTH_SHORT).show();
                     checkUserType();
-
                 }else{
                     Toast.makeText(getApplicationContext(), "Unable to Send Reset Link", Toast.LENGTH_LONG).show();
                 }
@@ -65,6 +67,7 @@ public class PasswordReset extends AppCompatActivity {
         });
     }
 
+    //method to check the type of user requesting to reset password
     public void checkUserType(){
         Intent intent;
         bundle = getIntent().getExtras();
@@ -82,6 +85,7 @@ public class PasswordReset extends AppCompatActivity {
         }
     }
 
+    //method to validate password reset form
     private boolean validateForm(String email){
 
         boolean valid = true;

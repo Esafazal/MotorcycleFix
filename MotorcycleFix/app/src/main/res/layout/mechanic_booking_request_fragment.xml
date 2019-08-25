@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".MechanicFragments.BookingRequestFragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="10sp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="10sp"
+            android:paddingEnd="5sp">
+
+            <TextView
+                android:id="@+id/reqBikeModel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20sp"
+                android:text="Hero Hunk 2011"
+                android:textColor="@color/colorblack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/reqRiderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Esa Fazal"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reqBikeModel" />
+
+            <TextView
+                android:id="@+id/serviceTypeStatic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Service Type: "
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reqRiderName" />
+
+
+            <TextView
+                android:id="@+id/serviceDateStatic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Service Date: "
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/serviceTypeStatic" />
+
+            <TextView
+                android:id="@+id/repairCatStatic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Repair Category:"
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/serviceDateStatic"/>
+
+            <TextView
+                android:id="@+id/repairCatDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Engine"
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:visibility="gone"
+                android:textStyle="italic"
+                app:layout_constraintTop_toBottomOf="@+id/serviceDateStatic"
+                app:layout_constraintStart_toEndOf="@+id/repairCatStatic"/>
+
+            <TextView
+                android:id="@+id/reqSTypeDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Repair"
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toEndOf="@+id/serviceTypeStatic"
+                app:layout_constraintTop_toBottomOf="@+id/reqRiderName" />
+
+            <TextView
+                android:id="@+id/reqSDateDynamic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="23 July 2019"
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                app:layout_constraintStart_toEndOf="@+id/serviceDateStatic"
+                app:layout_constraintTop_toBottomOf="@+id/serviceTypeStatic" />
+
+            <!--repair detail text view-->
+            <TextView
+                android:id="@+id/repairDetailStatic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Repair Detail: "
+                android:textColor="@color/colorblack"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/repairCatStatic"
+                app:layout_constraintEnd_toStartOf="@+id/reqRepairDetialDynamic"/>
+
+            <TextView
+                android:id="@+id/reqRepairDetialDynamic"
+                android:layout_width="0sp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="Bike break pads change "
+                android:textColor="@color/colorblack"
+                android:textSize="15sp"
+                android:textStyle="italic"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/repairDetailStatic"
+                app:layout_constraintTop_toBottomOf="@+id/repairCatStatic"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/bookingDeclineBooking"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:background="@color/red"
+                android:text="Decline"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reqRepairDetialDynamic" />
+
+            <Button
+                android:id="@+id/bookingAcceptOrder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10sp"
+                android:layout_marginBottom="10sp"
+                android:background="@color/colorblack"
+                android:text="Accept"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bookingDeclineBooking" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

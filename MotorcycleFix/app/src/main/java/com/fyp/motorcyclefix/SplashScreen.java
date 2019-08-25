@@ -15,6 +15,7 @@ public class SplashScreen extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
+        //Easy splash screen library instance to display splash screen
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
@@ -25,5 +26,7 @@ public class SplashScreen extends AppCompatActivity {
         View splashIt = config.create();
 
         setContentView(splashIt);
+
     }
+
 }

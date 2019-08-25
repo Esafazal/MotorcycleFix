@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".RiderFragments.SettingsFragments.MyVehicle">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RiderFragments.SettingsFragments.MyVehicle"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
 <TextView
     android:id="@+id/profileUpdate"
@@ -64,7 +66,7 @@ tools:context=".RiderFragments.SettingsFragments.MyVehicle">
                     android:id="@+id/myVehicleChosenManufacturer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="kawasaki"
+                    android:text="manufacturer"
                     android:layout_gravity="end"
                     android:layout_marginTop="20sp"
                     android:layout_marginEnd="5sp"
@@ -100,7 +102,7 @@ tools:context=".RiderFragments.SettingsFragments.MyVehicle">
                     android:id="@+id/myVehicleChosenModel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bajaj XCD 125"
+                    android:text="model"
                     android:layout_gravity="right"
                     android:layout_marginTop="20sp"
                     android:layout_marginEnd="5sp"
@@ -200,21 +202,37 @@ tools:context=".RiderFragments.SettingsFragments.MyVehicle">
                     android:textSize="18sp"
                     android:textStyle="bold"/>
 
-                <RadioButton
-                    android:id="@+id/petrol"
+                <RadioGroup
+                    android:id="@+id/radioPowerUpdate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Petrol"
-                    android:layout_marginTop="40sp"
-                    android:layout_marginStart="20sp"/>
+                    android:layout_marginStart="20sp"
+                    android:layout_marginTop="15sp">
 
-                <RadioButton
-                    android:id="@+id/diesel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Diesel"
-                    android:layout_marginTop="40sp"
-                    android:layout_marginStart="100sp"/>
+                    <RadioButton
+                        android:id="@+id/radioPetrolUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="petrol"
+                        android:checked="true"
+                        android:layout_marginTop="20sp"/>
+
+                    <RadioButton
+                        android:id="@+id/radioDiesalUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="diesal"
+                        android:layout_marginStart="70dp"
+                        android:layout_marginTop="-32dp" />
+                    <RadioButton
+                        android:id="@+id/radioElectricUpdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="electric"
+                        android:layout_marginStart="140dp"
+                        android:layout_marginTop="-32dp" />
+
+                </RadioGroup>
 
             </androidx.cardview.widget.CardView>
 
@@ -240,7 +258,7 @@ tools:context=".RiderFragments.SettingsFragments.MyVehicle">
         android:text="Update Details"
         android:textSize="20sp"
         android:layout_margin="7sp"
-        android:background="@color/colorblack"
+        android:background="@color/yelloOrange"
         android:textColor="@color/white"
         android:textStyle="bold"
         android:onClick="updateVehicleButtonClick"/>
