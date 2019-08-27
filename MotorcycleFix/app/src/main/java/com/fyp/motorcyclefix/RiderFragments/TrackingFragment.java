@@ -39,9 +39,9 @@ import java.util.Date;
  * A simple {@link Fragment} subclass.
  */
 public class TrackingFragment extends Fragment {
-
+    //constant
     private static final String TAG = "trackingFragment";
-
+    //varibale declarations and initilizations
     private RecyclerView recyclerView;
     private TrackingAdapter trackingAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -62,9 +62,10 @@ public class TrackingFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.rider_tracking_fragment, container, false);
 
+        //getting reference to the widgets in layout
         progressBar = view.findViewById(R.id.viewTrackingProgressBar);
         message = view.findViewById(R.id.viewTrackingMessage);
-
+        //method call to get bookings
         getPlacedBookings(view);
 
         return view;
@@ -72,11 +73,13 @@ public class TrackingFragment extends Fragment {
 
     private void getPlacedBookings(final View view){
         final ArrayList<Booking> bookings = new ArrayList<>();
+        //get  current user id
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
 
         message.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
+        //Query to get bookings placed by current user
         bookingRef.whereEqualTo("userId", userId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -88,6 +91,7 @@ public class TrackingFragment extends Fragment {
                     String bUserId = booking.getUserId().trim();
 
                     if(bUserId.equals(userId)){
+                        //get bike model of the current user
                         getBikeModel(booking, view, bookings);
                     }
                 }
@@ -107,89 +111,93 @@ public class TrackingFragment extends Fragment {
 
     private void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
 
-        final String vehicleId = booking.getVehicleId().trim();
+        try {
+            final String vehicleId = booking.getVehicleId().trim();
+            //query to get information of the registered bike
+            db.collection("my_vehicle").whereEqualTo("userId", booking.getUserId())
+                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
-        db.collection("my_vehicle").whereEqualTo("userId", booking.getUserId())
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
+                        Vehicle vehicle = snap.toObject(Vehicle.class);
+                        String mVehicleId = snap.getId();
 
-                        for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
-
-                            Vehicle vehicle = snap.toObject(Vehicle.class);
-
-                            String mVehicleId = snap.getId();
-
-                            if (mVehicleId.equals(vehicleId)) {
-                                booking.setModel(vehicle.getManufacturer()+" "+vehicle.getModel());
-                            }
+                        if (mVehicleId.equals(vehicleId)) {
+                            booking.setModel(vehicle.getManufacturer() + " " + vehicle.getModel());
                         }
-
-                        long bookId = booking.getBookingID();
-                        String sType = booking.getServiceType();
-                        String makeNModel = booking.getModel();
-                        String status = booking.getStatus();
-                        String message = booking.getMessage();
-                        Date dateOfService = booking.getDateOfService();
-                        String workshopId = booking.getWorkshopId();
-                        String category = booking.getRepairCategory();
-                        String description = booking.getRepairDescription();
-                        String messageSeen = booking.getMessageSeen();
-                        String viewColor = null;
-
-                        if(status.equals("accepted") || status.equals("progress")){
-                            viewColor = String.valueOf(getResources().getColor(R.color.green));
-                        }
-                        if(status.equals("completed")){
-                            viewColor = String.valueOf(getResources().getColor(R.color.red));
-                        }
-
-                        trackingDaos.add(new Booking(bookId, sType, viewColor, makeNModel, message
-                                        , status, messageSeen, category, description, workshopId, dateOfService, ""));
-
-                        recyclerView = view.findViewById(R.id.tracking_recycler_view);
-                        recyclerView.setHasFixedSize(true);
-                        layoutManager = new LinearLayoutManager(getActivity());
-                        trackingAdapter = new TrackingAdapter(trackingDaos);
-
-                        progressBar.setVisibility(View.GONE);
-                        recyclerView.setLayoutManager(layoutManager);
-                        recyclerView.setAdapter(trackingAdapter);
-
-
-                        trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(int position) {
-
-                                Booking data = trackingDaos.get(position);
-                                Bundle bundle = new Bundle();
-
-                                bundle.putLong("bookingID", data.getBookingID());
-                                bundle.putString("bookingStatus", data.getStatus());
-                                bundle.putString("serviceType", data.getServiceType());
-                                bundle.putString("serviceDate", String.valueOf(data.getDateOfService()));
-                                bundle.putString("model", data.getModel());
-                                bundle.putString("workshopID", data.getWorkshopId());
-                                bundle.putString("repairCat", data.getRepairCategory());
-                                bundle.putString("repairDesc", data.getRepairDescription());
-                                bundle.putString("message", data.getMessage());
-
-                                TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
-                                trackingViewDetails.setArguments(bundle);
-                                trackingViewDetails.show(getActivity().getSupportFragmentManager(), "View Details");
-
-                            }
-                        });
-
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                    //variable initilizations to pass into booking constructor
+                    long bookId = booking.getBookingID();
+                    String sType = booking.getServiceType();
+                    String makeNModel = booking.getModel();
+                    String status = booking.getStatus();
+                    String message = booking.getMessage();
+                    Date dateOfService = booking.getDateOfService();
+                    String workshopId = booking.getWorkshopId();
+                    String category = booking.getRepairCategory();
+                    String description = booking.getRepairDescription();
+                    String messageSeen = booking.getMessageSeen();
+                    String viewColor = null;
 
-                        Log.d(TAG, e.toString());
+                    if (status.equals("accepted") || status.equals("progress")) {
+                        viewColor = String.valueOf(getResources().getColor(R.color.green));
                     }
-                });
+                    if (status.equals("completed")) {
+                        viewColor = String.valueOf(getResources().getColor(R.color.red));
+                    }
+                    //adding all the variables
+                    trackingDaos.add(new Booking(bookId, sType, viewColor, makeNModel, message
+                            , status, messageSeen, category, description, workshopId, dateOfService, ""));
+
+                    //Tracking adapter initilizations, setup and passing values to the adapter
+                    recyclerView = view.findViewById(R.id.tracking_recycler_view);
+                    recyclerView.setHasFixedSize(true);
+                    layoutManager = new LinearLayoutManager(getActivity());
+                    trackingAdapter = new TrackingAdapter(trackingDaos);
+
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(trackingAdapter);
+                    //tracking recylcer view on item click listener
+                    trackingAdapter.setOnItemClickListener(new TrackingAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(int position) {
+
+                            Booking data = trackingDaos.get(position);
+                            //values passed into  the bundler object to pass data to next ativity
+                            Bundle bundle = new Bundle();
+                            bundle.putLong("bookingID", data.getBookingID());
+                            bundle.putString("bookingStatus", data.getStatus());
+                            bundle.putString("serviceType", data.getServiceType());
+                            bundle.putString("serviceDate", String.valueOf(data.getDateOfService()));
+                            bundle.putString("model", data.getModel());
+                            bundle.putString("workshopID", data.getWorkshopId());
+                            bundle.putString("repairCat", data.getRepairCategory());
+                            bundle.putString("repairDesc", data.getRepairDescription());
+                            bundle.putString("message", data.getMessage());
+
+                            //display tracking summary
+                            TrackingViewDetails trackingViewDetails = new TrackingViewDetails();
+                            trackingViewDetails.setArguments(bundle);
+                            trackingViewDetails.show(getActivity().getSupportFragmentManager(), "View Details");
+
+                        }
+                    });
+
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.d(TAG, e.toString());
+        }
     }
 
     @Override
@@ -199,7 +207,7 @@ public class TrackingFragment extends Fragment {
     }
 
     private AlertDialog.Builder showDialogBox() {
-
+        //
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();

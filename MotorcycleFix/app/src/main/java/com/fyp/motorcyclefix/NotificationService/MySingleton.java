@@ -1,4 +1,4 @@
-package com.fyp.motorcyclefix.Services;
+package com.fyp.motorcyclefix.NotificationService;
 
 import android.content.Context;
 

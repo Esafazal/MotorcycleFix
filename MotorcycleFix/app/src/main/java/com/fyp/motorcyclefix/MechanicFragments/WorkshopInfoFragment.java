@@ -41,9 +41,9 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class WorkshopInfoFragment extends Fragment implements View.OnClickListener {
-
+    //constant
     public static final String TAG = "workshopFragment";
-
+    //vairable declarations and initilization
     private EditText wName, wAddress, wPlace, wOpenHours, wLat, wLng;
     private TextView wSpecialized;
     private Button update;
@@ -66,6 +66,7 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.mechanic_workshop_info_fragment_, container, false);
 
+        //widget references
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         String WorkshopExist = getArguments().getString("workshopExists");
         update = view.findViewById(R.id.workshopUpdateButton);
@@ -92,7 +93,7 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
 
         return view;
     }
-
+    //method to add workshop
     private void registerWorkshop(final GeoPoint geoPoint, long clicks) {
         FirebaseUser cUser = mAuth.getCurrentUser();
         String userId = cUser.getUid();
@@ -102,7 +103,15 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
         String workshopAddress = wAddress.getText().toString();
         String workshopOpenH = wOpenHours.getText().toString();
         String workshopPlace = wPlace.getText().toString();
-        special.addAll(workshop.getSpecialized());
+
+        if(workshop.getSpecialized() != null){
+            special.addAll(workshop.getSpecialized());
+        }
+
+        //check if the validtion is false
+        if(!validateForm(workshopName, workshopAddress, workshopOpenH, workshopPlace)){
+            return;
+        }
 
         workshop.setWorkshopName(workshopName);
         workshop.setAddress(workshopAddress);
@@ -200,6 +209,31 @@ public class WorkshopInfoFragment extends Fragment implements View.OnClickListen
                 }
             }
         });
+    }
+
+    //method to validate form
+    private boolean validateForm(String workshopName, String workshopAddress, String openHours, String place) {
+
+        boolean valid = true;
+
+        if (workshopName.isEmpty()) {
+            wName.setError("Please enter name of your workshop!");
+            wName.requestFocus();
+            valid = false;
+        } else if (workshopAddress.isEmpty()) {
+            wAddress.setError("Please enter address to your workshop!");
+            wAddress.requestFocus();
+            valid = false;
+        } else if (place.isEmpty()) {
+            wPlace.setError("Please enter name of location!");
+            wPlace.requestFocus();
+            valid = false;
+        }else if (openHours.isEmpty()) {
+            wOpenHours.setError("Please enter open hours!");
+            wOpenHours.requestFocus();
+            valid = false;
+        }
+        return valid;
     }
 
     @Override

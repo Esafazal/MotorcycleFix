@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.CardViewHolder> implements Filterable {
-
+    //variables
     private List<WorkshopDao> workshopDaos;
     private List<WorkshopDao> workshopList;
     private WorkshopsAdapter.OnItemClickListener itemClickListener;
 
+    //interface for item click listner with one method
     public interface OnItemClickListener{
         void onItemClick(int position);
     }
@@ -32,17 +33,18 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
     }
 
     public static class CardViewHolder extends RecyclerView.ViewHolder {
-
+        //variables for widgets
         public ImageView workshopImg;
         public TextView workshopName;
         public TextView speciality;
 
         public CardViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
+            //initilization
             workshopImg = itemView.findViewById(R.id.workshopImg);
             workshopName = itemView.findViewById(R.id.workshopName);
             speciality = itemView.findViewById(R.id.specialized);
-
+            //click listner impl
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -58,7 +60,7 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
 
         }
     }
-
+    //constructor
     public WorkshopsAdapter(List<WorkshopDao> workshopDaos) {
         this.workshopDaos = workshopDaos;
         workshopList = new ArrayList<>(workshopDaos);
@@ -86,7 +88,7 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
 
     @Override
     public int getItemCount() {
-
+        //return item size
         return workshopDaos.size();
     }
 
@@ -94,7 +96,7 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
     public Filter getFilter() {
         return workshopFilter;
     }
-
+    //method filters list of workshops based on the make, model specilization or workshop name
     private Filter workshopFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
@@ -106,7 +108,9 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
                 for (WorkshopDao item : workshopList) {
-                    if (item.getSpecalized().toLowerCase().contains(filterPattern)) {
+                    if (item.getSpecalized().toLowerCase().contains(filterPattern)
+                            || item.getWorkshopName().toLowerCase().contains(filterPattern)) {
+
                         filteredList.add(item);
                     }
                 }

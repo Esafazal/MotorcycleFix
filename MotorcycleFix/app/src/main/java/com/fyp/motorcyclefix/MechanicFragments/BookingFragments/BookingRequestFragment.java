@@ -1,7 +1,7 @@
-package com.fyp.motorcyclefix.MechanicFragments;
+package com.fyp.motorcyclefix.MechanicFragments.BookingFragments;
 
 import android.app.Dialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +12,13 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Vehicle;
-import com.fyp.motorcyclefix.MechanicPortal;
+import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
-import com.fyp.motorcyclefix.Services.SendNotificationService;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,6 +39,7 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
     private String userId, vehicleId, serviceType, serviceDate, sDesc, rCategory;
     private long bookingId;
     private TextView makeModel, uName, sType, sDate, rDetailD, rCategoryS, rCategoryD, rDetailS;
+    private AlertDialog.Builder builder;
 
     public BookingRequestFragment() {
         // Required empty public constructor
@@ -80,27 +82,32 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
 
         getUserVehicle();
         sType.setText(serviceType);
-        sDate.setText(serviceDate);
+        sDate.setText(date);
         rDetailD.setText(sDesc);
         rCategoryD.setText(rCategory);
 
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                acceptBooking();
+              acceptBooking(getActivity(), getActivity().getSupportFragmentManager());
+              dismiss();
             }
         });
 
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                declineBooking();
+                declineBooking(getActivity());
+                dismiss();
             }
         });
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//        AlertDialog.Builder
+                builder = new AlertDialog.Builder(getActivity());
+        builder.setView(view);
 
-        return builder.setView(view).create();
+
+        return builder.create();
     }
 
 
@@ -140,10 +147,9 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
                 uName.setText(user.getName());
             }
         });
-
     }
 
-    private void declineBooking() {
+    private void declineBooking(final Context context) {
 
         Map<String, Object> update = new HashMap<>();
         update.put("status", "declined");
@@ -153,31 +159,32 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
                 .update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getActivity(), "Accepted Booking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Accepted Booking", Toast.LENGTH_SHORT).show();
                 String title = "Booking Rejected";
                 String message = "This is to inform your order has been declined, So please Place another order.";
-                SendNotificationService.sendNotification(getContext(), userId, title, message);
+                SendNotificationService.sendNotification(context, userId, title, message);
 
-                startActivity(new Intent(getActivity(), MechanicPortal.class));
             }
         });
     }
 
-    private void acceptBooking() {
+    private void acceptBooking(final Context context, final FragmentManager manager) {
 
         db.collection("bookings").document(String.valueOf(bookingId))
                 .update("status", "accepted").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(), "Accepted Booking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Accepted Booking", Toast.LENGTH_SHORT).show();
                 String title = "Booking Accepted";
                 String message = "This is to inform your order has been accepted.";
-                SendNotificationService.sendNotification(getContext(), userId, title, message);
+                SendNotificationService.sendNotification(context, userId, title, message);
 
-                startActivity(new Intent(getActivity(), MechanicPortal.class));
+                manager.beginTransaction()
+                        .replace(R.id.frameLayMechanic, new BookingsFragment()).commit();
+
             }
         });
-    }
 
+    }
 
 }

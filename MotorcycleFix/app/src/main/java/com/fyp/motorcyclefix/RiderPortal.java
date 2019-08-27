@@ -2,6 +2,7 @@ package com.fyp.motorcyclefix;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -14,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.Listeners.ShowEmergencyAlert;
 import com.fyp.motorcyclefix.RiderFragments.EmergencyFragment;
 import com.fyp.motorcyclefix.RiderFragments.MapsFragment;
@@ -67,11 +68,13 @@ public class RiderPortal extends AppCompatActivity {
 
         //initilizr firebase user instance and get user id
         user = mAuth.getCurrentUser();
-        String userId = user.getUid();
-        //method calls get workshop feedback and get any emergencies nearby
-        leaveFeedback(userId);
-        getAnyEmergenciesSOS(userId);
 
+        if(user != null){
+            String userId = user.getUid();
+            //method calls get workshop feedback and get any emergencies nearby
+            leaveFeedback(userId);
+            getAnyEmergenciesSOS(userId);
+        }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
 
@@ -80,11 +83,9 @@ public class RiderPortal extends AppCompatActivity {
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
             /* switch case to identify 5 button clicks, wihtin each case, a fragment instance
              is created and the loadFragment method is called with the fragment instance as
               the argument and lastly setting a suitable title  for the fragment class*/
-
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     selectedFragment = new MapsFragment();
@@ -136,12 +137,19 @@ public class RiderPortal extends AppCompatActivity {
                     bundle.putString("workId", booking.getWorkshopId());
                     //alertDialog is a triggered to get user rating for the service recieved
                     GetServiceRating getServiceRating = new GetServiceRating();
+                    Log.d(TAG, "Leave Feedback");
                     getServiceRating.setArguments(bundle);
                     getServiceRating.show(getSupportFragmentManager(), TAG);
                 }
             }
         });
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        Log.d(TAG, "onSaveInstanceState Called:");
+    }
+
     //method contains a snapsho listner to listen to SOS messages from riders facing breakdowns nearby to current user
     private void getAnyEmergenciesSOS(final String userId) {
         //Query
@@ -174,7 +182,6 @@ public class RiderPortal extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User me = documentSnapshot.toObject(User.class);
                 GeoPoint currentUserGeo = me.getGeoPoint();
-
                try {
                    //static method call to distance between distance between current user and rider facing breakdown
                    double distance = CalculateDistance.calculateDistanceFormulae(sosGeoPoint, currentUserGeo);
@@ -195,16 +202,17 @@ public class RiderPortal extends AppCompatActivity {
                }
             }
         });
-
     }
+
+
+
     //method to load the desired fragment when bottom navigation view buttons are clicked
-    public void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment) {
         //support fragment manager instance
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.framelay, fragment);
         fragmentTransaction.commit();
-
     }
 
 }

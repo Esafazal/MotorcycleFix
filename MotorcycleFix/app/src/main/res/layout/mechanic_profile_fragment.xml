@@ -126,9 +126,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/emailText"
+                    android:clickable="false"
+                    android:focusableInTouchMode="false"
+                    android:focusable="false"
                     android:layout_toRightOf="@+id/nameImg"
                     android:layout_marginEnd="10sp"
-                    android:inputType="textEmailAddress"/>
+                    android:inputType="none"/>
                 <!--GENDER-->
                 <ImageView
                     android:id="@+id/genderImg"

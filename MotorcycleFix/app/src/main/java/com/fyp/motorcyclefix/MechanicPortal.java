@@ -22,9 +22,10 @@ import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Workshop;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.MechanicFragments.MechanicSchedule;
+import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.Listeners.ShowEmergencyAlert;
-import com.fyp.motorcyclefix.MechanicFragments.BookingRequestFragment;
+import com.fyp.motorcyclefix.MechanicFragments.BookingFragments.BookingRequestFragment;
 import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
 import com.fyp.motorcyclefix.MechanicFragments.DashboardFragment;
 import com.fyp.motorcyclefix.MechanicFragments.ProfileFragment;
@@ -116,6 +117,13 @@ public class MechanicPortal extends AppCompatActivity {
                 case R.id.nav_bookings:
                     setTitle("Bookings");
                     fragment = new BookingsFragment();
+                    loadFragment(fragment);
+                    closeDrawer();
+                    return true;
+
+                case R.id.nav_Schedule:
+                    setTitle("My Schedule");
+                    fragment = new MechanicSchedule();
                     loadFragment(fragment);
                     closeDrawer();
                     return true;

@@ -82,6 +82,11 @@ public class SignUpActivity extends AppCompatActivity {
         String password = Password.getText().toString().trim();
         final String name = Name.getText().toString();
         final String phone = phoneNumber.getText().toString();
+
+        //boolean to validate user inputs to widgets
+        if(!validateForm(email, password, name, phone)){
+            return;
+        }
         progressBar.setVisibility(View.VISIBLE);
         //method call to create user
         createUser(email, password, name, phone);
@@ -89,11 +94,6 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void createUser(final String email, final String password, final String name, final String phone){
-
-        //boolean to validate user inputs to widgets
-        if(!validateForm(email, password, name, phone)){
-            return;
-        }
 
         //gender radio button, getting user selected option
         int selectedId = sexGroup.getCheckedRadioButtonId();
@@ -244,13 +244,21 @@ public class SignUpActivity extends AppCompatActivity {
 
         boolean valid = true;
 
-        if (email.isEmpty()) {
+         if (name.isEmpty()) {
+            Name.setError("Please enter name");
+            Name.requestFocus();
+            valid = false;
+        } else if(email.isEmpty()) {
             Email.setError("Please Enter an Email Address!");
             Email.requestFocus();
             valid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Email.setError("Please Enter an Valid Email Address!");
             Email.requestFocus();
+            valid = false;
+        } else if (phoneN.length() < 10) {
+            phoneNumber.setError("Contains less than 10 digits");
+            phoneNumber.requestFocus();
             valid = false;
         } else if (password.isEmpty()) {
             Password.setError("Please Enter a Password!");
@@ -259,21 +267,6 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (password.length() < 6) {
             Password.setError("Password Too Short!");
             Password.requestFocus();
-            valid = false;
-
-        } else if (name.isEmpty()) {
-            Name.setError("Please enter name");
-            Name.requestFocus();
-            valid = false;
-
-        } else if (phoneN.length() < 10) {
-            phoneNumber.setError("Contains less than 10 digits");
-            phoneNumber.requestFocus();
-            valid = false;
-
-        } else if (phoneN.length() > 10) {
-            phoneNumber.setError("Contains more than 10 digits");
-            phoneNumber.requestFocus();
             valid = false;
         }
 

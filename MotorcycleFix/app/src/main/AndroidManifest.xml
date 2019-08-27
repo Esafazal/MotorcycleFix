@@ -29,7 +29,7 @@
         <activity android:name=".Listeners.ShowEmergencyAlert"></activity>
         <activity android:name=".RiderFragments.WorkshopFragments.SelectRepairCategory" />
 
-        <service android:name=".Services.RecieveFirebaseNotificationService">
+        <service android:name=".NotificationService.RecieveFirebaseNotificationService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -37,18 +37,35 @@
 
         <activity android:name=".RiderFragments.WorkshopFragments.SelectBike" />
         <activity android:name=".PasswordReset" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity" />
-        <activity android:name=".RiderFragments.SettingsFragments.MyVehicle" />
-        <activity android:name=".RiderFragments.SettingsFragments.ChooseModel" />
-        <activity android:name=".RiderFragments.SettingsFragments.ChooseManufacturer" />
-        <activity android:name=".RiderFragments.SettingsFragments.AddVehicle" />
-        <activity android:name=".RiderFragments.SettingsFragments.VehicleActivity" />
-        <activity android:name=".RiderFragments.SettingsFragments.ProfileActivity" />
+        <activity
+            android:name=".SignUpActivity"
+            android:screenOrientation="portrait"/>/>
+        <activity
+            android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.MyVehicle"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.ChooseModel"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.ChooseManufacturer"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.AddVehicle"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.VehicleActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".RiderFragments.SettingsFragments.ProfileActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <activity
             android:name=".MechanicPortal"
             android:label="@string/title_activity_mechanic_portal"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -65,14 +82,19 @@
             android:value="@integer/google_play_services_version" /> <!-- [START fcm_default_icon] -->
         <activity
             android:name=".RiderPortal"
-            android:label="@string/title_activity_rider_portal" />
-        <activity android:name=".LoginActivity" />
+            android:label="@string/title_activity_rider_portal"
+            android:configChanges="orientation|screenSize|keyboardHidden"/>
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

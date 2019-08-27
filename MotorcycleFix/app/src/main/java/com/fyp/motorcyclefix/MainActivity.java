@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.fyp.motorcyclefix.Dao.User;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.Services.CheckNetworkConnection;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //check if network connection is available, if not display snackbar message
-        boolean isConnected = CalculateDistance.isNetworkAvailable(this);
+        boolean isConnected = CheckNetworkConnection.isNetworkAvailable(this);
         if(!isConnected){
             Snackbar.make(constraintLayout, "NO CONNECTION!", Snackbar.LENGTH_INDEFINITE).show();
             progressBar.setVisibility(View.GONE);
@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                     //User type not null check, type of user, display toast and goto rider/mechanic portal
                     if (type != null) {
                         if (type.contentEquals("rider")) {
-                            Toast.makeText(MainActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Hi RiderPortalService!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), RiderPortal.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
                         }
@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
                         else if (type.contentEquals("mechanic")) {
                             Toast.makeText(MainActivity.this, "Hi Mechanic!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MechanicPortal.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                    | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                             finish();
                         }

@@ -24,11 +24,11 @@ import androidx.cardview.widget.CardView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
 import com.fyp.motorcyclefix.RiderPortal;
-import com.fyp.motorcyclefix.Services.SendNotificationService;
+import com.fyp.motorcyclefix.Services.GetWorkshopRating;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -164,7 +164,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         workshopImg.setImageResource(R.drawable.reliability);
 
         workshopId = getIntent().getStringExtra("workshopId");
-        CalculateDistance.getStarRating(workshopId, ratingBar, suggestion);
+        GetWorkshopRating.getStarRating(workshopId, ratingBar, suggestion);
 
         workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @SuppressLint("SetTextI18n")
@@ -338,12 +338,12 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
 
             case R.id.radioGeneral:
                 repairCategory.setVisibility(View.GONE);
-//                CalculateDistance.getTimeEstimateForGeneralService(ETA, estimateCard);
+//                GetTimeEstimate.getTimeEstimateForGeneralService(ETA, estimateCard);
                 return;
 
             case R.id.radioPolish:
                 repairCategory.setVisibility(View.GONE);
-//                CalculateDistance.getTimeEstimateForWashNWaxService(ETA, estimateCard);
+//                GetTimeEstimate.getTimeEstimateForWashNWaxService(ETA, estimateCard);
                 return;
         }
     }

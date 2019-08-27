@@ -69,6 +69,7 @@
     <string name="key">key=AAAAkzPIZqg:APA91bHGefpHFuCN9DFHP_NMq9Xqfgg29JTjhelCpIniwj0ZROv_i51eFDLdZkAAgWhl3oEEKU9ItVrudjzDPvEYl5wF6ty7rFGGUDWfjy47TGcd68_-h1YCodyCA4lx8sKtUYcgo714</string>
     <string name="sosMessage">This message is to get your kind attention to help a rider who is currently stuck in the road due to an unexpected breakdown. If you are willing to help please use the following rider detials to get in touch with the person. Thank you!</string>
     <string name="informedMessage">All users nearby you have been informed about your situation, Please await assistance. People willing to help will contact you shortly...</string>
+    <string name="schedule">Schedule</string>
 
 
 </resources>

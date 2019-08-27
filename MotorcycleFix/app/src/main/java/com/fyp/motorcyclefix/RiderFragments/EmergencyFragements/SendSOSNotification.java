@@ -24,9 +24,9 @@ import androidx.fragment.app.Fragment;
 
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.R;
-import com.fyp.motorcyclefix.Services.SendNotificationService;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;

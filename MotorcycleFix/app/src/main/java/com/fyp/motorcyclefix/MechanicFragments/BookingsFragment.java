@@ -23,8 +23,8 @@ import com.fyp.motorcyclefix.Adapters.AcceptedBookingsAdapter;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Vehicle;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
-import com.fyp.motorcyclefix.Services.SendNotificationService;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BookingsFragment extends Fragment {
+public class BookingsFragment extends Fragment implements AcceptedBookingsAdapter.OnItemClickListener{
 
     private RecyclerView mRecyclerView;
     private AcceptedBookingsAdapter mAdapter;
@@ -53,6 +53,7 @@ public class BookingsFragment extends Fragment {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private TextView noBookings;
     private ProgressBar progressBar;
+    private Booking booking;
 
     public BookingsFragment() {
         // Required empty public constructor
@@ -84,7 +85,7 @@ public class BookingsFragment extends Fragment {
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
 
                 for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-                    Booking booking = snapshot.toObject(Booking.class);
+                    booking = snapshot.toObject(Booking.class);
                     String status = booking.getStatus().trim();
 
                     if(status.equals("accepted") || status.equals("progress")){
@@ -154,86 +155,85 @@ public class BookingsFragment extends Fragment {
                 mRecyclerView.setAdapter(mAdapter);
                 progressBar.setVisibility(View.GONE);
 
-                mAdapter.setOnItemClickListener(new AcceptedBookingsAdapter.OnItemClickListener() {
-
-                    @Override
-                    public void onEditNote(int position, Button sendNote) {
-                        sendNote.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onStartServiceClick(final int position, final Button completeService, final Button startService) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage("Please note the customer is informed of the service start time" +
-                                ", Please make sure to update end time for collection. Do you want to start?")
-                                .setTitle("Confirmation")
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        completeService.setBackgroundColor(getResources().getColor(R.color.red));
-                                        completeService.setClickable(true);
-                                        startService.setBackgroundColor(getResources().getColor(R.color.dimGreem));
-                                        startService.setClickable(false);
-                                       updateStartTimeandStatus(position);
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                }).show();
-
-                    }
-
-                    @Override
-                    public void onCompleteServiceClick(final int position, final Button startService, final Button completeService) {
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage("Please note the customer is informed that the service is completed " +
-                                "and ready for collection. Are you sure the service is complete?")
-                                .setTitle("Confirmation")
-                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        updateEndTimeandStatus(position);
-                                    }
-                                })
-                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.cancel();
-                                    }
-                                }).show();
-                    }
-
-                    @Override
-                    public void onSendNoteClick(int position, final EditText editNote, final Button btnSend) {
-
-                        final String note = editNote.getText().toString();
-                        if(note.isEmpty()){
-                            editNote.setError("Please enter message!");
-                            editNote.requestFocus();
-                        }
-
-                        final String bookId = String.valueOf(booking.getBookingID());
-
-                        db.collection("bookings").document(bookId)
-                                .update("message", note).addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                btnSend.setVisibility(View.GONE);
-                                editNote.setEnabled(false);
-                                String title = "Message From Mechanic!";
-                                SendNotificationService.sendNotification(getContext(), booking.getUserId(), title, note);
-                            }
-                        });
-                    }
-                });
+                mAdapter.setOnItemClickListener(BookingsFragment.this);
             }
         });
 
+    }
+
+    @Override
+    public void onEditNote(int position, Button sendNote) {
+        sendNote.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onStartServiceClick(final int position, final Button completeService, final Button startService) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Please note the customer is informed of the service start time" +
+                ", Please make sure to update end time for collection. Do you want to start?")
+                .setTitle("Confirmation")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        completeService.setBackgroundColor(getResources().getColor(R.color.red));
+                        completeService.setClickable(true);
+                        startService.setBackgroundColor(getResources().getColor(R.color.dimGreem));
+                        startService.setClickable(false);
+                        updateStartTimeandStatus(position);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
+
+    }
+
+    @Override
+    public void onCompleteServiceClick(final int position, final Button startService, final Button completeService) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage("Please note the customer is informed that the service is completed " +
+                "and ready for collection. Are you sure the service is complete?")
+                .setTitle("Confirmation")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateEndTimeandStatus(position);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
+    }
+
+    @Override
+    public void onSendNoteClick(int position, final EditText editNote, final Button btnSend) {
+
+        final String note = editNote.getText().toString();
+        if(note.isEmpty()){
+            editNote.setError("Please enter message!");
+            editNote.requestFocus();
+        }
+
+        final String bookId = String.valueOf(booking.getBookingID());
+
+        db.collection("bookings").document(bookId)
+                .update("message", note).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                btnSend.setVisibility(View.GONE);
+                editNote.setEnabled(false);
+                String title = "Message From Mechanic!";
+                SendNotificationService.sendNotification(getContext(), booking.getUserId(), title, note);
+            }
+        });
     }
 
     private void updateEndTimeandStatus(int position){
@@ -288,4 +288,9 @@ public class BookingsFragment extends Fragment {
     }
 
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+    }
 }
