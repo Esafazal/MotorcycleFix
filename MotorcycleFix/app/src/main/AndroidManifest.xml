@@ -39,7 +39,7 @@
         <activity android:name=".PasswordReset" />
         <activity
             android:name=".SignUpActivity"
-            android:screenOrientation="portrait"/>/>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".RiderFragments.WorkshopFragments.ViewWorkshopActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"/>
