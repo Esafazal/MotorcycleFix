@@ -96,36 +96,42 @@ public class WorkshopsAdapter extends RecyclerView.Adapter<WorkshopsAdapter.Card
     public Filter getFilter() {
         return workshopFilter;
     }
-    //method filters list of workshops based on the make, model specilization or workshop name
+    //adapter method filters list of workshops based on the make, model specilization or workshop name
     private Filter workshopFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<WorkshopDao> filteredList = new ArrayList<>();
-
+            //get workshop arrayList to filter if constraint isn't null
             if (constraint == null || constraint.length() == 0) {
                 filteredList.addAll(workshopList);
             } else {
+                //if null, convert user input to lowercaase  and revmove spaces
                 String filterPattern = constraint.toString().toLowerCase().trim();
-
+                //loop workshopList and filter according to user input String
                 for (WorkshopDao item : workshopList) {
+                    //checks for filter pattern of make, model and workshop name
                     if (item.getSpecalized().toLowerCase().contains(filterPattern)
                             || item.getWorkshopName().toLowerCase().contains(filterPattern)) {
-
+                        //add the list of matching workshops to the filteredList object and display user
                         filteredList.add(item);
                     }
                 }
             }
-
+            //create a new object of the filterResults and pass in filtered list
             FilterResults results = new FilterResults();
             results.values = filteredList;
-
+            //send results to the adapter
             return results;
         }
 
+        //method to publish filtered results to adapter
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
+            //empty the list
             workshopDaos.clear();
+            //add new list of results
             workshopDaos.addAll((List) results.values);
+            //method call to notify change
             notifyDataSetChanged();
         }
     };

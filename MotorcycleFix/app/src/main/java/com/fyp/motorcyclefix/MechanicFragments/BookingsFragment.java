@@ -44,7 +44,9 @@ import java.util.Map;
  * A simple {@link Fragment} subclass.
  */
 public class BookingsFragment extends Fragment implements AcceptedBookingsAdapter.OnItemClickListener{
-
+    //
+    public static final String TAG = "bookingsFragment";
+    //
     private RecyclerView mRecyclerView;
     private AcceptedBookingsAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -65,13 +67,12 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.mechanic_bookings_fragment, container, false);
-
+        //
         progressBar = view.findViewById(R.id.bookingsProgressBar);
         noBookings = view.findViewById(R.id.viewBookingsAccepted);
         mRecyclerView = view.findViewById(R.id.bookings_recycler_view);
-
+        //
         getAcceptedBookings();
-
         return view;
     }
 
@@ -91,7 +92,6 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                     if(status.equals("accepted") || status.equals("progress")){
                         progressBar.setVisibility(View.VISIBLE);
                         noBookings.setVisibility(View.GONE);
-
                         getVehicleMakeNModel(booking);
                     }
                 }
@@ -143,8 +143,6 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                     startColor =  String.valueOf(getResources().getColor(R.color.dimGreem));
                     endColor =  String.valueOf(getResources().getColor(R.color.red));
                 }
-
-
                 bookings.add(new Booking(bID, sType, dateOfService, repairDesc, userName
                         , makeNmodel, uID, status, phoneNumber,startColor, endColor));
 
@@ -168,7 +166,7 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
 
     @Override
     public void onStartServiceClick(final int position, final Button completeService, final Button startService) {
-
+        //display confirmation message
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Please note the customer is informed of the service start time" +
                 ", Please make sure to update end time for collection. Do you want to start?")
@@ -189,12 +187,11 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                         dialog.cancel();
                     }
                 }).show();
-
     }
 
     @Override
     public void onCompleteServiceClick(final int position, final Button startService, final Button completeService) {
-
+        //display confirmation message
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Please note the customer is informed that the service is completed " +
                 "and ready for collection. Are you sure the service is complete?")
@@ -213,17 +210,17 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                 }).show();
     }
 
+    //method to send message to rider
     @Override
     public void onSendNoteClick(int position, final EditText editNote, final Button btnSend) {
-
+        ///get string entered by mechanic
         final String note = editNote.getText().toString();
         if(note.isEmpty()){
             editNote.setError("Please enter message!");
             editNote.requestFocus();
         }
-
         final String bookId = String.valueOf(booking.getBookingID());
-
+        //query
         db.collection("bookings").document(bookId)
                 .update("message", note).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -286,7 +283,6 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
                     }
                 });
     }
-
 
     @Override
     public void onDetach() {

@@ -88,7 +88,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 User user1 = documentSnapshot.toObject(User.class);
                 phoneNo = user1.getPhoneNumber();
                 name.setText(user1.getName());
-                number.setText(String.valueOf("+94"+user1.getPhoneNumber()));
+                number.setText("+94" + user1.getPhoneNumber());
             }
         });
 
@@ -108,7 +108,6 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         if(checkPermission()){
             mMap.setMyLocationEnabled(true);
         } else{
@@ -122,7 +121,6 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     }
 
     private void getCurrentUserPosition() {
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -134,12 +132,11 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
             @Override
             public void onComplete(@NonNull Task<Location> task) {
                 if(task.isSuccessful()){
+                    //
                     Location location = task.getResult();
-
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
-
+                    //
                     showUserInTrouble();
                 }
             }
@@ -147,13 +144,12 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     }
 
     private void showUserInTrouble() {
-
+        //
         LatLng latLng = new LatLng(lat, lng);
-
+        //
         MarkerOptions markerOptions = new MarkerOptions()
                 .position(latLng)
                 .title("I'm Here!");
-
         mMap.addMarker(markerOptions);
     }
 
@@ -185,7 +181,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 return;
 
             case R.id.closeSOS:
-                startActivity(new Intent(getApplicationContext(), RiderPortal.class));
+                onBackPressed();
                 return;
         }
     }

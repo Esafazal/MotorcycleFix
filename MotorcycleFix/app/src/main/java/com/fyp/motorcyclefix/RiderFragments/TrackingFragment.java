@@ -84,19 +84,24 @@ public class TrackingFragment extends Fragment {
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
+                //check if the retruned object is null
+                if(queryDocumentSnapshots.isEmpty()){
+                    //displays "no bookings" message
+                    message.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
                 for (QueryDocumentSnapshot bookingInfo : queryDocumentSnapshots) {
                     Booking booking = bookingInfo.toObject(Booking.class);
-
+                    //getting user id
                     String bUserId = booking.getUserId().trim();
-
+                    //check if current users id matches the queried user id
                     if(bUserId.equals(userId)){
                         //get bike model of the current user
                         getBikeModel(booking, view, bookings);
                     }
                 }
             }
-        })
+        })      //if the query isn't successful, display and log error
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -106,9 +111,7 @@ public class TrackingFragment extends Fragment {
                     }
                 });
     }
-
-
-
+    //get users bike make and model
     private void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
 
         try {

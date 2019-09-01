@@ -32,22 +32,18 @@ import com.google.firebase.messaging.RemoteMessage;
 import java.util.Random;
 
 public class RecieveFirebaseNotificationService extends FirebaseMessagingService {
-
-    //constant
+    //constant for channel
     private final String CHANNEL_ID ="admin_channel";
     //varibales and initilizations
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     public static final String TAG = "notificationService";
 
-
     @Override
     public void onNewToken(String s) {
         super.onNewToken(s);
-
         //get current user id
         FirebaseUser user = mAuth.getCurrentUser();
         String SUBSCRIBE_TO = user.getUid();
-
         //subscribing to a topic to get notfication from firebase cloud messaging
         FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);
         FirebaseInstanceId.getInstance().getInstanceId()
@@ -65,30 +61,24 @@ public class RecieveFirebaseNotificationService extends FirebaseMessagingService
                 });
     }
 
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
         //goto main activity when notification is clicked via pending intent
         final Intent intent = new Intent(this, MainActivity.class);
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         int notificationID = new Random().nextInt(3000);
-
         //checking if the users mobile device is running Android Oreo or updawards
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             //method call to setup channel
             setupChannels(notificationManager);
-        }
-
+        }//adding flags to the intent object
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this , 0, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
         //image to display in the notification recieved
         Bitmap largeIcon = BitmapFactory.decodeResource(getResources(),
                 R.drawable.logo);
-
         //enabling sound to be heard when a notifcation is recieved
         Uri notificationSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
@@ -100,22 +90,20 @@ public class RecieveFirebaseNotificationService extends FirebaseMessagingService
                 .setSound(notificationSoundUri)
                 .setContentIntent(pendingIntent)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
-
         //Set notification color to match your app color template
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             notificationBuilder.setColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+        //method call to dispatch notification
         notificationManager.notify(notificationID, notificationBuilder.build());
-
     }
-
 
     //method which sets up a channel if user device is running android oreo onwards
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupChannels(NotificationManager notificationManager){
         CharSequence adminChannelName = "New notification";
         String adminChannelDescription = "Device to device notification";
-
+        // creating a new object of NotifcationChannel
         NotificationChannel adminChannel;
         adminChannel = new NotificationChannel(CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
         adminChannel.setDescription(adminChannelDescription);

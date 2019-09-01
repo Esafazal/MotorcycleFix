@@ -118,9 +118,9 @@ public class RiderPortal extends AppCompatActivity {
     };
 
 
-    //method contains a snapsho listner to listen to completed bookings of the current user
+    //method contains a snapshot listner to listen to completed bookings of the current user
     private void leaveFeedback(String userId){
-        //Query
+        //Query to match exact booking of user
         db.collection("bookings")
                 .whereEqualTo("status", "completed")
                 .whereEqualTo("userId", userId)
@@ -131,14 +131,17 @@ public class RiderPortal extends AppCompatActivity {
 
                 for(QueryDocumentSnapshot snap : snapshot){
                     Booking booking = snap.toObject(Booking.class);
-
+                    //bundle object to pass data to fragment
                     Bundle bundle = new Bundle();
+                    //inserting data into bundle object
                     bundle.putString("bookId", snap.getId());
                     bundle.putString("workId", booking.getWorkshopId());
                     //alertDialog is a triggered to get user rating for the service recieved
                     GetServiceRating getServiceRating = new GetServiceRating();
                     Log.d(TAG, "Leave Feedback");
+                    //passing the bundle as an argument
                     getServiceRating.setArguments(bundle);
+                    //showing the dialog
                     getServiceRating.show(getSupportFragmentManager(), TAG);
                 }
             }
@@ -152,7 +155,7 @@ public class RiderPortal extends AppCompatActivity {
 
     //method contains a snapsho listner to listen to SOS messages from riders facing breakdowns nearby to current user
     private void getAnyEmergenciesSOS(final String userId) {
-        //Query
+        //Listener to get pending sos messages
         db.collection("SOS").whereEqualTo("status", "pending")
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
@@ -160,9 +163,7 @@ public class RiderPortal extends AppCompatActivity {
                         //loop to get location of rider facing breakdown
                         for(QueryDocumentSnapshot snap : snapshot){
                             SOS sos = snap.toObject(SOS.class);
-
                             String docId = snap.getId();
-
                             if(docId.equals(userId)){
                                 return;
                             }

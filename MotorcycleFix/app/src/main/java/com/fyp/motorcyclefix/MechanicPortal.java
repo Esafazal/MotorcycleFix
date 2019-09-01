@@ -148,9 +148,9 @@ public class MechanicPortal extends AppCompatActivity {
             return false;
         }
     };
-
+    //
     private void displayAlertDialogandLogout(){
-
+        //
         AlertDialog.Builder builder = new AlertDialog.Builder(MechanicPortal.this);
         builder.setMessage("Are you sure you want to logout?")
                 .setTitle("Confirmation")
@@ -186,9 +186,8 @@ public class MechanicPortal extends AppCompatActivity {
                         //loop to get location of rider facing breakdown
                         for(QueryDocumentSnapshot snap : snapshot){
                             SOS sos = snap.toObject(SOS.class);
-
                             String docId = snap.getId();
-
+                            //
                             if(docId.equals(userId)){
                                 return;
                             }
@@ -199,7 +198,7 @@ public class MechanicPortal extends AppCompatActivity {
                     }
                 });
     }
-
+    //
     private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
         //Query to get current user info
         db.collection("users").document(id)
@@ -228,7 +227,6 @@ public class MechanicPortal extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     //Method to check id current user has a registered workshop, if not prompt to add one.
@@ -276,7 +274,7 @@ public class MechanicPortal extends AppCompatActivity {
                     }
                 });
     }
-
+    //
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -286,7 +284,7 @@ public class MechanicPortal extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
+    //
     public boolean closeDrawer() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -309,15 +307,14 @@ public class MechanicPortal extends AppCompatActivity {
                 .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-
+                        //check if there is an exception
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e);
                             return;
-                        }
-
+                        }//looping to get snapshot object to booking model
                         for(QueryDocumentSnapshot snap : snapshot){
                             Booking booking = snap.toObject(Booking.class);
-
+                            //creaking a bundle object to pass information to next fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("userId", booking.getUserId());
                             bundle.putString("sType", booking.getServiceType());
@@ -326,13 +323,11 @@ public class MechanicPortal extends AppCompatActivity {
                             bundle.putString("sDesc", booking.getRepairDescription());
                             bundle.putString("rCat", booking.getRepairCategory());
                             bundle.putLong("bookingId", booking.getBookingID());
-
                             //Display booking via alertDialog
                             BookingRequestFragment fragment = new BookingRequestFragment();
                             fragment.setArguments(bundle);
                             fragment.show(getSupportFragmentManager(), "ViewBookingRequest");
                         }
-
                     }
                 });
     }

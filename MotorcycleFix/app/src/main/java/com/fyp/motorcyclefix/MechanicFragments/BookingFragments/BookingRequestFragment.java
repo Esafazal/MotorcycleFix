@@ -32,14 +32,16 @@ import java.util.Locale;
 import java.util.Map;
 
 public class BookingRequestFragment extends AppCompatDialogFragment {
-
+    //
+    public static final String TAG = "bookingRequestFragment";
+    //
     private Button acceptBtn, declineBtn;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId, vehicleId, serviceType, serviceDate, sDesc, rCategory;
     private long bookingId;
     private TextView makeModel, uName, sType, sDate, rDetailD, rCategoryS, rCategoryD, rDetailS;
-    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
 
     public BookingRequestFragment() {
         // Required empty public constructor
@@ -50,9 +52,9 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.mechanic_booking_request_fragment, null);
-
+        //
         initilizeWidgets(view);
-
+        //
         userId = getArguments().getString("userId");
         bookingId = getArguments().getLong("bookingId");
         vehicleId = getArguments().getString("vId");
@@ -61,7 +63,7 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         sDesc = getArguments().getString("sDesc");
         rCategory = getArguments().getString("rCat");
         vehicleId = getArguments().getString("vId");
-
+        //
         if(!rCategory.equals("")){
             rCategoryS.setVisibility(View.VISIBLE);
             rCategoryD.setVisibility(View.VISIBLE);
@@ -70,7 +72,7 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
             rDetailS.setVisibility(View.VISIBLE);
             rDetailD.setVisibility(View.VISIBLE);
         }
-
+        //
         String date = null;
         try {
             DateFormat dateFormat = new SimpleDateFormat("E dd MMM", Locale.ENGLISH);
@@ -79,21 +81,20 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         } catch (Exception e){
             e.printStackTrace();
         }
-
+        //
         getUserVehicle();
         sType.setText(serviceType);
         sDate.setText(date);
         rDetailD.setText(sDesc);
         rCategoryD.setText(rCategory);
-
+        //
         acceptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              acceptBooking(getActivity(), getActivity().getSupportFragmentManager());
-              dismiss();
+              acceptBooking();
             }
         });
-
+        //
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -101,17 +102,17 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
                 dismiss();
             }
         });
-
-//        AlertDialog.Builder
-                builder = new AlertDialog.Builder(getActivity());
+        //
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(view);
+        dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
 
-
-        return builder.create();
+        return dialog;
     }
-
-
+    //
     private void initilizeWidgets(View view) {
+        //
         acceptBtn = view.findViewById(R.id.bookingAcceptOrder);
         declineBtn = view.findViewById(R.id.bookingDeclineBooking);
         makeModel = view.findViewById(R.id.reqBikeModel);
@@ -123,22 +124,23 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         rCategoryS = view.findViewById(R.id.repairCatStatic);
         rCategoryD = view.findViewById(R.id.repairCatDynamic);
     }
-
+    //
     private void getUserVehicle() {
+        //
         db.collection("my_vehicle").document(vehicleId)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 Vehicle vehicle = documentSnapshot.toObject(Vehicle.class);
                 makeModel.setText(vehicle.getManufacturer()+" "+vehicle.getModel());
-
+                //
                 getUserName();
             }
         });
-
     }
-
+    //
     private void getUserName() {
+        //
         db.collection("users").document(userId)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -150,11 +152,11 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
     }
 
     private void declineBooking(final Context context) {
-
+        //update database noting mechanic de
         Map<String, Object> update = new HashMap<>();
         update.put("status", "declined");
         update.put("userId", null);
-
+        //
         db.collection("bookings").document(String.valueOf(bookingId))
                 .update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -168,20 +170,21 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         });
     }
 
-    private void acceptBooking(final Context context, final FragmentManager manager) {
-
+    private void acceptBooking() {
+        //
         db.collection("bookings").document(String.valueOf(bookingId))
                 .update("status", "accepted").addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(context, "Accepted Booking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Accepted Booking", Toast.LENGTH_SHORT).show();
                 String title = "Booking Accepted";
                 String message = "This is to inform your order has been accepted.";
-                SendNotificationService.sendNotification(context, userId, title, message);
-
-                manager.beginTransaction()
+                SendNotificationService.sendNotification(getContext(), userId, title, message);
+                //
+                getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frameLayMechanic, new BookingsFragment()).commit();
-
+                //
+                dialog.dismiss();
             }
         });
 

@@ -26,6 +26,7 @@ tools:context=".RiderFragments.SettingsFragments.VehicleActivity">
         android:layout_marginTop="8dp"
         android:text="No Registered Vehicle"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/vehicleFrame"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,5 +52,14 @@ tools:context=".RiderFragments.SettingsFragments.VehicleActivity">
             android:layout_margin="10sp"
             android:onClick="addVehicleButtonClick"/>
     </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/VehicleActivityProgressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

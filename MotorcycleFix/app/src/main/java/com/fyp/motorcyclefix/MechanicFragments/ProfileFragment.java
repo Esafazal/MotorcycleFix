@@ -86,7 +86,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         return view;
     }
-
+    //method to get user profile details
     private void getProfileDetails() {
         //get current user logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -98,11 +98,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User user1 = documentSnapshot.toObject(User.class);
-
+                    //setting the fetched values into the widgets
                     Name.setText(user1.getName());
                     Email.setText(user1.getEmail());
                     PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
-
+                    //checking user gender and setting it
                     if (user1.getGender().contentEquals("male")) {
                         sexGroup.check(R.id.MecradioMaleProfile);
                     } else {
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     }
                     progressBar.setVisibility(View.GONE);
                 }
-            })
+            })      //log error
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -137,12 +137,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getLastKnownLocation(final View view) {
-
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
+            //
             askPermission();
         }
 

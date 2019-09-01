@@ -24,7 +24,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
  * A simple {@link Fragment} subclass.
  */
 public class SettingsFragment extends Fragment {
-
+    //
+    public static final String TAG = "settingsFragment";
+    //
     private CardView profileSetting;
     private CardView vehicleSetting;
     private CardView logoutSetting;
@@ -33,7 +35,6 @@ public class SettingsFragment extends Fragment {
     public SettingsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,30 +47,26 @@ public class SettingsFragment extends Fragment {
     }
 
     private void onMenuItemClick(View view) {
-
         profileSetting = view.findViewById(R.id.settingProfileCard);
         vehicleSetting = view.findViewById(R.id.settingVehicleCard);
         logoutSetting = view.findViewById(R.id.settingLogoutCard);
-
-
+        //
         profileSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(getActivity(), ProfileActivity.class);
                 startActivity(intent);
             }
         });
-
+        //
         vehicleSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(getActivity(), VehicleActivity.class);
                 startActivity(intent);
             }
         });
-
+        //
         logoutSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,11 +74,11 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-
+    //
     private void logoutUser(){
         FirebaseUser user = mAuth.getCurrentUser();
         final String userId = user.getUid();
-
+        //
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Are you sure you want to logout?")
                 .setTitle("Confirmation")
@@ -96,7 +93,7 @@ public class SettingsFragment extends Fragment {
                         startActivity(intent);
                         getActivity().finish();
                     }
-                })
+                })//
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

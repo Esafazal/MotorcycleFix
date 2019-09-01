@@ -26,89 +26,80 @@ import com.google.firebase.firestore.QuerySnapshot;
  * A simple {@link Fragment} subclass.
  */
 public class DashboardFragment extends Fragment {
-
+    //constant for logging
     private static final String TAG = "dashboard";
-
+    //variable declarations and initlizations
     private TextView workshopName, location, onGoing, upComing, completed, cancelled, mVisitors, mUsers;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private RatingBar ratingBar;
 
-
     public DashboardFragment() {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.mechanic_dashboard_fragment, container, false);
-
+        //method call to initialize widgets
         initilizeWidgets(view);
+        //get arguments set in the previous activity
         workshopName.setText(getArguments().getString("name"));
         location.setText(getArguments().getString("location"));
-
+        //method call to get dashboard updates
         getDashboardUpdates();
-
         return view;
     }
 
+    //method get data for satistics of the machanic
     private void getDashboardUpdates() {
+        //getting current user id
         FirebaseUser user = mAuth.getCurrentUser();
         final String workshopId = user.getUid().trim();
-
+        //Query to get all booking placed to the mehchanic current logged in
         db.collection("bookings").whereEqualTo("workshopId", workshopId)
                 .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                int coming = 0;
-                int came = 0;
-                int nope = 0;
-                int happening = 0;
+                int upcomingBookings = 0;
+                int completedBookings = 0;
+                int cancelledBookings = 0;
+                int bookingsInProgress = 0;
                 float additonOfRating = 0;
                 int allUsers = queryDocumentSnapshots.getDocuments().size();
-
                 for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
-
                    try {
                        Booking booking = snapshot.toObject(Booking.class);
                        String status = booking.getStatus().trim();
-
-
+                       //filtering fetched data
                        if(status.equals("accepted")){
-                           coming++;
-                       }
-                       else if(status.equals("completed")){
-                           came++;
+                           upcomingBookings++;
+                       } else if(status.equals("completed")){
+                           completedBookings++;
                            additonOfRating += booking.getStarRating();
+                       } else if(status.equals("declined")){
+                           cancelledBookings++;
+                       } else if(status.equals("progress")){
+                           bookingsInProgress++;
                        }
-                       else if(status.equals("declined")){
-                           nope++;
-                       }
-                       else if(status.equals("progress")){
-                           happening++;
-                       }
-                   }
+                   }//log error
                    catch (Exception e){
                        Log.d(TAG, "Get Dashboard updates: "+e.toString());
                    }
-
                 }
-                try {
-
-                    float average = additonOfRating/came;
-
+                try {//getting average rating
+                    float average = additonOfRating/completedBookings;
+                    //getting the number of user clicks
                     getWorkshopClicks();
-                    onGoing.setText(String.valueOf(happening));
-                    upComing.setText(String.valueOf(coming));
-                    completed.setText(String.valueOf(came));
-                    cancelled.setText(String.valueOf(nope));
+                    //setting the filtered and calculated results for basic analyticss
+                    onGoing.setText(String.valueOf(bookingsInProgress));
+                    upComing.setText(String.valueOf(upcomingBookings));
+                    completed.setText(String.valueOf(completedBookings));
+                    cancelled.setText(String.valueOf(cancelledBookings));
                     mUsers.setText(String.valueOf(allUsers));
                     ratingBar.setRating(average);
-
-
+                    //log error
                 } catch (Exception e){
                     Log.d(TAG, e.toString());
                     Toast.makeText(getActivity(), "Dashboard Updates not available!", Toast.LENGTH_SHORT).show();
@@ -116,20 +107,19 @@ public class DashboardFragment extends Fragment {
             }
         });
     }
-
+    //getting user clicks on the selected workshop
     private void getWorkshopClicks(){
         FirebaseUser user = mAuth.getCurrentUser();
         String workshopId = user.getUid();
-
+            //Query to get clicks registered
            db.collection("my_workshop").document(workshopId)
                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                @Override
                public void onSuccess(DocumentSnapshot documentSnapshot) {
-
-                   try {
+                   try {//getting value
                        long newCount = documentSnapshot.getLong("clicks");
                        mVisitors.setText(String.valueOf(newCount));
-                     }
+                     }//log error
                    catch (Exception e){
                        Log.d(TAG, e.toString());
                        Toast.makeText(getActivity(), "workshop document id space issue", Toast.LENGTH_SHORT).show();
@@ -137,10 +127,9 @@ public class DashboardFragment extends Fragment {
                }
            });
     }
-
-
+    //
     private void initilizeWidgets(View view){
-
+        //getting references to the widgets
         workshopName = view.findViewById(R.id.dashboardWorkshopName);
         location = view.findViewById(R.id.dashboardWorkshopLocation);
         onGoing = view.findViewById(R.id.onGoing);
@@ -151,5 +140,4 @@ public class DashboardFragment extends Fragment {
         mUsers = view.findViewById(R.id.mUsers);
         ratingBar = view.findViewById(R.id.dashboardRatingBar);
     }
-
 }
