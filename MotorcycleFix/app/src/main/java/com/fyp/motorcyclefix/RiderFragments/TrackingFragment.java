@@ -2,6 +2,7 @@ package com.fyp.motorcyclefix.RiderFragments;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -55,7 +57,6 @@ public class TrackingFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,12 +67,12 @@ public class TrackingFragment extends Fragment {
         progressBar = view.findViewById(R.id.viewTrackingProgressBar);
         message = view.findViewById(R.id.viewTrackingMessage);
         //method call to get bookings
-        getPlacedBookings(view);
+        getPlacedBookings(view, getContext());
 
         return view;
     }
 
-    private void getPlacedBookings(final View view){
+    private void getPlacedBookings(final View view, final Context context){
         final ArrayList<Booking> bookings = new ArrayList<>();
         //get  current user id
         FirebaseUser user = mAuth.getCurrentUser();
@@ -97,7 +98,7 @@ public class TrackingFragment extends Fragment {
                     //check if current users id matches the queried user id
                     if(bUserId.equals(userId)){
                         //get bike model of the current user
-                        getBikeModel(booking, view, bookings);
+                        getBikeModel(booking, view, bookings, context);
                     }
                 }
             }
@@ -112,24 +113,21 @@ public class TrackingFragment extends Fragment {
                 });
     }
     //get users bike make and model
-    private void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos) {
+    private void getBikeModel(final Booking booking, final View view, final ArrayList<Booking> trackingDaos, final Context context) {
 
         try {
             final String vehicleId = booking.getVehicleId().trim();
             //query to get information of the registered bike
-            db.collection("my_vehicle").whereEqualTo("userId", booking.getUserId())
-                    .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            db.collection("my_vehicle").document(booking.getVehicleId())
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                    for (QueryDocumentSnapshot snap : queryDocumentSnapshots) {
-                        Vehicle vehicle = snap.toObject(Vehicle.class);
-                        String mVehicleId = snap.getId();
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Vehicle vehicle = documentSnapshot.toObject(Vehicle.class);
+                        String mVehicleId = documentSnapshot.getId();
 
                         if (mVehicleId.equals(vehicleId)) {
                             booking.setModel(vehicle.getManufacturer() + " " + vehicle.getModel());
                         }
-                    }
                     //variable initilizations to pass into booking constructor
                     long bookId = booking.getBookingID();
                     String sType = booking.getServiceType();
@@ -144,10 +142,10 @@ public class TrackingFragment extends Fragment {
                     String viewColor = null;
 
                     if (status.equals("accepted") || status.equals("progress")) {
-                        viewColor = String.valueOf(getResources().getColor(R.color.green));
+                        viewColor = String.valueOf(context.getResources().getColor(R.color.green));
                     }
                     if (status.equals("completed")) {
-                        viewColor = String.valueOf(getResources().getColor(R.color.red));
+                        viewColor = String.valueOf(context.getResources().getColor(R.color.red));
                     }
                     //adding all the variables
                     trackingDaos.add(new Booking(bookId, sType, viewColor, makeNModel, message
@@ -193,7 +191,7 @@ public class TrackingFragment extends Fragment {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-
+                            //log error
                             Log.d(TAG, e.toString());
                         }
                     });

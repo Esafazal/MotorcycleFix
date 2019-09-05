@@ -51,6 +51,7 @@
 
     <string name="menu_dashboard">Dashboard</string>
     <string name="menu_bookings">Bookings</string>
+    <string name="menu_bookings_past">Past Bookings</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_workshop_details">Workshop Info</string>
     <string name="menu_logout">Logout</string>

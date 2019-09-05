@@ -29,8 +29,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -44,8 +51,12 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     private double lng;
     private String userId;
     private long phoneNo;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mAuth.getCurrentUser();
     private Button accept, reject, close;
     private SupportMapFragment mapFragment;
+    private GeoPoint geoPoint;
+    private String docId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +72,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
         getUsername();
         String issue1 = getIntent().getStringExtra("issue");
         String landMark1 = getIntent().getStringExtra("mark");
+        docId = getIntent().getStringExtra("docId");
         lat = getIntent().getDoubleExtra("lat", 0);
         lng = getIntent().getDoubleExtra("lng", 0);
 
@@ -134,6 +146,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 if(task.isSuccessful()){
                     //
                     Location location = task.getResult();
+                    geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                     //
@@ -144,7 +157,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     }
 
     private void showUserInTrouble() {
-        //
+        //passing the globle  variable containing lat lng coordinates
         LatLng latLng = new LatLng(lat, lng);
         //
         MarkerOptions markerOptions = new MarkerOptions()
@@ -152,7 +165,6 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 .title("I'm Here!");
         mMap.addMarker(markerOptions);
     }
-
 
     // Check for permission to access Location
     private boolean checkPermission() {
@@ -177,7 +189,7 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 return;
 
             case R.id.rejectSos:
-                onBackPressed();
+                addUserToRejectList();
                 return;
 
             case R.id.closeSOS:
@@ -186,10 +198,25 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private void changeStatusInDB() {
+    private void addUserToRejectList() {
+        db.collection("SOS").document(docId)
+                .update("rejects", FieldValue.arrayUnion(currentUser.getUid()))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                onBackPressed();
+            }
+        });
+    }
 
-        db.collection("SOS").document(userId)
-                .update("status", "resolved").addOnSuccessListener(new OnSuccessListener<Void>() {
+    private void changeStatusInDB() {
+        Map<String, Object> update = new HashMap<>();
+        update.put("status", "accepted");
+        update.put("helperId", currentUser.getUid());
+        update.put("helperLocation", geoPoint);
+
+        db.collection("SOS").document(docId)
+                .update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 accept.setVisibility(View.GONE);
@@ -198,4 +225,5 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
             }
         });
     }
+
 }

@@ -3,7 +3,9 @@ package com.fyp.motorcyclefix.Dao;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class SOS {
 
@@ -14,8 +16,35 @@ public class SOS {
     private String status;
     private @ServerTimestamp
     java.util.Date time;
+    private String helperId;
+    private List<String> rejects;
+    private GeoPoint helperLocation;
 
     public SOS() {
+    }
+
+    public GeoPoint getHelperLocation() {
+        return helperLocation;
+    }
+
+    public void setHelperLocation(GeoPoint helperLocation) {
+        this.helperLocation = helperLocation;
+    }
+
+    public List<String> getRejects() {
+        return rejects;
+    }
+
+    public void setRejects(List<String> rejects) {
+        this.rejects = rejects;
+    }
+
+    public String getHelperId() {
+        return helperId;
+    }
+
+    public void setHelperId(String helperId) {
+        this.helperId = helperId;
     }
 
     public String getUserId() {

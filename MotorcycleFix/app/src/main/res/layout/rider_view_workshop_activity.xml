@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/PlaceBookingContainer"
     tools:context=".RiderFragments.WorkshopFragments.ViewWorkshopActivity">
 
 
@@ -180,10 +181,11 @@
                         android:id="@+id/chosenRepairType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/orange"
+                        android:textColor="@color/colorAsh2"
                         android:textStyle="italic"
+                        android:text=""
                         android:layout_marginTop="5sp"
-                        android:layout_marginStart="10sp"
+                        android:layout_marginStart="5sp"
                         android:textSize="18sp"
                         android:padding="3sp"
                         app:layout_constraintBottom_toTopOf="@+id/repairDescription"

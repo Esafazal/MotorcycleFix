@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                     //User type not null check, type of user, display toast and goto rider/mechanic portal
                     if (type != null) {
                         if (type.contentEquals("rider")) {
-                            Toast.makeText(MainActivity.this, "Hi RiderPortalService!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "Hi Rider!", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), RiderPortal.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK
                                     | Intent.FLAG_ACTIVITY_NEW_TASK);

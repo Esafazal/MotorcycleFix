@@ -53,6 +53,7 @@ public class MyVehicle extends AppCompatActivity implements MenuItem.OnMenuItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_my_vehicle_activity);
         setTitle("Edit Vehicle");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getting references to the widgets in the layout file
         chosenMake = findViewById(R.id.myVehicleChosenManufacturer);
         chosenModel = findViewById(R.id.myVehicleChosenModel);
@@ -189,7 +190,7 @@ public class MyVehicle extends AppCompatActivity implements MenuItem.OnMenuItemC
     private void deleteUserVehicle(){
         //Query to remove vehicle from database
         db.collection("my_vehicle").document(documentId)
-                .delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                .update("userId", null).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 //display success message
@@ -198,5 +199,11 @@ public class MyVehicle extends AppCompatActivity implements MenuItem.OnMenuItemC
                 startActivity(new Intent(MyVehicle.this, VehicleActivity.class));
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
     }
 }

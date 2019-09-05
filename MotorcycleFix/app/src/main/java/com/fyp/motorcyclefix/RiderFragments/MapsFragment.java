@@ -2,6 +2,7 @@ package com.fyp.motorcyclefix.RiderFragments;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.fyp.motorcyclefix.Adapters.MapsCustomWindowAdapter;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
@@ -56,15 +58,17 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MapsFragment extends Fragment implements OnMapReadyCallback {
-
+    //log constant
     public static final String TAG = "mapsFragment";
-
+    //variable declarations and initilization
     private ProgressBar progressBar;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
@@ -76,23 +80,22 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient mlocationProviderClient;
     private Marker marker;
 
-
+    //default constructor
     public MapsFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        //inflating the fragment into the activity
         View view = inflater.inflate(R.layout.rider_maps_fragment, container, false);
+        //getting reference to the framelayout, in which the map will be displayed
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-
         progressBar = view.findViewById(R.id.mapsProgressBar);
+        //getting last known location of user
         mlocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
-
+        //checking if map fragment object is null, if so, initilize it
         if (mapFragment == null) {
-
             FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             mapFragment = SupportMapFragment.newInstance();
@@ -102,205 +105,122 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
-        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
-        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
-                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        DrawableCompat.setTint(vectorDrawable, color);
-        vectorDrawable.draw(canvas);
-        return BitmapDescriptorFactory.fromBitmap(bitmap);
-    }
-
-
-    private void getWorkshopLocations() {
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                @Override
-                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
-                        workshop = snapshot.toObject(Workshop.class);
-                        workshopList.add(workshop);
-
-                        GeoPoint geoPoint = snapshot.getGeoPoint("location");
-                       try {
-                           LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-                           MarkerOptions markerOptions = new MarkerOptions()
-                                   .title(workshop.getWorkshopName())
-                                   .snippet(workshop.getOpeningHours())
-                                   .icon(vectorToBitmap(R.drawable.ic_actual_bike, getResources().getColor(R.color.colorblack)))
-                                   .position(latLng);
-
-                           marker = mMap.addMarker(markerOptions);
-
-                           getStarRating(workshop.getWorkshopId());
-                       } catch (Exception e){
-                           Log.d(TAG, "Marker: "+e.toString());
-                       }
-
-                    }
-                }
-            });
-        }
-
-    }
-
-    private void getStarRating(final String workshopId){
-
-        db.collection("bookings")
-                .whereEqualTo("workshopId", workshopId)
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot snap) {
-                float rating = 0;
-                int count = 0;
-                float average = 0;
-
-                for(QueryDocumentSnapshot snapshot : snap){
-                    Booking booking = snapshot.toObject(Booking.class);
-                    String status = booking.getStatus().trim();
-
-                    try {
-                        if(status.equals("completed")){
-                            count++;
-                            rating += booking.getStarRating();
-                        }
-                    } catch (Exception e){
-                        Log.d(TAG, e.toString());
-                    }
-
-                }
-                average = rating / count;
-//                workshopRating.setRating(average);
-
-                final float finalAverage = average;
-                final int finalCount = count;
-                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return null;
-                    }
-
-                    @Override
-                    public View getInfoContents(Marker marker) {
-                        View view = getLayoutInflater().inflate(R.layout.rider_maps_custom_info_window, null);
-
-                        ImageView windowImage = view.findViewById(R.id.mapsInfoboxIcon);
-                        TextView title = view.findViewById(R.id.mapsInfoboxtitle);
-                        TextView openHours = view.findViewById(R.id.mapsOpenHours);
-                        RatingBar workshopRating = view.findViewById(R.id.mapsRatingbar);
-                        TextView suggestion = view.findViewById(R.id.mapsSuggestion);
-
-                        title.setText(marker.getTitle());
-                        openHours.setText("Open hours: " + marker.getSnippet());
-                        workshopRating.setRating(finalAverage);
-
-                        if(finalCount != 0) {
-
-                            if(finalAverage <= 1.4){
-                                suggestion.setText("(Poor)");
-                            }
-                            else if(finalAverage <= 2){
-                                suggestion.setText("(Average)");
-                            }
-                            else if(finalAverage <= 3.4){
-                                suggestion.setText("(Good)");
-                            }
-                            else if(finalAverage <= 4.4){
-                                suggestion.setText("(Very Good)");
-                            }
-                            else {
-                                suggestion.setText("(Excellent)");
-                            }
-                        }
-
-                        return view;
-                    }
-                });
+    //this method is called when the map is ready to be displayed
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        //initilizing the googleMap object
+        mMap = googleMap;
+        //checking if user has given given permission to get location
+        if (checkPermission()) {
+            //set the find my  location  button as true
+            mMap.setMyLocationEnabled(true);
+        } else {
+            //ask permission from user to access location
+            askPermission();
+            if (checkPermission()) {
+                mMap.setMyLocationEnabled(true);
             }
-        });
+        }
+        //method call to get user current location
+        getCurrentUserPosition();
+        //method  call to view workshop clicked
+        infoWindowClickHandler(getActivity());
     }
 
+    //method gets the last known locations of the current user
     private void getCurrentUserPosition() {
-
+        //checks if user has granted permission to use gps
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            return;
+            //ask for location permission to display user current location
+            askPermission();
         }
+        //using the locationprovider client to get user lastknown location
         mlocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                if(task.isSuccessful()){
+                if (task.isSuccessful()) {
+                    //get the current user locations and initilizing it tolatLng object
                     Location location = task.getResult();
-
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
-
+                    //setting the camera view of the map to the location of the current user
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+                    //method call to get all the locations of workshops
                     getWorkshopLocations();
-
                 }
             }
         });
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if(checkPermission()){
-            mMap.setMyLocationEnabled(true);
-        } else{
-            askPermission();
-
-            if(checkPermission()){
-                mMap.setMyLocationEnabled(true);
-            }
+    private void getWorkshopLocations() {
+        //check if there is a user logged in
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            //Query to getworkshop locations
+            workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
+                        //map the queryDocumentSnapshot object to workshop model class
+                        workshop = snapshot.toObject(Workshop.class);
+                        workshopList.add(workshop);
+                        //getting the workshop coordinates
+                        GeoPoint geoPoint = snapshot.getGeoPoint("location");
+                        try {//creating a new LatLng object to pass the geocoordinates recieved
+                            LatLng latLng = new LatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
+                            //creating a marker on the map to display workshop
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .title(workshop.getWorkshopName())
+                                    .snippet(workshop.getWorkshopId())
+                                    .icon(vectorToBitmap(R.drawable.ic_actual_bike, getResources().getColor(R.color.colorblack)))
+                                    .position(latLng);
+                            //passing the markerOptions object to the market object as the parameter
+                            marker = mMap.addMarker(markerOptions);
+                            //custom maps info window adapter  object is created to pass data
+                            mMap.setInfoWindowAdapter(new MapsCustomWindowAdapter(getActivity()));
+                        } catch (Exception e) {
+                            //logs any exceptions
+                            Log.d(TAG, "Marker: " + e.toString());
+                        }
+                    }
+                }
+            });
         }
-        getCurrentUserPosition();
-        infoWindowClickHandler();
-
     }
 
-    private void infoWindowClickHandler(){
+    private void infoWindowClickHandler(final Context context) {
+        //setting info window click listener
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 progressBar.setVisibility(View.VISIBLE);
+                //passing the workshop geo location coordinates
                 GeoPoint loc = new GeoPoint(marker.getPosition().latitude, marker.getPosition().longitude);
-
-                getWorkshopId(loc);
+                getWorkshopId(loc, context);
             }
         });
     }
 
-    private void getWorkshopId(final GeoPoint loc) {
-
+    private void getWorkshopId(final GeoPoint loc, final Context context) {
+        //Query to get workshop details based on the location of the workshop passed in
         workshopRef.whereEqualTo("location", loc).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
+                for (QueryDocumentSnapshot snapshot : queryDocumentSnapshots) {
                     String workID = snapshot.getId();
+                    //getting workshop details into workshop Model
                     workshop = snapshot.toObject(Workshop.class);
-
-                    if(workshop.getLocation().equals(loc)){
-
-                        Intent intent = new Intent(getActivity(), ViewWorkshopActivity.class);
+                    //checking if the passed locationg geo coordinates matches the coordinates queried
+                    if (workshop.getLocation().equals(loc)) {
+                        //display workshop activity class for user to make a booking
+                        Intent intent = new Intent(context, ViewWorkshopActivity.class);
                         intent.putExtra("workshopId", workID);
                         progressBar.setVisibility(View.GONE);
                         startActivity(intent);
-
-                    } else{
-
+                    } else {
+                        //display error message
                         Toast.makeText(getActivity(), "Locations don't match!", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -308,19 +228,34 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    //method converts vector graphics to bitmap
+    public BitmapDescriptor vectorToBitmap(@DrawableRes int id, @ColorInt int color) {
+        //creating a new drawable object to pass resource file
+        Drawable vectorDrawable = ResourcesCompat.getDrawable(getResources(), id, null);
+        //creating a bitmap object
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        //creating a canvas object and passing the bitmap object as the argument
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        DrawableCompat.setTint(vectorDrawable, color);
+        vectorDrawable.draw(canvas);
+        //return converted  vector to bitmap resource
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
 
     // Check for permission to access Location
     private boolean checkPermission() {
         Log.d(TAG, "checkPermission()");
         // Ask for permission if it wasn't granted yet
         return (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED );
+                == PackageManager.PERMISSION_GRANTED);
     }
+
     // Asks for permission
     private void askPermission() {
         Log.d(TAG, "askPermission()");
-        ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.ACCESS_FINE_LOCATION
-                , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
+        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION}, 1);
     }
-
 }

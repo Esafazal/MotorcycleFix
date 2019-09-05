@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void getProfileDetails() {
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
             String userId = currentUser.getUid();
@@ -85,7 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
                     User user = documentSnapshot.toObject(User.class);
 
                     Name.setText(user.getName());
-                    Email.setText(user.getEmail());
+                    Email.setText(user.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
                     PhoneNo.setText(String.valueOf(user.getPhoneNumber()));
 
                     if (user.getGender().contentEquals("male")) {
@@ -115,19 +115,17 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        //
         onBackPressed();
         return true;
     }
-
+    //
     public void profileUpdateClickHandler(View view) {
-
+        //
         getLastKnownLocation();
-
     }
 
     private void getLastKnownLocation() {
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -135,7 +133,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             return;
         }
-
             mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
                 @Override
                 public void onComplete(@NonNull Task<Location> task) {
@@ -143,7 +140,7 @@ public class ProfileActivity extends AppCompatActivity {
                         Location location = task.getResult();
                         GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
                         user.setGeoPoint(geoPoint);
-
+                        //
                         int selectedId = sexGroup.getCheckedRadioButtonId();
                         radioSelected = findViewById(selectedId);
                         String gender = radioSelected.getText().toString();
@@ -161,8 +158,9 @@ public class ProfileActivity extends AppCompatActivity {
             });
     }
 
+    //
     private void saveUserDetails(){
-
+        //
         FirebaseUser currentUser = mAuth.getCurrentUser();
         String userId = currentUser.getUid();
         userRef.document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {

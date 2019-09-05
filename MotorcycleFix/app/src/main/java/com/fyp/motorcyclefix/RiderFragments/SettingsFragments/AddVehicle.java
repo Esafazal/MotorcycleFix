@@ -3,6 +3,7 @@ package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -40,6 +41,7 @@ public class AddVehicle extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_addvehicle_form_activity);
         setTitle("Add New Vehicle");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //layout widget references
         selectedManufacturer = findViewById(R.id.choosenManufacturerHidden);
         selectedModel = findViewById(R.id.choosenModelHidden);
@@ -160,5 +162,11 @@ public class AddVehicle extends AppCompatActivity {
             valid = false;
         }
         return valid;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
     }
 }

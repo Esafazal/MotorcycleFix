@@ -33,7 +33,7 @@ public class AcceptedBookings extends Fragment {
         View view = inflater.inflate(R.layout.mechanic_accepted_bookings_fragment, container, false);
 
         sendNote = view.findViewById(R.id.btnLeaveNote);
-        sendNoteEditText = view.findViewById(R.id.bookingLeaveNote);
+        sendNoteEditText = view.findViewById(R.id.bookingLeaveNotePast);
         String note = sendNoteEditText.getText().toString();
         startService = view.findViewById(R.id.bookingDeclineBooking);
         completeService = view.findViewById(R.id.bookingCompleteService);

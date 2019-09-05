@@ -89,7 +89,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     //method to get user profile details
     private void getProfileDetails() {
         //get current user logged in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
             docId = userId;
@@ -100,7 +100,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     User user1 = documentSnapshot.toObject(User.class);
                     //setting the fetched values into the widgets
                     Name.setText(user1.getName());
-                    Email.setText(user1.getEmail());
+                    Email.setText(user.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
                     PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
                     //checking user gender and setting it
                     if (user1.getGender().contentEquals("male")) {

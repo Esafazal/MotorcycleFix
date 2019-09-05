@@ -4,6 +4,7 @@ package com.fyp.motorcyclefix.RiderFragments.EmergencyFragements;
 import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment;
 
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
+import com.fyp.motorcyclefix.RiderFragments.EmergencyFragment;
 import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
@@ -87,7 +89,9 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
                 triggerSOS();
                 return;
             case R.id.closeSendSosBtn:
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+//                startActivity(new Intent(getActivity(), ShowUsersReadyToHelp.class));
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction().replace(R.id.framelay, new EmergencyFragment()).commit();
         }
     }
 
@@ -108,6 +112,12 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         getCurrentLocation();
+                        //view widgets visibility setting
+                        sos.setVisibility(View.GONE);
+                        describe.setVisibility(View.GONE);
+                        landmark.setVisibility(View.GONE);
+                        closeSos.setVisibility(View.VISIBLE);
+                        summary.setVisibility(View.VISIBLE);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -116,12 +126,6 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
                         dialog.cancel();
                     }
                 }).show();
-        //view widgets visibility setting
-        sos.setVisibility(View.GONE);
-        describe.setVisibility(View.GONE);
-        landmark.setVisibility(View.GONE);
-        closeSos.setVisibility(View.VISIBLE);
-        summary.setVisibility(View.VISIBLE);
 
     }
 
@@ -219,7 +223,7 @@ public class SendSOSNotification extends AppCompatDialogFragment implements View
         sos.setStatus("pending");
         sos.setTime(null);
         //Query to save SOS
-        db.collection("SOS").document(victimUserId).set(sos)
+        db.collection("SOS").document().set(sos)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

@@ -21,6 +21,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
@@ -30,9 +31,11 @@ import com.fyp.motorcyclefix.RiderFragments.SettingsFragments.VehicleActivity;
 import com.fyp.motorcyclefix.RiderPortal;
 import com.fyp.motorcyclefix.Services.GetTimeEstimate;
 import com.fyp.motorcyclefix.Services.GetWorkshopRating;
+import com.fyp.motorcyclefix.SignUpActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.Nullable;
@@ -58,6 +61,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
     private CardView repairCategory, estimateCard;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseUser currentUser = mAuth.getCurrentUser();
     private CollectionReference workshopRef = db.collection("my_workshop");
     private DocumentReference bookingCount = db.collection("bookings").document("bookings_count");
     private String workshopId;
@@ -66,6 +70,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
     private ProgressBar progressBar;
     private TextView bikeMod;
     private String bikeId = null;
+    private ConstraintLayout placeBookingContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         suggestion = findViewById(R.id.reviewsCount);
         ETA = findViewById(R.id.ETA);
         estimateCard = findViewById(R.id.timeEstimateCard);
+        placeBookingContainer = findViewById(R.id.PlaceBookingContainer);
         //formatting date and setting max and min date of service
         Date date = new Date();
         long minDate = date.getTime();
@@ -206,7 +212,20 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         //if user hasn't chosen a bike, display toast
         if(bikeId == null){
             Toast.makeText(this, "Please Select a Bike!", Toast.LENGTH_LONG).show();
-        } else {
+        } else if(!currentUser.isEmailVerified()){
+            Snackbar.make(placeBookingContainer, "", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("verify", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SignUpActivity signUpActivity = new SignUpActivity();
+                            signUpActivity.sendEmailVerification();
+                            Toast.makeText(ViewWorkshopActivity.this,
+                                    "Verification email sent to " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .show();
+        }
+        else {
             progressBar.setVisibility(View.VISIBLE);
             //method call to send booking request
             sendBookingRequest();
@@ -265,7 +284,6 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
                             Log.d(TAG, e.toString());
                         }
                     });
-
         }
     }
 

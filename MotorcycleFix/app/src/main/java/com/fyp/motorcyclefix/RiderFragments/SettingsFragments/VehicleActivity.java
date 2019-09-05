@@ -3,6 +3,7 @@ package com.fyp.motorcyclefix.RiderFragments.SettingsFragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -49,6 +50,7 @@ public class VehicleActivity extends AppCompatActivity implements VehicleAdapter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_vehicle_settings_activity);
         setTitle("My Vehicles");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getting references to the widgets in the layout file
         imageView = findViewById(R.id.arrorIcon);
         progressBar = findViewById(R.id.VehicleActivityProgressbar);
@@ -156,5 +158,9 @@ public class VehicleActivity extends AppCompatActivity implements VehicleAdapter
         startActivity(intent);
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        onBackPressed();
+        return true;
+    }
 }

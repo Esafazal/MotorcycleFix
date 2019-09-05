@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -25,6 +30,7 @@ import com.fyp.motorcyclefix.RiderFragments.TrackingFragments.GetServiceRating;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -45,14 +51,15 @@ public class RiderPortal extends AppCompatActivity {
     private Fragment selectedFragment;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private FirebaseUser user;
+    private FirebaseUser currentUser;
+    private ConstraintLayout riderConstraintLayout;
 
     @Override
     protected void onStart() {
         super.onStart();
-        //firebase user instance is initilized and the user id is retrieved
-        user = mAuth.getCurrentUser();
-        String userId = user.getUid();
+        //firebase currentUser instance is initilized and the currentUser id is retrieved
+        currentUser = mAuth.getCurrentUser();
+        String userId = currentUser.getUid();
         //initilization of firebase messaging to subscribe to a topic to get notifications sent to that particular topic.
         FirebaseMessaging.getInstance().subscribeToTopic(userId);
     }
@@ -66,14 +73,16 @@ public class RiderPortal extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         setTitle("Nearby Workshops");
 
-        //initilizr firebase user instance and get user id
-        user = mAuth.getCurrentUser();
+        //initilizr firebase currentUser instance and get currentUser id
+        currentUser = mAuth.getCurrentUser();
+        riderConstraintLayout = findViewById(R.id.RiderPortalContainer);
 
-        if(user != null){
-            String userId = user.getUid();
+        if(currentUser != null){
+            String userId = currentUser.getUid();
             //method calls get workshop feedback and get any emergencies nearby
             leaveFeedback(userId);
             getAnyEmergenciesSOS(userId);
+            checkIsEmailVerified(currentUser);
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
@@ -118,14 +127,14 @@ public class RiderPortal extends AppCompatActivity {
     };
 
 
-    //method contains a snapshot listner to listen to completed bookings of the current user
+    //method contains a snapshot listner to listen to completed bookings of the current currentUser
     private void leaveFeedback(String userId){
-        //Query to match exact booking of user
+        //Query to match exact booking of currentUser
         db.collection("bookings")
                 .whereEqualTo("status", "completed")
                 .whereEqualTo("userId", userId)
                 .whereEqualTo("ratingStatus", "unrated")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
 
@@ -136,7 +145,7 @@ public class RiderPortal extends AppCompatActivity {
                     //inserting data into bundle object
                     bundle.putString("bookId", snap.getId());
                     bundle.putString("workId", booking.getWorkshopId());
-                    //alertDialog is a triggered to get user rating for the service recieved
+                    //alertDialog is a triggered to get currentUser rating for the service recieved
                     GetServiceRating getServiceRating = new GetServiceRating();
                     Log.d(TAG, "Leave Feedback");
                     //passing the bundle as an argument
@@ -153,30 +162,37 @@ public class RiderPortal extends AppCompatActivity {
         Log.d(TAG, "onSaveInstanceState Called:");
     }
 
-    //method contains a snapsho listner to listen to SOS messages from riders facing breakdowns nearby to current user
+    //method contains a snapsho listner to listen to SOS messages from riders facing breakdowns nearby to current currentUser
     private void getAnyEmergenciesSOS(final String userId) {
         //Listener to get pending sos messages
         db.collection("SOS").whereEqualTo("status", "pending")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                         //loop to get location of rider facing breakdown
                         for(QueryDocumentSnapshot snap : snapshot){
                             SOS sos = snap.toObject(SOS.class);
                             String docId = snap.getId();
-                            if(docId.equals(userId)){
+                            if(sos.getUserId().equals(userId)){
                                 return;
                             }
+                            if(sos.getRejects() != null){
+                                for(String user : sos.getRejects()) {
+                                    if (user.equals(userId)) {
+                                        return;
+                                    }
+                            }
+                            }
                             GeoPoint sosGeopoint = sos.getGeoPoint();
-                            //method call to get current user location
-                            getCurrentUserGeoPoint(sosGeopoint, sos, userId);
+                            //method call to get current currentUser location
+                            getCurrentUserGeoPoint(sosGeopoint, sos, userId, docId);
                         }
                     }
                 });
     }
 
-    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
-        //Query to get current user info
+    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id, final String docId){
+        //Query to get current currentUser info
         db.collection("users").document(id)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -184,7 +200,7 @@ public class RiderPortal extends AppCompatActivity {
                 User me = documentSnapshot.toObject(User.class);
                 GeoPoint currentUserGeo = me.getGeoPoint();
                try {
-                   //static method call to distance between distance between current user and rider facing breakdown
+                   //static method call to distance between distance between current currentUser and rider facing breakdown
                    double distance = CalculateDistance.calculateDistanceFormulae(sosGeoPoint, currentUserGeo);
 
                    //checking if distance in less or equal to 1.2km
@@ -196,6 +212,7 @@ public class RiderPortal extends AppCompatActivity {
                        intent.putExtra("mark", sos.getLandmark());
                        intent.putExtra("lat", sos.getGeoPoint().getLatitude());
                        intent.putExtra("lng", sos.getGeoPoint().getLongitude());
+                       intent.putExtra("docId", docId);
                        startActivity(intent);
                    }
                } catch (Exception e){
@@ -205,8 +222,6 @@ public class RiderPortal extends AppCompatActivity {
         });
     }
 
-
-
     //method to load the desired fragment when bottom navigation view buttons are clicked
     private void loadFragment(Fragment fragment) {
         //support fragment manager instance
@@ -214,6 +229,28 @@ public class RiderPortal extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.framelay, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void checkIsEmailVerified(final FirebaseUser user){
+        user.reload();
+        if(!user.isEmailVerified()){
+            Snackbar snack = Snackbar.make(riderConstraintLayout,
+                    "Please verify email address", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("verify", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SignUpActivity signUpActivity = new SignUpActivity();
+                            signUpActivity.sendEmailVerification();
+                            Toast.makeText(RiderPortal.this,
+                                    "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            View view = snack.getView();
+            FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
+            params.gravity = Gravity.TOP;
+            view.setLayoutParams(params);
+            snack.show();
+        }
     }
 
 }
