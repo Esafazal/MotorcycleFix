@@ -93,6 +93,7 @@ public class EmergencyFragment extends Fragment {
 
     //
     private void getConfirmationAndProceed() {
+        currentUser.reload();
         //check if email is verified
         if(!currentUser.isEmailVerified()){
             snack = Snackbar.make(emergencyLyout, "Please verify email address", Snackbar.LENGTH_INDEFINITE)

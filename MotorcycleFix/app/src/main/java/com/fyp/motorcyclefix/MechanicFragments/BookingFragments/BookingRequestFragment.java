@@ -98,8 +98,7 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         declineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                declineBooking(getActivity());
-                dismiss();
+                declineBooking();
             }
         });
         //
@@ -151,7 +150,7 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
         });
     }
 
-    private void declineBooking(final Context context) {
+    private void declineBooking() {
         //update database noting mechanic de
         Map<String, Object> update = new HashMap<>();
         update.put("status", "declined");
@@ -161,11 +160,12 @@ public class BookingRequestFragment extends AppCompatDialogFragment {
                 .update(update).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(context, "Accepted Booking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Rejected Booking", Toast.LENGTH_SHORT).show();
                 String title = "Booking Rejected";
                 String message = "This is to inform your order has been declined, So please Place another order.";
-                SendNotificationService.sendNotification(context, userId, title, message);
+                SendNotificationService.sendNotification(getContext(), userId, title, message);
 
+                dialog.dismiss();
             }
         });
     }

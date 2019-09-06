@@ -120,53 +120,56 @@ public class BookingsFragment extends Fragment implements AcceptedBookingsAdapte
     }
     //method gets riders details
     private void getUserName(final Vehicle vehicle, final Booking booking, final Context context){
-        //Query to get users info
-        db.collection("users").document(booking.getUserId())
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                //mapping the document snapshot into user model
-                User user = documentSnapshot.toObject(User.class);
-                //getting all the values from the model
-                long bID = booking.getBookingID();
-                String sType = booking.getServiceType();
-                Date dateOfService = booking.getDateOfService();
-                String repairDesc = booking.getRepairDescription();
-                String userName = user.getName();
-                String makeNmodel = vehicle.getManufacturer()+" "+vehicle.getModel();
-                String repairCat = booking.getRepairCategory();
-                String status = booking.getStatus();
-                String phoneNumber = String.valueOf(user.getPhoneNumber());
-                String message = booking.getMessage();
-                String userId = booking.getUserId();
-                float rating = booking.getStarRating();
-                String startColor;
-                String endColor;
-                //checking booking status
-                if(status.equals("accepted")){
-                  startColor =  String.valueOf(context.getResources().getColor(R.color.green));
-                  endColor =  String.valueOf(context.getResources().getColor(R.color.dimRed));
-                } else {
-                    startColor =  String.valueOf(context.getResources().getColor(R.color.dimGreem));
-                    endColor =  String.valueOf(context.getResources().getColor(R.color.red));
-                }
-                //passing the variales into the arraylist model
-                bookings.add(new AcceptedBooking(makeNmodel, userName, bID, phoneNumber, sType, dateOfService,
-                        repairDesc, repairCat, startColor, endColor, message, status, userId, rating));
+        if(booking.getUserId() != null) {
+            //Query to get users info
+            db.collection("users").document(booking.getUserId())
+                    .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    //mapping the document snapshot into user model
+                    User user = documentSnapshot.toObject(User.class);
+                    //getting all the values from the model
+                    long bID = booking.getBookingID();
+                    String sType = booking.getServiceType();
+                    Date dateOfService = booking.getDateOfService();
+                    String repairDesc = booking.getRepairDescription();
+                    String userName = user.getName();
+                    String makeNmodel = vehicle.getManufacturer()
+                            + " " + vehicle.getModel()+" ("+vehicle.getRegistrationNo()+")";
+                    String repairCat = booking.getRepairCategory();
+                    String status = booking.getStatus();
+                    String phoneNumber = String.valueOf(user.getPhoneNumber());
+                    String message = booking.getMessage();
+                    String userId = booking.getUserId();
+                    float rating = booking.getStarRating();
+                    String startColor;
+                    String endColor;
+                    //checking booking status
+                    if (status.equals("accepted")) {
+                        startColor = String.valueOf(context.getResources().getColor(R.color.green));
+                        endColor = String.valueOf(context.getResources().getColor(R.color.dimRed));
+                    } else {
+                        startColor = String.valueOf(context.getResources().getColor(R.color.dimGreem));
+                        endColor = String.valueOf(context.getResources().getColor(R.color.red));
+                    }
+                    //passing the variales into the arraylist model
+                    bookings.add(new AcceptedBooking(makeNmodel, userName, bID, phoneNumber, sType, dateOfService,
+                            repairDesc, repairCat, startColor, endColor, message, status, userId, rating));
 
-                //setting up the recycller view
-                mRecyclerView.setHasFixedSize(true);
-                //creating a new layoutmanager objject
-                mLayoutManager = new LinearLayoutManager(getActivity());
-                mAdapter = new AcceptedBookingsAdapter(bookings);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-                //setting the adapter
-                mRecyclerView.setAdapter(mAdapter);
-                progressBar.setVisibility(View.GONE);
-                //handling clicks in the recycler
-                mAdapter.setOnItemClickListener(BookingsFragment.this);
-            }
-        });
+                    //setting up the recycller view
+                    mRecyclerView.setHasFixedSize(true);
+                    //creating a new layoutmanager objject
+                    mLayoutManager = new LinearLayoutManager(getActivity());
+                    mAdapter = new AcceptedBookingsAdapter(bookings);
+                    mRecyclerView.setLayoutManager(mLayoutManager);
+                    //setting the adapter
+                    mRecyclerView.setAdapter(mAdapter);
+                    progressBar.setVisibility(View.GONE);
+                    //handling clicks in the recycler
+                    mAdapter.setOnItemClickListener(BookingsFragment.this);
+                }
+            });
+        }
 
     }
 

@@ -100,7 +100,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     User user1 = documentSnapshot.toObject(User.class);
                     //setting the fetched values into the widgets
                     Name.setText(user1.getName());
-                    Email.setText(user.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
+                    Email.setText(user1.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
                     PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
                     //checking user gender and setting it
                     if (user1.getGender().contentEquals("male")) {

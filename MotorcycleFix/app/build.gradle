@@ -16,6 +16,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+//        exclude 'com/sun/xml/bind/marshaller/Messages_ko.properties'
+//        exclude 'com/sun/xml/bind/v2/Messages_ko.properties'
+//        exclude 'com/sun/xml/bind/Messages.properties'
+//        exclude 'com/sun/xml/bind/v2/Messages_es.properties'
+//        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -36,6 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.0.0'
     implementation 'com.google.firebase:firebase-messaging:19.0.0'
     implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
+//    implementation group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.9.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

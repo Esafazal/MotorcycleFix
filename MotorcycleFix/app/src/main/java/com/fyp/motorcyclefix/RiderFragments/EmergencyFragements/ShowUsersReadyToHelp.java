@@ -23,6 +23,7 @@ import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.MapsFragment;
 import com.fyp.motorcyclefix.RiderPortal;
+import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -52,6 +54,9 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapReadyCallback {
 
+    public static final String  TAG = "showUsersReadyOnMap";
+    public static final double GAP = 1.2;
+
     private SupportMapFragment mapFragment;
     private GoogleMap mMap;
     private FusedLocationProviderClient mfusedLocationProviderClient;
@@ -59,12 +64,14 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser currentUser = mAuth.getCurrentUser();
     private String docId;
+    private GeoPoint currentUserPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rider_show_users_ready_to_help_);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Live Help");
 
         docId = getIntent().getStringExtra("docId");
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.SOSMapFrame);
@@ -108,6 +115,7 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
                 if(task.isSuccessful()){
                     //
                     Location location = task.getResult();
+                    currentUserPosition = new GeoPoint(location.getLatitude(), location.getLongitude());
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
                 }
@@ -181,8 +189,12 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
                                 }
                             }
                             GeoPoint userLoc = user.getGeoPoint();
-                            LatLng latLng = new LatLng(userLoc.getLatitude(), userLoc.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(latLng));
+                            Double distance = CalculateDistance
+                                  .calculateDistanceFormulae(currentUserPosition, userLoc);
+                            if(distance <= GAP){
+                                LatLng latLng = new LatLng(userLoc.getLatitude(), userLoc.getLongitude());
+                                mMap.addMarker(new MarkerOptions().position(latLng));
+                            }
                         }
                     }
                 });

@@ -35,6 +35,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.fyp.motorcyclefix.Adapters.MapsCustomWindowAdapter;
 import com.fyp.motorcyclefix.Dao.Booking;
+import com.fyp.motorcyclefix.Dao.InfoWindow;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
@@ -140,6 +141,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         getCurrentUserPosition();
         //method  call to view workshop clicked
         infoWindowClickHandler(getActivity());
+
     }
 
     //method gets the last known locations of the current user
@@ -190,10 +192,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                                     .snippet(workshop.getWorkshopId())
                                     .icon(vectorToBitmap(R.drawable.ic_actual_bike, getResources().getColor(R.color.colorblack)))
                                     .position(latLng);
-                            //passing the markerOptions object to the market object as the parameter
-                            marker = mMap.addMarker(markerOptions);
-                            //custom maps info window adapter  object is created to pass data
-                            mMap.setInfoWindowAdapter(new MapsCustomWindowAdapter(getActivity()));
+                            //method call to get ratings and suggestion
+                            getRatingAndSuggestion(workshop, markerOptions);
+
                         } catch (Exception e) {
                             //logs any exceptions
                             Log.d(TAG, "Marker: " + e.toString());
@@ -295,9 +296,66 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    private void getRatingAndSuggestion(final Workshop workshop, final MarkerOptions markerOptions){
+        final InfoWindow infoWindow = new InfoWindow();
+        //Query to get bookings for ratings calculation
+        db.collection("bookings")
+                .whereEqualTo("workshopId", workshop.getWorkshopId())
+                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot snap) {
+                //variables to assign calculated values
+                float rating = 0;
+                int count = 0;
+                float average = 0;
+                //looping the snapshop object and mapping to the booking model
+                for (QueryDocumentSnapshot snapshot : snap) {
+                    Booking booking = snapshot.toObject(Booking.class);
+                    String status = booking.getStatus().trim();
+                    try {
+                        //getting all bookings in completed state and getting the total count
+                        if (status.equals("completed")) {
+                            count++;
+                            rating += booking.getStarRating();
+                        }
+                        //log any errors thrown
+                    } catch (Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                }
+                //averaging the star ratings
+                average = rating / count;
+                infoWindow.setRating(average);
+                infoWindow.setOpenHours(workshop.getOpeningHours());
+                if (count != 0) {
+                    if (average <= 1.4) {
+                        infoWindow.setSuggestion("(Poor)");
+                    } else if (average <= 2) {
+                        infoWindow.setSuggestion("(Average)");
+                    } else if (average <= 3.4) {
+                        infoWindow.setSuggestion("(Good)");
+                    } else if (average <= 4.4) {
+                        infoWindow.setSuggestion("(Very Good)");
+                    } else {
+                        infoWindow.setSuggestion("(Excellent)");
+                    }
+                } else {
+                    infoWindow.setSuggestion("(No Ratings)");
+                }
+                //custom maps info window adapter  object is created to pass data
+                mMap.setInfoWindowAdapter(new MapsCustomWindowAdapter(getContext()));
+                //passing the markerOptions object to the market object as the parameter
+                marker = mMap.addMarker(markerOptions);
+                marker.setTag(infoWindow);
+            }
+        });
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        snack.dismiss();
+       if(snack != null){
+           snack.dismiss();
+       }
     }
 }

@@ -10,6 +10,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fyp.motorcyclefix.Dao.Booking;
+import com.fyp.motorcyclefix.Dao.InfoWindow;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,14 +25,19 @@ public class MapsCustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
     //constant for logging
     public static final String TAG = "mapsCustomAdapter";
     //variable initlitizations and declarations
-    private final View mWindow;
+    private View mWindow;
     private Context mContext;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     //constructor
     public MapsCustomWindowAdapter(Context context) {
         mContext = context;
-        mWindow = LayoutInflater.from(context).inflate(R.layout.rider_maps_custom_info_window, null);
+        try {
+            mWindow = LayoutInflater.from(context).inflate(R.layout.rider_maps_custom_info_window, null);
+        } catch (Exception e){
+            Log.d(TAG, e.toString());
+            e.printStackTrace();
+        }
     }
 
     //method all the information that is needed to display in the info window
@@ -42,66 +48,13 @@ public class MapsCustomWindowAdapter implements GoogleMap.InfoWindowAdapter {
         final TextView openHours = view.findViewById(R.id.mapsOpenHours);
         final RatingBar workshopRating = view.findViewById(R.id.mapsRatingbar);
         final TextView suggestion = view.findViewById(R.id.mapsSuggestion);
-        //Query to get bookings for ratings calculation
-        db.collection("bookings")
-                .whereEqualTo("workshopId", marker.getSnippet())
-                .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot snap) {
-                //variables to assign calculated values
-                float rating = 0;
-                int count = 0;
-                float average = 0;
-                //looping the snapshop object and mapping to the booking model
-                for (QueryDocumentSnapshot snapshot : snap) {
-                    Booking booking = snapshot.toObject(Booking.class);
-                    String status = booking.getStatus().trim();
-                    try {
-                        //getting all bookings in completed state and getting the total count
-                        if (status.equals("completed")) {
-                            count++;
-                            rating += booking.getStarRating();
-                        }
-                        //log any errors thrown
-                    } catch (Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                }
-                //averaging the star ratings
-                average = rating / count;
-                workshopRating.setRating(average);
-                if (count != 0) {
-                    //setting suggestion based on the average ratings
-                    if (average <= 1.4) {
-                        suggestion.setText("(Poor)");
-                    } else if (average <= 2) {
-                        suggestion.setText("(Average)");
-                    } else if (average <= 3.4) {
-                        suggestion.setText("(Good)");
-                    } else if (average <= 4.4) {
-                        suggestion.setText("(Very Good)");
-                    } else {
-                        suggestion.setText("(Excellent)");
-                    }
-                }
-                //method call to get workshop title and openhours
-                getWorkshopInfo(marker, title, openHours);
-            }
-        });
-    }
-    //method to get workshop info
-    private void getWorkshopInfo(Marker marker, final TextView title, final TextView openHours){
-        //Query to get workshops
-        db.collection("my_workshop").document(marker.getSnippet())
-                .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Workshop workshop = documentSnapshot.toObject(Workshop.class);
-                //setting the retrieved values
-                openHours.setText(workshop.getOpeningHours());
-                title.setText(workshop.getWorkshopName());
-            }
-        });
+
+        InfoWindow infoWindow = (InfoWindow) marker.getTag();
+        title.setText(marker.getTitle());
+        openHours.setText(infoWindow.getOpenHours());
+        workshopRating.setRating(infoWindow.getRating());
+        suggestion.setText(infoWindow.getSuggestion());
+
     }
 
     @Override

@@ -213,9 +213,8 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
     //method to handle place booking click event
     public void placeBookingClickHandler(View view) {
         //if user hasn't chosen a bike, display toast
-        if(bikeId == null){
-            Toast.makeText(this, "Please Select a Bike!", Toast.LENGTH_LONG).show();
-        } else if(!currentUser.isEmailVerified()){
+        currentUser.reload();
+         if(!currentUser.isEmailVerified()){
            Snackbar snack = Snackbar.make(placeBookingContainer, "Please verify email address", Snackbar.LENGTH_INDEFINITE)
                     .setAction("verify", new View.OnClickListener() {
                         @Override
@@ -233,6 +232,9 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
             snack.show();
 
         }
+         else if(bikeId == null){
+             Toast.makeText(this, "Please Select a Bike!", Toast.LENGTH_LONG).show();
+         }
         else {
             progressBar.setVisibility(View.VISIBLE);
             //method call to send booking request
