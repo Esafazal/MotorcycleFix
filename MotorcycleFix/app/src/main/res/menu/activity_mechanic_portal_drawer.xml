@@ -9,9 +9,17 @@
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/menu_dashboard" />
         <item
+            android:id="@+id/nav_Schedule"
+            android:icon="@drawable/ic_schedule_black_24dp"
+            android:title="@string/schedule" />
+        <item
             android:id="@+id/nav_bookings"
             android:icon="@drawable/ic_single_motorbike"
             android:title="@string/menu_bookings" />
+        <item
+            android:id="@+id/nav_past_bookings"
+            android:icon="@drawable/ic_done_all_black_24dp"
+            android:title="@string/menu_bookings_past" />
         <item
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_account_circle_black_24dp"

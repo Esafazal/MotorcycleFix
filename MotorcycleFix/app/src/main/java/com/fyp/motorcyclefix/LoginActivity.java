@@ -2,6 +2,7 @@ package com.fyp.motorcyclefix;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
-
+    //constant for logging
+    public static final String TAG = "loginActivity";
     //variable declarations and initilizations
     private RiderSharedPreferenceConfig riderPreferenceConfig;
     private MechanicSharedPreferencesConfig mechanicPreferenceConfig;
@@ -54,8 +56,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.signInProgressBar);
 
         //delete once development completed
-        Email.setText("esafazal72@gmail.com");
-        Password.setText("123456");
+//        Email.setText("esafazal72@gmail.com");
+//        Password.setText("123456");
 
     }
 
@@ -156,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressBar.setVisibility(View.GONE);
+                        Log.e(TAG, "checkUserTypeAndLoginUser: "+e.toString());
                         Toast.makeText(LoginActivity.this, "serious fail", Toast.LENGTH_SHORT).show();
                     }
                 });

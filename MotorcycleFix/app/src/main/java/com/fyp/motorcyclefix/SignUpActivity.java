@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 
 import com.fyp.motorcyclefix.Dao.User;
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,12 +44,13 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText Email, Password, Name, phoneNumber;
     private RadioGroup sexGroup;
     private RadioButton radioSelected;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private ProgressBar progressBar;
     private Bundle bundle;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private User userModel;
     private FusedLocationProviderClient mfusedLocationProviderClient;
+    private ConstraintLayout signupConstraintLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +66,7 @@ public class SignUpActivity extends AppCompatActivity {
         sexGroup = findViewById(R.id.radioSex);
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         progressBar = findViewById(R.id.signUpProgressBar);
-
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        signupConstraintLayout = findViewById(R.id.signUpContainer);
     }
 
     @Override
@@ -82,6 +83,11 @@ public class SignUpActivity extends AppCompatActivity {
         String password = Password.getText().toString().trim();
         final String name = Name.getText().toString();
         final String phone = phoneNumber.getText().toString();
+
+        //boolean to validate user inputs to widgets
+        if(!validateForm(email, password, name, phone)){
+            return;
+        }
         progressBar.setVisibility(View.VISIBLE);
         //method call to create user
         createUser(email, password, name, phone);
@@ -89,11 +95,6 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void createUser(final String email, final String password, final String name, final String phone){
-
-        //boolean to validate user inputs to widgets
-        if(!validateForm(email, password, name, phone)){
-            return;
-        }
 
         //gender radio button, getting user selected option
         int selectedId = sexGroup.getCheckedRadioButtonId();
@@ -144,14 +145,12 @@ public class SignUpActivity extends AppCompatActivity {
 
                     //if user type is rider, method call to save rider details
                     if (bundle.getString("type").equals("1")) {
-                        saveUserRider(name, email, gender, geoPoint,phone,userId);
+                        saveUserRider(name, email, gender, geoPoint,phone,userId, user);
 
                     //if the user type is mechanic, method call to save Mechnaic details
                     } else if (bundle.getString("type").equals("2")) {
                         saveUserMechanic(name, email, gender, geoPoint,phone, userId);
-
                     }
-
                 }
             }
         });
@@ -171,6 +170,8 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         Toast.makeText(SignUpActivity.this, "Mechanic Registration Successful!"
                                 , Toast.LENGTH_SHORT).show();
+                        //sending verification email to user
+                        sendEmailVerification();
                         //Method call to add workshop as empty
                         addWorkshoptoDBAsNull(userId);
                         //goto mechnic portal activity
@@ -192,7 +193,8 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
-    private void saveUserRider(String name, String email, String gender, GeoPoint geoPoint,long phone, String userId){
+    private void saveUserRider(String name, String email, String gender, GeoPoint geoPoint
+            , long phone, String userId, final FirebaseUser user){
         //user type
         String type ="rider";
         //initlizing usermodel constructor
@@ -204,7 +206,10 @@ public class SignUpActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(SignUpActivity.this, "Rider Registration Successful!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignUpActivity.this,
+                                "Rider Registration Successful!", Toast.LENGTH_SHORT).show();
+                        //sending verification email to user
+                        sendEmailVerification();
                         //goto rider portal activity
                         Intent intent = (new Intent(getApplicationContext(), RiderPortal.class));
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -244,13 +249,21 @@ public class SignUpActivity extends AppCompatActivity {
 
         boolean valid = true;
 
-        if (email.isEmpty()) {
+         if (name.isEmpty()) {
+            Name.setError("Please enter name");
+            Name.requestFocus();
+            valid = false;
+        } else if(email.isEmpty()) {
             Email.setError("Please Enter an Email Address!");
             Email.requestFocus();
             valid = false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Email.setError("Please Enter an Valid Email Address!");
             Email.requestFocus();
+            valid = false;
+        } else if (phoneN.length() < 10) {
+            phoneNumber.setError("Contains less than 10 digits");
+            phoneNumber.requestFocus();
             valid = false;
         } else if (password.isEmpty()) {
             Password.setError("Please Enter a Password!");
@@ -259,21 +272,6 @@ public class SignUpActivity extends AppCompatActivity {
         } else if (password.length() < 6) {
             Password.setError("Password Too Short!");
             Password.requestFocus();
-            valid = false;
-
-        } else if (name.isEmpty()) {
-            Name.setError("Please enter name");
-            Name.requestFocus();
-            valid = false;
-
-        } else if (phoneN.length() < 10) {
-            phoneNumber.setError("Contains less than 10 digits");
-            phoneNumber.requestFocus();
-            valid = false;
-
-        } else if (phoneN.length() > 10) {
-            phoneNumber.setError("Contains more than 10 digits");
-            phoneNumber.requestFocus();
             valid = false;
         }
 
@@ -285,5 +283,33 @@ public class SignUpActivity extends AppCompatActivity {
         Log.d(TAG, "askPermission()");
         ActivityCompat.requestPermissions(this , new String[] { Manifest.permission.ACCESS_FINE_LOCATION
                 , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
+    }
+    //method is used to send verification email to user
+    public void sendEmailVerification(){
+        //getting currently logged in user
+        final FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null) {
+            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isComplete()) {
+                                //log errors
+                                Log.e(TAG, "sendEmailVerification", task.getException());
+                                Toast.makeText(SignUpActivity.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })//log  severe errors
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "Email verification: " + e.toString());
+                            e.printStackTrace();
+                        }
+                    });
+        } else {
+            Toast.makeText(this, "no users available", Toast.LENGTH_SHORT).show();
+        }
     }
 }

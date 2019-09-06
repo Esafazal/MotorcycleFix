@@ -28,11 +28,10 @@
                 android:layout_marginTop="20sp"
                 android:text="Hero Hunk 2011"
                 android:textColor="@color/colorblack"
-                android:textSize="20sp"
+                android:textSize="19sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
 
             <TextView
@@ -245,7 +244,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/dimRed"
                 android:text="Completed"
-                android:clickable="false"
+                android:enabled="false"
                 android:layout_margin="5sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"

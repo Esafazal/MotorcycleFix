@@ -130,7 +130,9 @@
                 android:layout_below="@+id/emailText"
                 android:layout_toRightOf="@+id/nameImg"
                 android:layout_marginEnd="10sp"
-                android:inputType="textEmailAddress"/>
+                android:inputType="none"
+                android:clickable="false"
+                android:focusable="false"/>
             <!--GENDER-->
         <ImageView
             android:id="@+id/genderImg"

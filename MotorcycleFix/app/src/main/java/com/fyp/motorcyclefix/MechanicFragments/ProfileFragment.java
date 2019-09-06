@@ -42,9 +42,9 @@ import com.google.firebase.firestore.GeoPoint;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
-
+    //constant
     private static final String TAG = "mechanicProfileActivity";
-
+    //vairable declarations and initilization
     private EditText Name, Email, PhoneNo;
     private Button update;
     private RadioGroup sexGroup;
@@ -68,41 +68,41 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.mechanic_profile_fragment, container, false);
-
+        //widget references
         Name = view.findViewById(R.id.MnameEdit);
         Email = view.findViewById(R.id.MemailEdit);
         PhoneNo = view.findViewById(R.id.MphoneEdit);
         sexGroup = view.findViewById(R.id.MecRadioSexProfile);
         update = view.findViewById(R.id.MupdateButton);
         progressBar = view.findViewById(R.id.mechanicProfleProgressbar);
-
+        //initilization
         user = new User();
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
 
+        //method call to get user info
         getProfileDetails();
-
+        //Update button onclick listner
         update.setOnClickListener(this);
 
         return view;
     }
-
+    //method to get user profile details
     private void getProfileDetails() {
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        //get current user logged in
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
             docId = userId;
-
+            //Query to get user info
             userRef.document(userId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User user1 = documentSnapshot.toObject(User.class);
-
+                    //setting the fetched values into the widgets
                     Name.setText(user1.getName());
-                    Email.setText(user1.getEmail());
+                    Email.setText(user1.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
                     PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
-
+                    //checking user gender and setting it
                     if (user1.getGender().contentEquals("male")) {
                         sexGroup.check(R.id.MecradioMaleProfile);
                     } else {
@@ -110,7 +110,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     }
                     progressBar.setVisibility(View.GONE);
                 }
-            })
+            })      //log error
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
@@ -119,32 +119,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     });
 
         } else {
+            //if the user isn't logged in prompt to login again
             Toast.makeText(getActivity(), "Please login again!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra("type", "1");
             startActivity(intent);
             getActivity().finish();
-
         }
-
     }
 
     @Override
     public void onClick(View v) {
-
+        //on update button clicked method call to update new details
         getLastKnownLocation(v);
 
     }
 
     private void getLastKnownLocation(final View view) {
-
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            return;
+            //
+            askPermission();
         }
 
         mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -175,11 +173,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void saveUserDetails(){
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        String userId = currentUser.getUid();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
+        final String userId = currentUser.getUid();
 
-        currentUser.updateEmail(user.getEmail());
-        Toast.makeText(getActivity(), currentUser.getDisplayName(), Toast.LENGTH_SHORT).show();
         userRef.document(userId).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -195,6 +191,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     }
                 });
 
+    }
+
+    // Asks for permission to access gps
+    private void askPermission() {
+        Log.d(TAG, "askPermission()");
+        ActivityCompat.requestPermissions(getActivity() , new String[] { Manifest.permission.ACCESS_FINE_LOCATION
+                , Manifest.permission.ACCESS_FINE_LOCATION }, 1);
     }
 
 }

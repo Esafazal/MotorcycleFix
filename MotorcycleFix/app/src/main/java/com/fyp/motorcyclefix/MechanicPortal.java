@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -22,9 +24,11 @@ import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Workshop;
-import com.fyp.motorcyclefix.Listeners.CalculateDistance;
+import com.fyp.motorcyclefix.MechanicFragments.ScheduleFragment;
+import com.fyp.motorcyclefix.MechanicFragments.PastBookingsFragment;
+import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.Listeners.ShowEmergencyAlert;
-import com.fyp.motorcyclefix.MechanicFragments.BookingRequestFragment;
+import com.fyp.motorcyclefix.MechanicFragments.BookingFragments.BookingRequestFragment;
 import com.fyp.motorcyclefix.MechanicFragments.BookingsFragment;
 import com.fyp.motorcyclefix.MechanicFragments.DashboardFragment;
 import com.fyp.motorcyclefix.MechanicFragments.ProfileFragment;
@@ -32,6 +36,7 @@ import com.fyp.motorcyclefix.MechanicFragments.ProfileFragments.AddWorkshop;
 import com.fyp.motorcyclefix.MechanicFragments.WorkshopInfoFragment;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,6 +61,7 @@ public class MechanicPortal extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String userId;
     private FirebaseUser currentUser;
+    private DrawerLayout drawer;
 
     @Override
     protected void onStart() {
@@ -63,6 +69,7 @@ public class MechanicPortal extends AppCompatActivity {
         //firebase user instance is initilized and the user id is retrieved
         currentUser = mAuth.getCurrentUser();
         String newUser = currentUser.getUid();
+        checkIsEmailVerified(currentUser);
         //initilization of firebase messaging to subscribe to a topic to get notifications sent to that particular topic.
         FirebaseMessaging.getInstance().subscribeToTopic(newUser);
     }
@@ -78,7 +85,7 @@ public class MechanicPortal extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -120,6 +127,20 @@ public class MechanicPortal extends AppCompatActivity {
                     closeDrawer();
                     return true;
 
+                case R.id.nav_past_bookings:
+                    setTitle("Past Bookings");
+                    fragment = new PastBookingsFragment();
+                    loadFragment(fragment);
+                    closeDrawer();
+                    return true;
+
+                case R.id.nav_Schedule:
+                    setTitle("My ScheduleFragment");
+                    fragment = new ScheduleFragment();
+                    loadFragment(fragment);
+                    closeDrawer();
+                    return true;
+
                 case R.id.nav_profile:
                     setTitle("Profile");
                     fragment = new ProfileFragment();
@@ -140,9 +161,9 @@ public class MechanicPortal extends AppCompatActivity {
             return false;
         }
     };
-
+    //
     private void displayAlertDialogandLogout(){
-
+        //
         AlertDialog.Builder builder = new AlertDialog.Builder(MechanicPortal.this);
         builder.setMessage("Are you sure you want to logout?")
                 .setTitle("Confirmation")
@@ -172,27 +193,33 @@ public class MechanicPortal extends AppCompatActivity {
         final String userId = currentUser.getUid();
         //Query
         db.collection("SOS").whereEqualTo("status", "pending")
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
                         //loop to get location of rider facing breakdown
                         for(QueryDocumentSnapshot snap : snapshot){
                             SOS sos = snap.toObject(SOS.class);
-
                             String docId = snap.getId();
-
+                            //
                             if(docId.equals(userId)){
                                 return;
                             }
+                            if(sos.getRejects() != null){
+                                for(String user : sos.getRejects()) {
+                                    if (user.equals(userId)) {
+                                        return;
+                                    }
+                            }
+                            }
                             GeoPoint sosGeopoint = sos.getGeoPoint();
                             //method call to get current user location
-                            getCurrentUserGeoPoint(sosGeopoint, sos, userId);
+                            getCurrentUserGeoPoint(sosGeopoint, sos, userId, docId);
                         }
                     }
                 });
     }
-
-    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
+    //
+    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id, final String docId){
         //Query to get current user info
         db.collection("users").document(id)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -213,6 +240,7 @@ public class MechanicPortal extends AppCompatActivity {
                         intent.putExtra("mark", sos.getLandmark());
                         intent.putExtra("lat", sos.getGeoPoint().getLatitude());
                         intent.putExtra("lng", sos.getGeoPoint().getLongitude());
+                        intent.putExtra("docId", docId);
                         startActivity(intent);
                     }
                 } catch (Exception e){
@@ -220,7 +248,6 @@ public class MechanicPortal extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     //Method to check id current user has a registered workshop, if not prompt to add one.
@@ -268,7 +295,7 @@ public class MechanicPortal extends AppCompatActivity {
                     }
                 });
     }
-
+    //
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -278,7 +305,7 @@ public class MechanicPortal extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
+    //
     public boolean closeDrawer() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -301,15 +328,14 @@ public class MechanicPortal extends AppCompatActivity {
                 .addSnapshotListener(this, new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException e) {
-
+                        //check if there is an exception
                         if (e != null) {
                             Log.w(TAG, "Listen failed.", e);
                             return;
-                        }
-
+                        }//looping to get snapshot object to booking model
                         for(QueryDocumentSnapshot snap : snapshot){
                             Booking booking = snap.toObject(Booking.class);
-
+                            //creaking a bundle object to pass information to next fragment
                             Bundle bundle = new Bundle();
                             bundle.putString("userId", booking.getUserId());
                             bundle.putString("sType", booking.getServiceType());
@@ -318,14 +344,30 @@ public class MechanicPortal extends AppCompatActivity {
                             bundle.putString("sDesc", booking.getRepairDescription());
                             bundle.putString("rCat", booking.getRepairCategory());
                             bundle.putLong("bookingId", booking.getBookingID());
-
                             //Display booking via alertDialog
                             BookingRequestFragment fragment = new BookingRequestFragment();
                             fragment.setArguments(bundle);
                             fragment.show(getSupportFragmentManager(), "ViewBookingRequest");
                         }
-
                     }
                 });
+    }
+
+    public void checkIsEmailVerified(final FirebaseUser user){
+        user.reload();
+        if(!user.isEmailVerified()){
+            Snackbar snack = Snackbar.make(drawer,
+                    "Please verify email address", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("verify", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SignUpActivity signUpActivity = new SignUpActivity();
+                            signUpActivity.sendEmailVerification();
+                            Toast.makeText(MechanicPortal.this,
+                                    "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            snack.show();
+        }
     }
 }

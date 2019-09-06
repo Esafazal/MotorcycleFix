@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/PlaceBookingContainer"
     tools:context=".RiderFragments.WorkshopFragments.ViewWorkshopActivity">
 
 
@@ -78,7 +79,6 @@
                         android:id="@+id/reviewsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="(500+)"
                         android:textSize="12sp"
                         android:layout_marginStart="105sp"
                         android:layout_marginBottom="10sp"
@@ -180,10 +180,11 @@
                         android:id="@+id/chosenRepairType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/orange"
+                        android:textColor="@color/colorAsh2"
                         android:textStyle="italic"
+                        android:text=""
                         android:layout_marginTop="5sp"
-                        android:layout_marginStart="10sp"
+                        android:layout_marginStart="5sp"
                         android:textSize="18sp"
                         android:padding="3sp"
                         app:layout_constraintBottom_toTopOf="@+id/repairDescription"
@@ -203,7 +204,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/dateNTimeCard"
@@ -238,23 +238,25 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/dateNTimeCard"
                 android:layout_marginStart="8dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginTop="8sp"
                 android:layout_marginEnd="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/estimateCardNew"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginBottom="10sp">
 
                     <TextView
                         android:id="@+id/estimated"
-                        android:layout_width="0sp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Estimated time for Service completion:"
+                        android:text="Estimated Time Duration:"
                         android:textColor="@color/colorblack"
                         android:textSize="20sp"
+                        android:layout_marginStart="5sp"
                         app:layout_constraintEnd_toStartOf="@id/ETA"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -263,24 +265,17 @@
                         android:id="@+id/ETA"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:text="dasdssd"
-                        android:textColor="@color/yelloOrange"
-                        android:textSize="18sp"
-                        android:layout_marginEnd="20sp"
+                        android:textColor="@color/colorAsh2"
+                        android:textSize="20sp"
                         android:textStyle="italic"
+                        android:layout_marginStart="10sp"
                         app:layout_constraintStart_toEndOf="@+id/estimated"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
+                        app:layout_constraintTop_toTopOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
-
-
 
             <Button
                 android:layout_width="match_parent"

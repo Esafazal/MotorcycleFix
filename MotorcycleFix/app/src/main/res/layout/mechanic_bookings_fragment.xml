@@ -47,7 +47,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bookings_recycler_view" />
 
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

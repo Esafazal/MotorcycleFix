@@ -29,7 +29,7 @@ public class Booking {
 
     }
 
-    public Booking(long bookingID, String serviceType, Date dateOfService, String repairDescription ,String userId
+    public Booking(long bookingID, String serviceType, Date dateOfService, String repairDescription , String userId
             , String vehicleId, String model, String status, String  message, String startColor, String endColor) {
 
         this.bookingID = bookingID;

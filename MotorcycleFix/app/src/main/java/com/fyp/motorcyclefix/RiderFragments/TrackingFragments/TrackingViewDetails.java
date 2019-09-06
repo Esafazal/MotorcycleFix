@@ -76,16 +76,16 @@ public class TrackingViewDetails extends AppCompatDialogFragment implements View
         mechanicMessage = getArguments().getString("message");
 
       try {
-          if (!serviceCategory.equals("")) {
+          if (serviceCategory != null && serviceCategory.length() > 2) {
               sRepairS.setVisibility(View.VISIBLE);
               sRepairD.setVisibility(View.VISIBLE);
           }
 
-          if (!serviceDescription.equals("")) {
+          if (serviceDescription != null && serviceDescription.length() > 2) {
               sCategoryS.setVisibility(View.VISIBLE);
               sCategoryD.setVisibility(View.VISIBLE);
           }
-          if (!mechanicMessage.equals("")) {
+          if (mechanicMessage != null && mechanicMessage.length() > 2) {
               messageS.setVisibility(View.VISIBLE);
               messageD.setVisibility(View.VISIBLE);
           }
