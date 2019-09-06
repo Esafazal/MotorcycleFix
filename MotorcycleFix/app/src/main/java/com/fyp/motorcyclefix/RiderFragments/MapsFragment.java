@@ -11,9 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -36,6 +38,8 @@ import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
+import com.fyp.motorcyclefix.RiderPortal;
+import com.fyp.motorcyclefix.SignUpActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,6 +54,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -73,12 +78,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser currentUser = mAuth.getCurrentUser();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference workshopRef = db.collection("my_workshop");
     private ArrayList<Workshop> workshopList = new ArrayList<>();
     private Workshop workshop;
     private FusedLocationProviderClient mlocationProviderClient;
     private Marker marker;
+    private FrameLayout mapsLayout;
+    private Snackbar snack;
 
     //default constructor
     public MapsFragment() {
@@ -92,6 +100,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         //getting reference to the framelayout, in which the map will be displayed
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         progressBar = view.findViewById(R.id.mapsProgressBar);
+        mapsLayout = view.findViewById(R.id.mapsLayout);
         //getting last known location of user
         mlocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
         //checking if map fragment object is null, if so, initilize it
@@ -103,6 +112,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }
         mapFragment.getMapAsync(this);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkIsEmailVerified(currentUser);
     }
 
     //this method is called when the map is ready to be displayed
@@ -156,7 +171,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
 
     private void getWorkshopLocations() {
         //check if there is a user logged in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             //Query to getworkshop locations
             workshopRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -257,5 +271,33 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         Log.d(TAG, "askPermission()");
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION
                 , Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
+    public void checkIsEmailVerified(final FirebaseUser user){
+        user.reload();
+        if(!user.isEmailVerified()){
+            snack = Snackbar.make(mapsLayout,
+                    "Please verify email address", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("verify", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SignUpActivity signUpActivity = new SignUpActivity();
+                            signUpActivity.sendEmailVerification();
+                            Toast.makeText(getActivity(), "Verification email sent to "
+                                    + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            View view = snack.getView();
+            FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
+            params.gravity = Gravity.TOP;
+            view.setLayoutParams(params);
+            snack.show();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        snack.dismiss();
     }
 }

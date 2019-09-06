@@ -5,9 +5,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.Workshop;
@@ -213,7 +216,7 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
         if(bikeId == null){
             Toast.makeText(this, "Please Select a Bike!", Toast.LENGTH_LONG).show();
         } else if(!currentUser.isEmailVerified()){
-            Snackbar.make(placeBookingContainer, "", Snackbar.LENGTH_INDEFINITE)
+           Snackbar snack = Snackbar.make(placeBookingContainer, "Please verify email address", Snackbar.LENGTH_INDEFINITE)
                     .setAction("verify", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -222,8 +225,13 @@ public class ViewWorkshopActivity extends AppCompatActivity implements View.OnCl
                             Toast.makeText(ViewWorkshopActivity.this,
                                     "Verification email sent to " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
                         }
-                    })
-                    .show();
+                    });
+            View view1 = snack.getView();
+            FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view1.getLayoutParams();
+            params.gravity = Gravity.TOP;
+            view1.setLayoutParams(params);
+            snack.show();
+
         }
         else {
             progressBar.setVisibility(View.VISIBLE);

@@ -13,14 +13,13 @@ import com.fyp.motorcyclefix.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MechanicSchedule extends Fragment {
+public class ScheduleFragment extends Fragment {
 
 
-    public MechanicSchedule() {
+    public ScheduleFragment() {
         // Required empty public constructor
     }
-
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

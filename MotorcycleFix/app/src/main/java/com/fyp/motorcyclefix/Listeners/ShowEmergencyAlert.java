@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.fyp.motorcyclefix.Dao.User;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderPortal;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -62,20 +63,21 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.show_emergency_alert_activity);
-
+        //
         initializeWidgets();
-
+        //
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.miniFrameMap);
         mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
+        //
         userId = getIntent().getStringExtra("userId");
-        getUsername();
         String issue1 = getIntent().getStringExtra("issue");
         String landMark1 = getIntent().getStringExtra("mark");
         docId = getIntent().getStringExtra("docId");
         lat = getIntent().getDoubleExtra("lat", 0);
         lng = getIntent().getDoubleExtra("lng", 0);
-
+        //
+        getUsername();
+        //
         issue.setText(issue1);
         landmark.setText(landMark1);
 
@@ -103,7 +105,6 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 number.setText("+94" + user1.getPhoneNumber());
             }
         });
-
     }
 
     private void initializeWidgets(){
@@ -115,7 +116,6 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
         close = findViewById(R.id.closeSOS);
         reject = findViewById(R.id.rejectSos);
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -222,6 +222,11 @@ public class ShowEmergencyAlert extends AppCompatActivity implements View.OnClic
                 accept.setVisibility(View.GONE);
                 reject.setVisibility(View.GONE);
                 close.setVisibility(View.VISIBLE);
+                //notification title and message
+                String title = "Someone is ready to help";
+                String message = "Please contact this person ASAP!";
+                //send notification to rider informing a user ready to help
+                SendNotificationService.sendNotification(ShowEmergencyAlert.this, userId,title, message);
             }
         });
     }

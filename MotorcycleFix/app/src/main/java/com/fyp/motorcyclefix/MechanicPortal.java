@@ -4,10 +4,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,7 +24,7 @@ import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
 import com.fyp.motorcyclefix.Dao.Workshop;
-import com.fyp.motorcyclefix.MechanicFragments.MechanicSchedule;
+import com.fyp.motorcyclefix.MechanicFragments.ScheduleFragment;
 import com.fyp.motorcyclefix.MechanicFragments.PastBookingsFragment;
 import com.fyp.motorcyclefix.Services.CalculateDistance;
 import com.fyp.motorcyclefix.Listeners.ShowEmergencyAlert;
@@ -137,8 +135,8 @@ public class MechanicPortal extends AppCompatActivity {
                     return true;
 
                 case R.id.nav_Schedule:
-                    setTitle("My Schedule");
-                    fragment = new MechanicSchedule();
+                    setTitle("My ScheduleFragment");
+                    fragment = new ScheduleFragment();
                     loadFragment(fragment);
                     closeDrawer();
                     return true;
@@ -215,13 +213,13 @@ public class MechanicPortal extends AppCompatActivity {
                             }
                             GeoPoint sosGeopoint = sos.getGeoPoint();
                             //method call to get current user location
-                            getCurrentUserGeoPoint(sosGeopoint, sos, userId);
+                            getCurrentUserGeoPoint(sosGeopoint, sos, userId, docId);
                         }
                     }
                 });
     }
     //
-    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id){
+    private void getCurrentUserGeoPoint(final GeoPoint sosGeoPoint, final SOS sos, String id, final String docId){
         //Query to get current user info
         db.collection("users").document(id)
                 .get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -242,6 +240,7 @@ public class MechanicPortal extends AppCompatActivity {
                         intent.putExtra("mark", sos.getLandmark());
                         intent.putExtra("lat", sos.getGeoPoint().getLatitude());
                         intent.putExtra("lng", sos.getGeoPoint().getLongitude());
+                        intent.putExtra("docId", docId);
                         startActivity(intent);
                     }
                 } catch (Exception e){

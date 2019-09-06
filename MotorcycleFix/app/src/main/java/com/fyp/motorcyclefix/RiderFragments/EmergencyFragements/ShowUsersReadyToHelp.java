@@ -19,6 +19,7 @@ import android.view.View;
 
 import com.fyp.motorcyclefix.Dao.SOS;
 import com.fyp.motorcyclefix.Dao.User;
+import com.fyp.motorcyclefix.NotificationService.SendNotificationService;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.MapsFragment;
 import com.fyp.motorcyclefix.RiderPortal;
@@ -89,7 +90,7 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
             }
         }
         getCurrentUserPosition();
-        getAllUsersNeabybyRider();
+        getAllUsersNeabybyRider(null);
         getUserReadyToHelp();
     }
 
@@ -152,6 +153,8 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
             //setting marker in the map
             mMap.addMarker(markerOptions);
+            //method call to get nearby users to rider
+            getAllUsersNeabybyRider(user.getUserId());
             //info window click handler
             mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
@@ -164,13 +167,19 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
         }
     }
 
-    private void getAllUsersNeabybyRider(){
+    private void getAllUsersNeabybyRider(final String userId){
         db.collection("users").get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for(QueryDocumentSnapshot snapshot : queryDocumentSnapshots){
                             User user = snapshot.toObject(User.class);
+                            //removing duplicate helper
+                            if(userId != null){
+                                if(userId.equals(user.getUserId())){
+                                    return;
+                                }
+                            }
                             GeoPoint userLoc = user.getGeoPoint();
                             LatLng latLng = new LatLng(userLoc.getLatitude(), userLoc.getLongitude());
                             mMap.addMarker(new MarkerOptions().position(latLng));

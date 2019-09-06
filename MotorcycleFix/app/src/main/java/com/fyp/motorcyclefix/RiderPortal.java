@@ -82,7 +82,6 @@ public class RiderPortal extends AppCompatActivity {
             //method calls get workshop feedback and get any emergencies nearby
             leaveFeedback(userId);
             getAnyEmergenciesSOS(userId);
-            checkIsEmailVerified(currentUser);
         }
         getSupportFragmentManager().beginTransaction().replace(R.id.framelay, new MapsFragment()).commit();
     }
@@ -229,28 +228,6 @@ public class RiderPortal extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.framelay, fragment);
         fragmentTransaction.commit();
-    }
-
-    public void checkIsEmailVerified(final FirebaseUser user){
-        user.reload();
-        if(!user.isEmailVerified()){
-            Snackbar snack = Snackbar.make(riderConstraintLayout,
-                    "Please verify email address", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("verify", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            SignUpActivity signUpActivity = new SignUpActivity();
-                            signUpActivity.sendEmailVerification();
-                            Toast.makeText(RiderPortal.this,
-                                    "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-            View view = snack.getView();
-            FrameLayout.LayoutParams params =(FrameLayout.LayoutParams)view.getLayoutParams();
-            params.gravity = Gravity.TOP;
-            view.setLayoutParams(params);
-            snack.show();
-        }
     }
 
 }
