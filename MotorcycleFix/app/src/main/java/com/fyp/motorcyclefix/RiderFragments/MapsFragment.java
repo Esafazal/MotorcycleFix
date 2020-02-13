@@ -2,14 +2,18 @@ package com.fyp.motorcyclefix.RiderFragments;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +41,7 @@ import com.fyp.motorcyclefix.Adapters.MapsCustomWindowAdapter;
 import com.fyp.motorcyclefix.Dao.Booking;
 import com.fyp.motorcyclefix.Dao.InfoWindow;
 import com.fyp.motorcyclefix.Dao.Workshop;
+import com.fyp.motorcyclefix.LoginActivity;
 import com.fyp.motorcyclefix.R;
 import com.fyp.motorcyclefix.RiderFragments.WorkshopFragments.ViewWorkshopActivity;
 import com.fyp.motorcyclefix.RiderPortal;
@@ -63,6 +68,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.w3c.dom.Text;
 
@@ -138,14 +144,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         //method call to get user current location
-        getCurrentUserPosition();
+        getCurrentUserPosition(getContext());
         //method  call to view workshop clicked
         infoWindowClickHandler(getActivity());
 
     }
 
     //method gets the last known locations of the current user
-    private void getCurrentUserPosition() {
+    private void getCurrentUserPosition(final Context context) {
         //checks if user has granted permission to use gps
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -153,6 +159,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 != PackageManager.PERMISSION_GRANTED) {
             //ask for location permission to display user current location
             askPermission();
+        }
+
+        LocationManager lm = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+
+        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            // notify user
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Enable Location Services")
+                    .setTitle("Confirmation")
+                    .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        }
+                    })//
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).show();
+            return;
         }
         //using the locationprovider client to get user lastknown location
         mlocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {

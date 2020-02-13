@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,6 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
     private User user;
     private String docId;
     private ProgressBar progressBar;
+    private TextView emailView;
 
 
     @Override
@@ -63,6 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         PhoneNo = findViewById(R.id.MphoneEdit);
         sexGroup = findViewById(R.id.MradioSexProfile);
         progressBar = findViewById(R.id.riderProfileProgressBar);
+        emailView = findViewById(R.id.emailText);
 
         user = new User();
 
@@ -85,7 +88,8 @@ public class ProfileActivity extends AppCompatActivity {
                     User user = documentSnapshot.toObject(User.class);
 
                     Name.setText(user.getName());
-                    Email.setText(user.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
+                    emailView.setText("Email ID (verified: "+currentUser.isEmailVerified()+")");
+                    Email.setText(user.getEmail());
                     PhoneNo.setText(String.valueOf(user.getPhoneNumber()));
 
                     if (user.getGender().contentEquals("male")) {
