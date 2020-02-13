@@ -39,7 +39,7 @@ import java.util.HashMap;
 public class SignUpActivity extends AppCompatActivity {
 
     //TAG Constant
-    private static final String TAG = "Signup Activity";
+    private static final String TAG = "signupActivty";
     //Variables for widgets, model and firebase/firestore
     private EditText Email, Password, Name, phoneNumber;
     private RadioGroup sexGroup;
@@ -112,6 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                         else{
                             progressBar.setVisibility(View.GONE);
+                            Log.d(TAG, "Create User method: "+task.getException());
                             Toast.makeText(getApplicationContext(), "Email Already Exists!", Toast.LENGTH_LONG).show();
                         }
                     }
@@ -128,6 +129,15 @@ public class SignUpActivity extends AppCompatActivity {
 
         //method call to request permission
            askPermission();
+           progressBar.setVisibility(View.GONE);
+           FirebaseUser currentUser = mAuth.getCurrentUser();
+           currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+               @Override
+               public void onComplete(@NonNull Task<Void> task) {
+                   Toast.makeText(SignUpActivity.this, "Please resubmit form.", Toast.LENGTH_LONG).show();
+               }
+           });
+           
         }
         //get last known location of user
         mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -137,9 +147,13 @@ public class SignUpActivity extends AppCompatActivity {
                 if(task.isSuccessful()){
                     Location location = task.getResult();
                     GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                    if(geoPoint == null){
+                        return;
+                    }
 
                     bundle = getIntent().getExtras();
                     //Firebase user instance to get session of current user
+
                     FirebaseUser user = mAuth.getCurrentUser();
                     final String userId = user.getUid().trim();
 

@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     //map the document snapshot to user model and get user type
                     User user = documentSnapshot.toObject(User.class);
+                    if(user == null){
+                        progressBar.setVisibility(View.GONE);
+                        return;
+                    }
                     String type = user.getType();
 
                     //User type not null check, type of user, display toast and goto rider/mechanic portal

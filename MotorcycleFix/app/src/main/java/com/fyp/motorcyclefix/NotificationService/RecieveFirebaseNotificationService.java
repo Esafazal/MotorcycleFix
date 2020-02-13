@@ -43,6 +43,9 @@ public class RecieveFirebaseNotificationService extends FirebaseMessagingService
         super.onNewToken(s);
         //get current user id
         FirebaseUser user = mAuth.getCurrentUser();
+        if(user == null){
+            return;
+        }
         String SUBSCRIBE_TO = user.getUid();
         //subscribing to a topic to get notfication from firebase cloud messaging
         FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);

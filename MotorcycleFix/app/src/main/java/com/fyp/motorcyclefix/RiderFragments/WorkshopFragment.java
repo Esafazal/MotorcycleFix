@@ -192,7 +192,6 @@ public class WorkshopFragment extends Fragment implements WorkshopsAdapter.OnIte
                            }
                        });
                 }
-
                 }
             }
         });

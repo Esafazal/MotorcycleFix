@@ -105,8 +105,6 @@ public class TrackingAdapter extends RecyclerView.Adapter<TrackingAdapter.CardVi
            holder.serviceType.setText(booking.getServiceType());
            holder.bikeModel.setText(booking.getModel());
 
-
-
        } catch (Exception e){
            Log.d("trackingAdapter", e.toString());
            e.printStackTrace();

@@ -151,7 +151,7 @@ public class ShowUsersReadyToHelp extends AppCompatActivity implements OnMapRead
     }
 
     private void showHelperPosition(GeoPoint helperLocation, User user) {
-        if(helperLocation != null) {
+        if(helperLocation != null && mMap != null) {
             LatLng latLng = new LatLng(helperLocation.getLatitude(), helperLocation.getLongitude());
             //creating a marker
             MarkerOptions markerOptions = new MarkerOptions()
