@@ -127,17 +127,17 @@ public class SignUpActivity extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-        //method call to request permission
-           askPermission();
-           progressBar.setVisibility(View.GONE);
-           FirebaseUser currentUser = mAuth.getCurrentUser();
-           currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-               @Override
-               public void onComplete(@NonNull Task<Void> task) {
-                   Toast.makeText(SignUpActivity.this, "Please resubmit form.", Toast.LENGTH_LONG).show();
-               }
-           });
-           
+            //method call to request permission
+            askPermission();
+            progressBar.setVisibility(View.GONE);
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(SignUpActivity.this, "Please resubmit form.", Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
         //get last known location of user
         mfusedLocationProviderClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
@@ -146,24 +146,33 @@ public class SignUpActivity extends AppCompatActivity {
                 //check if location was retrieved
                 if(task.isSuccessful()){
                     Location location = task.getResult();
-                    GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
-                    if(geoPoint == null){
-                        return;
-                    }
 
-                    bundle = getIntent().getExtras();
-                    //Firebase user instance to get session of current user
+                    try {
+                        GeoPoint geoPoint = new GeoPoint(location.getLatitude(), location.getLongitude());
+                        bundle = getIntent().getExtras();
+                        //Firebase user instance to get session of current user
 
-                    FirebaseUser user = mAuth.getCurrentUser();
-                    final String userId = user.getUid().trim();
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        final String userId = user.getUid().trim();
 
-                    //if user type is rider, method call to save rider details
-                    if (bundle.getString("type").equals("1")) {
-                        saveUserRider(name, email, gender, geoPoint,phone,userId, user);
+                        //if user type is rider, method call to save rider details
+                        if (bundle.getString("type").equals("1")) {
+                            saveUserRider(name, email, gender, geoPoint,phone,userId, user);
 
-                    //if the user type is mechanic, method call to save Mechnaic details
-                    } else if (bundle.getString("type").equals("2")) {
-                        saveUserMechanic(name, email, gender, geoPoint,phone, userId);
+                            //if the user type is mechanic, method call to save Mechnaic details
+                        } else if (bundle.getString("type").equals("2")) {
+                            saveUserMechanic(name, email, gender, geoPoint,phone, userId);
+                        }
+                    } catch (NullPointerException e){
+                        e.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(SignUpActivity.this, "Please resubmit form.", Toast.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 }
             }
@@ -251,11 +260,11 @@ public class SignUpActivity extends AppCompatActivity {
         //Add empty worksho to "my_workshop" collection, Denoting mechanic signed up, but didnt't register workshop
         db.collection("my_workshop").document(userID).set(emptyWorkshop)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(SignUpActivity.this, "added empty workshop", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(SignUpActivity.this, "added empty workshop", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     //method to check if the edit texts(widgets) are null, valid and length
@@ -263,7 +272,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         boolean valid = true;
 
-         if (name.isEmpty()) {
+        if (name.isEmpty()) {
             Name.setError("Please enter name");
             Name.requestFocus();
             valid = false;
@@ -289,8 +298,8 @@ public class SignUpActivity extends AppCompatActivity {
             valid = false;
         }
 
-            return valid;
-        }
+        return valid;
+    }
 
     // Asks for permission to access gps
     private void askPermission() {
@@ -304,17 +313,17 @@ public class SignUpActivity extends AppCompatActivity {
         final FirebaseUser user = mAuth.getCurrentUser();
         if(user != null) {
             user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (!task.isComplete()) {
-                                //log errors
-                                Log.e(TAG, "sendEmailVerification", task.getException());
-                                Toast.makeText(SignUpActivity.this,
-                                        "Failed to send verification email.",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    })//log  severe errors
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (!task.isComplete()) {
+                        //log errors
+                        Log.e(TAG, "sendEmailVerification", task.getException());
+                        Toast.makeText(SignUpActivity.this,
+                                "Failed to send verification email.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            })//log  severe errors
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {

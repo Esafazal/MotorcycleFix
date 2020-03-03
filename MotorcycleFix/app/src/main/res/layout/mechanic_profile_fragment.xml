@@ -112,14 +112,13 @@
                     android:id="@+id/emailText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/emailImg"
                     android:layout_below="@+id/MphoneEdit"
-                    android:text="Email ID"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
                     android:layout_marginTop="15sp"
-                    android:layout_marginStart="10sp"
-                    android:textColor="@color/colorblack"/>
+                    android:layout_toRightOf="@+id/emailImg"
+                    android:text="Email ID"
+                    android:textColor="@color/colorblack"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/MemailEdit"

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +47,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "mechanicProfileActivity";
     //vairable declarations and initilization
     private EditText Name, Email, PhoneNo;
+    private TextView emailText;
     private Button update;
     private RadioGroup sexGroup;
     private RadioButton radioSelected;
@@ -70,6 +72,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.mechanic_profile_fragment, container, false);
         //widget references
         Name = view.findViewById(R.id.MnameEdit);
+        emailText = view.findViewById(R.id.emailText);
         Email = view.findViewById(R.id.MemailEdit);
         PhoneNo = view.findViewById(R.id.MphoneEdit);
         sexGroup = view.findViewById(R.id.MecRadioSexProfile);
@@ -100,7 +103,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     User user1 = documentSnapshot.toObject(User.class);
                     //setting the fetched values into the widgets
                     Name.setText(user1.getName());
-                    Email.setText(user1.getEmail()+" (verified: "+currentUser.isEmailVerified()+")");
+                    emailText.setText("Email ID (Verified:"+currentUser.isEmailVerified()+")");
+                    Email.setText(user1.getEmail());
                     PhoneNo.setText(String.valueOf(user1.getPhoneNumber()));
                     //checking user gender and setting it
                     if (user1.getGender().contentEquals("male")) {
