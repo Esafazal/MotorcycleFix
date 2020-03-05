@@ -88,7 +88,7 @@
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="20sp"
         android:background="@color/lightAsh"
-        android:text="Close"
+        android:text="Live Help"
         android:textSize="20sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
